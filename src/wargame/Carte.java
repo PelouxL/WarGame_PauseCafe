@@ -79,18 +79,25 @@ public abstract class Carte implements IConfig, ICarte{
 
 	public Heros trouverHeros(Position pos) {
 		int indiceHeros = 0;
+		int dx, dy;
 		Heros[] listeHeros = new Heros[NB_HEROS];
 		
-		for(int i = 0; i < LARGEUR_CARTE; i++) {
-			for(int y = 0; y < HAUTEUR_CARTE; y++) {
+		for(dx = -1; dx < 1; dx++) {
+			for(dy = -1; dy < 1; dy++) {
+				// on ignore la position actuelle
+				if(dy == 0 && dx == 0) {
+					continue;
+				}
 				
-				Element e = carte[i][y];
-				// on verifie si e est une instanciation de Heros
-				if(e instanceof Heros) {
-					// /!\ ATTENTION
-					// GROS GROS DOUTES sur le faite de cast e avec Heros
-					listeHeros[indiceHeros] = (Heros) e;
-					indiceHeros++;
+				Element e = carte[pos.getX() + dx][pos.getY() + dy];
+				if(e.pos.estValide()) {
+					// on verifie si e est une instanciation de Heros
+					if(e instanceof Heros) {
+						// /!\ ATTENTION
+						// GROS GROS DOUTES sur le faite de cast e avec Heros
+						listeHeros[indiceHeros] = (Heros) e;
+						indiceHeros++;
+					}
 				}
 			}
 		}
@@ -98,4 +105,34 @@ public abstract class Carte implements IConfig, ICarte{
 	}
 	
 	
+	// Version très légère qui ne gère pas les endrit bloquer par une rivière ou cCAYOU
+	// en gros on peux traverser les obstacle mais se poser dessus
+	public boolean deplaceSoldat(Position pos, Soldat soldat) {
+		int diffDeplacement;
+		Position posSoldat = soldat.getPos();
+		
+		if(pos.estValide() && getElement(pos) == null) {
+			diffDeplacement = Math.abs(pos.getX() - posSoldat.getX()) + Math.abs(pos.getY() - posSoldat.getY());
+			if(diffDeplacement > 8) {
+				return false;
+			}
+			carte[pos.getX()][pos.getY()] = soldat;
+			carte[posSoldat.getX()][posSoldat.getY()] = null;
+		}
+		return true;
+		
+	}
+	// comprends pas trop la methode, je suppose qu'elle met un mort sur la carte
+	// celui ci doit compter comme obstacle ???
+	public void mort(Soldat perso) {
+		/*
+		carte[perso.getPos().getX()][perso.getPos().getY()] = mort;
+		// avoir une variable global hero restant ? 
+		nb_heros_restant--
+        */
+	}
+	
+	
+	
 }
+
