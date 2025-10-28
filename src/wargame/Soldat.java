@@ -1,6 +1,6 @@
 package wargame;
 
-public abstract class Soldat implements ISoldat{
+public abstract class Soldat extends Element implements ISoldat{
 	private final int POINT_DE_VIE_MAX, PUISSANCE, TIR, PORTEE_VISUELLE;
 	private int pointDeVie;
 	private Position pos;
