@@ -10,13 +10,13 @@ public class PanneauJeu extends JFrame implements IConfig {
 
 		JPanel panneau = new JPanel(new FlowLayout());
 		
-		File imageFile = new File("Wargame/src/wargame/panneauAffiche.gif");
+		File imageFile = new File("src/wargame/panneauAffiche.gif");
 		System.out.println("Chemin absolu de l'image : " + imageFile.getAbsolutePath());
 		System.out.println("Image existe ? " + imageFile.exists());
 		
 		
 		
-	    ImageIcon img = new ImageIcon("/Wargame/src/wargame/panneauAffiche.gif");
+	    ImageIcon img = new ImageIcon("src/wargame/panneauAffiche.gif");
 	    JLabel jLabelImg = new JLabel(img);
 	    panneau.add(jLabelImg);
 	    
@@ -29,8 +29,6 @@ public class PanneauJeu extends JFrame implements IConfig {
 	    pack();
 	    setVisible(true);
 	   }
+	      
 
-	  public static void main(String [] args){
-	      JFrame frame = new PanneauJeu();
-	  }
 }
