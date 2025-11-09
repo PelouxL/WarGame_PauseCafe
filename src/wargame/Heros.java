@@ -14,6 +14,15 @@ public class Heros extends Soldat{
 		TYPE = type;
 	}
 	
+	public Position getPos() {
+		return this.pos;
+	}
+	
+	public void setPos(Position pos) {
+		this.pos.setX(pos.getX());
+		this.pos.setY(pos.getY());
+	}
+	
 	public int getTour() {
 		return 1; // utiliser une variable pour tour
 	}
