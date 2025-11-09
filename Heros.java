@@ -14,29 +14,27 @@ public class Heros extends Soldat{
 		NOM = nom;
 		TYPE = type;
 	}
-	
-	public int getTour() {
-		if (tour) {
-			return 1;
-		}
-		return 0;
-	}
-	
-	public int getPoints() {
-		return getPoints();
-	}
-	
-	public int getPortee() {
-		return this.PORTEE_VISUELLE;
-	}
-	
+
+	// peut-être à mettre dans Soldat aussi
 	public void seDeplace(Position newPos) {
 		if (newPos.estValide()) {
-			this.setX(newPos.getX());
-			this.setY(newPos.getY());
+			this.pos.setX(newPos.getX());
+			this.pos.setY(newPos.getY());
 		} else {
 			System.out.println("Erreur seDeplace : position invalide.");
 		}
+	}
+
+	public void setJoue() {
+		if (this.getTour() == 1) {
+			this.joue = true;
+		} else {
+			this.joue = false;
+		}
+	}
+
+	public boolean getJoue() {
+		return this.joue;
 	}
 	
     public void combat(Soldat soldat) { // doit definir ces fonctions pour enlever erreurs
