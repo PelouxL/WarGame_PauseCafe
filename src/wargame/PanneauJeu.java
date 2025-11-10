@@ -1,5 +1,9 @@
 package wargame;
 import javax.swing.*;
+
+import wargame.ISoldat.TypesH;
+import wargame.ISoldat.TypesM;
+import wargame.Obstacle.TypeObstacle;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.*;
@@ -7,21 +11,25 @@ import javax.swing.table.*;
 public class PanneauJeu extends JFrame implements IConfig {
 	
 	public PanneauJeu() {
-		int[][] matrice = new int[25][25];
-		
+		Carte c = new Carte();
 		
 		JPanel panneau = new JPanel(new BorderLayout());
 		
 		
-		Object[][] donnees = new Object[25][25];  // Matrice d'objets
-	    for (int i = 0; i < 25; i++) {
-	    	for (int j = 0; j < 25; j++) {
-	    		donnees[i][j] = 1;  // Remplir la matrice d'objets avec les valeurs de int
-	        }
+		Object[][] donnees = new Object[LARGEUR_CARTE][HAUTEUR_CARTE];  // Matrice d'objets
+	    for (int i = 0; i < LARGEUR_CARTE; i++) {
+	    	for (int j = 0; j < HAUTEUR_CARTE; j++) {
+	    		Element e = c.getElement(new Position(i,j));
+	    		if(e == null) {
+	    			donnees[i][j] = null;
+	    		}else {
+	    			donnees[i][j] = c.getElement(new Position(i,j));  // Remplir la matrice d'objets avec les valeurs de int
+	    		}
+	    	}
 	    }
 	       
-	    String[] colonnes = new String[25];
-	    for (int i = 0; i < 25; i++) {
+	    String[] colonnes = new String[HAUTEUR_CARTE];
+	    for (int i = 0; i < HAUTEUR_CARTE; i++) {
 	        colonnes[i] = "";
 	    }
 		
@@ -46,19 +54,29 @@ public class PanneauJeu extends JFrame implements IConfig {
 				
 				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				
-				if (value instanceof Integer) {
-	                int val = (Integer) value;
-	                if (val == 1) {
-	                    c.setBackground(COULEUR_FORET);
-	                    setText(""); // vide si tu veux juste la couleur
-	                } else {
-	                    c.setBackground(Color.WHITE);
-	                    setText(""); // vide aussi
-	                }
-	            } else {
-	                c.setBackground(Color.WHITE);
+				
+				if (value instanceof Heros) {
+	                 c.setBackground(COULEUR_FORET);
+	            }else if (value instanceof Monstre) {
+	                 c.setBackground(COULEUR_MONSTRES);
+	            } else if (value instanceof Obstacle){
+	            	System.out.println(((Obstacle) value).getType()+" donne le type");
+	            	switch (((Obstacle) value).getType() ) {
+	            		case ROCHER:
+	            			c.setBackground(COULEUR_ROCHER);
+	            			break;
+	            		case EAU:
+	            			c.setBackground(COULEUR_EAU);
+	            			break;
+	            		case FORET:
+	            			c.setBackground(COULEUR_FORET);
+	            			break;
+	            	}
+	            }else {
+	            	c.setBackground(COULEUR_VIDE);
+	                
 	            }
-			
+				setText("");
 			return c;
 			
 			}
