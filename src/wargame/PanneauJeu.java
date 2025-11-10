@@ -6,7 +6,7 @@ import javax.swing.table.*;
 
 public class PanneauJeu extends JFrame implements IConfig {
 	
-	public  PanneauJeu() {
+	public PanneauJeu() {
 		int[][] matrice = new int[25][25];
 		
 		
@@ -14,22 +14,22 @@ public class PanneauJeu extends JFrame implements IConfig {
 		
 		
 		Object[][] donnees = new Object[25][25];  // Matrice d'objets
-	       for (int i = 0; i < 25; i++) {
-	           for (int j = 0; j < 25; j++) {
-	               donnees[i][j] = 1;  // Remplir la matrice d'objets avec les valeurs de int
-	           }
+	    for (int i = 0; i < 25; i++) {
+	    	for (int j = 0; j < 25; j++) {
+	    		donnees[i][j] = 1;  // Remplir la matrice d'objets avec les valeurs de int
+	        }
 	    }
 	       
-	       String[] colonnes = new String[25];
-	        for (int i = 0; i < 25; i++) {
-	            colonnes[i] = "";
-	        }
+	    String[] colonnes = new String[25];
+	    for (int i = 0; i < 25; i++) {
+	        colonnes[i] = "";
+	    }
 		
 		DefaultTableModel modeleTable = new DefaultTableModel(donnees,colonnes);
 		
 		JTable table = new JTable(modeleTable);
 		
-		 // Désactiver l'édition des cellules
+		// Désactiver l'édition des cellules
         table.setDefaultEditor(Object.class, null);
 
         // Désactiver la sélection des cellules
@@ -44,30 +44,25 @@ public class PanneauJeu extends JFrame implements IConfig {
 			
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 				
-				 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				
-				 if (value instanceof Integer) {
-	                    int val = (Integer) value;
-	                    if (val == 1) {
-	                        c.setBackground(COULEUR_FORET);
-	                        setText(""); // vide si tu veux juste la couleur
-	                    } else {
-	                        c.setBackground(Color.WHITE);
-	                        setText(""); // vide aussi
-	                    }
-	             } else {
+				if (value instanceof Integer) {
+	                int val = (Integer) value;
+	                if (val == 1) {
+	                    c.setBackground(COULEUR_FORET);
+	                    setText(""); // vide si tu veux juste la couleur
+	                } else {
 	                    c.setBackground(Color.WHITE);
+	                    setText(""); // vide aussi
 	                }
-			
-			
+	            } else {
+	                c.setBackground(Color.WHITE);
+	            }
 			
 			return c;
 			
 			}
-			
-			
-			
-			
+				
 		});
 		
 		table.setRowHeight(NB_PIX_CASE); // hauteur des cases
