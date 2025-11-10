@@ -2,36 +2,76 @@ package wargame;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.*;
 
 public class PanneauJeu extends JFrame implements IConfig {
-
+	
 	public  PanneauJeu() {
 		int[][] matrice = new int[25][25];
 		
 		
 		JPanel panneau = new JPanel(new BorderLayout());
 		
-		for(int i = 0; i < 25; i++) {
-			for(int j = 0; j < 25; j++) {
-				matrice[i][j] = i*25+j;
-			}
-		}
 		
 		Object[][] donnees = new Object[25][25];  // Matrice d'objets
 	       for (int i = 0; i < 25; i++) {
 	           for (int j = 0; j < 25; j++) {
-	               donnees[i][j] = matrice[i][j];  // Remplir la matrice d'objets avec les valeurs de int
+	               donnees[i][j] = 1;  // Remplir la matrice d'objets avec les valeurs de int
 	           }
 	    }
 	       
 	       String[] colonnes = new String[25];
 	        for (int i = 0; i < 25; i++) {
-	            colonnes[i] = ""+(i + 1);
+	            colonnes[i] = "";
 	        }
 		
 		DefaultTableModel modeleTable = new DefaultTableModel(donnees,colonnes);
 		
 		JTable table = new JTable(modeleTable);
+		
+		 // Désactiver l'édition des cellules
+        table.setDefaultEditor(Object.class, null);
+
+        // Désactiver la sélection des cellules
+        table.setCellSelectionEnabled(false);
+        table.setRowSelectionAllowed(false);
+        table.setColumnSelectionAllowed(false);
+		
+        table.getTableHeader().setVisible(false);
+		
+		// couleur pour affichage
+		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+			
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				
+				 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				
+				 if (value instanceof Integer) {
+	                    int val = (Integer) value;
+	                    if (val == 1) {
+	                        c.setBackground(COULEUR_FORET);
+	                        setText(""); // vide si tu veux juste la couleur
+	                    } else {
+	                        c.setBackground(Color.WHITE);
+	                        setText(""); // vide aussi
+	                    }
+	             } else {
+	                    c.setBackground(Color.WHITE);
+	                }
+			
+			
+			
+			return c;
+			
+			}
+			
+			
+			
+			
+		});
+		
+		table.setRowHeight(NB_PIX_CASE); // hauteur des cases
+        table.setGridColor(Color.GRAY);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		
@@ -55,7 +95,6 @@ public class PanneauJeu extends JFrame implements IConfig {
 		fenetre.add(panneau);
 		fenetre.setMinimumSize(new java.awt.Dimension(1000,600));
 		fenetre.pack();
-		
 		fenetre.setLocationRelativeTo(null);
 		fenetre.setVisible(true);
 	   }
