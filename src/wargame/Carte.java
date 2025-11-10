@@ -1,8 +1,11 @@
 package wargame;
 
 public abstract class Carte implements IConfig, ICarte{
-	private Element[][] carte = new Element[LARGEUR_CARTE][HAUTEUR_CARTE];
-	
+	private Element[][] carte;
+
+	public Carte() {
+		carte = new Element[LARGEUR_CARTE][HAUTEUR_CARTE];
+	}
 	
 	public Element getElement(Position pos) {
 		if (pos.estValide()) {
@@ -137,4 +140,5 @@ public abstract class Carte implements IConfig, ICarte{
 	
 	
 }
+
 
