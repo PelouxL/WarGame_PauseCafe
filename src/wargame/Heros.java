@@ -25,17 +25,5 @@ public class Heros extends Soldat{
 
 	public boolean getJoue() {
 		return this.joue;
-	}
-	
-    public void combat(Soldat soldat) { // doit definir ces fonctions pour enlever erreurs
-     
-    }
-
- 
-    public void joueTour(int tour) { // doit definir ces fonctions pour enlever erreurs
-    
-    }
-    
-    
-	
+	}  
 }
