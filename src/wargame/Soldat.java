@@ -48,4 +48,13 @@ public abstract class Soldat extends Element implements ISoldat{
 		return this.PORTEE_VISUELLE;
 	}
 	
+	public void seDeplace(Position newPos) {
+		if (newPos.estValide()) {
+			this.pos.setX(newPos.getX());
+			this.pos.setY(newPos.getY());
+		} else {
+			System.out.println("Erreur seDeplace : position invalide.");
+		}
+	}
+	
 }
