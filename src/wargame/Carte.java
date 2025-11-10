@@ -3,6 +3,7 @@ package wargame;
 import java.awt.Graphics;
 
 import wargame.ISoldat.TypesH;
+import wargame.ISoldat.TypesM;
 import wargame.Obstacle.TypeObstacle;
 
 public class Carte implements IConfig, ICarte {
@@ -13,28 +14,28 @@ public class Carte implements IConfig, ICarte {
 		// on parcours la table
 		for(int i = 0; i < LARGEUR_CARTE; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
-				
-				// on place nos heros
-				for(int k = 0; i < NB_HEROS; i++) {
-					Position p = trouvePositionVide();
-					carte[p.getX()][p.getY()] = new Heros(this, TypesH.getTypeHAlea(), "blabla", p);
-				}
-				// on place nos heros
-				for(int k = 0; i < NB_MONSTRES; i++) {
-					Position p = trouvePositionVide();
-					carte[p.getX()][p.getY()] = new Monstre(this, TypesH.getTypeMAlea(), "blabla", p);
-				}
-				
-				// on place nos obstacle
-				for(int k = 0; i < NB_OBSTACLES; i++) {
-					Position p = trouvePositionVide();
-					carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.getObstacleAlea(), p);
-				}
+				carte[i][j] = null;
 			}
 		}
-		
-		
+				// on place nos heros
+	    for(int k = 0; k < NB_HEROS; k++) {
+			Position p = trouvePositionVide();
+			carte[p.getX()][p.getY()] = new Heros(this, TypesH.getTypeHAlea(), "blabla", p);
+		}
+		// on place nos heros
+		for(int k = 0; k < NB_MONSTRES; k++) {
+			Position p = trouvePositionVide();
+			carte[p.getX()][p.getY()] = new Monstre(this, TypesM.getTypeMAlea(), "blabla", p);
+		}
+				
+		// on place nos obstacle
+		for(int k = 0; k < NB_OBSTACLES; k++) {
+			Position p = trouvePositionVide();
+			carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.getObstacleAlea(), p);
+		}
 	}
+		
+		
 	
 	public Element getElement(Position pos) {
 		if (pos.estValide()) {
@@ -50,8 +51,8 @@ public class Carte implements IConfig, ICarte {
 		int x, y;
 		
 		do {
-			x = (int) Math.random()*LARGEUR_CARTE - 1;
-			y = (int) Math.random()*HAUTEUR_CARTE - 1;
+			x = (int) (Math.random()*LARGEUR_CARTE - 1);
+			y = (int) (Math.random()*HAUTEUR_CARTE - 1);
 			
 			
 		} while ( x<0 || x>=LARGEUR_CARTE || y<0 || y>=HAUTEUR_CARTE);
