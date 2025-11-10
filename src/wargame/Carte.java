@@ -1,10 +1,39 @@
 package wargame;
 
-public abstract class Carte implements IConfig, ICarte{
+import java.awt.Graphics;
+
+import wargame.ISoldat.TypesH;
+import wargame.Obstacle.TypeObstacle;
+
+public class Carte implements IConfig, ICarte {
 	private Element[][] carte;
 
 	public Carte() {
 		carte = new Element[LARGEUR_CARTE][HAUTEUR_CARTE];
+		// on parcours la table
+		for(int i = 0; i < LARGEUR_CARTE; i++) {
+			for(int j = 0; j < HAUTEUR_CARTE; j++) {
+				
+				// on place nos heros
+				for(int k = 0; i < NB_HEROS; i++) {
+					Position p = trouvePositionVide();
+					carte[p.getX()][p.getY()] = new Heros(this, TypesH.getTypeHAlea(), "blabla", p);
+				}
+				// on place nos heros
+				for(int k = 0; i < NB_MONSTRES; i++) {
+					Position p = trouvePositionVide();
+					carte[p.getX()][p.getY()] = new Monstre(this, TypesH.getTypeMAlea(), "blabla", p);
+				}
+				
+				// on place nos obstacle
+				for(int k = 0; i < NB_OBSTACLES; i++) {
+					Position p = trouvePositionVide();
+					carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.getObstacleAlea(), p);
+				}
+			}
+		}
+		
+		
 	}
 	
 	public Element getElement(Position pos) {
@@ -17,7 +46,7 @@ public abstract class Carte implements IConfig, ICarte{
 
 	
 	// a Verifier si un typeH/M/Obstacle peut être null 
-	public Position trouverPositionVide() {
+	public Position trouvePositionVide() {
 		int x, y;
 		
 		do {
@@ -25,7 +54,7 @@ public abstract class Carte implements IConfig, ICarte{
 			y = (int) Math.random()*HAUTEUR_CARTE - 1;
 			
 			
-		} while (carte[x][y] != null);
+		} while ( x<0 || x>=LARGEUR_CARTE || y<0 || y>=HAUTEUR_CARTE);
 		
 		return new Position(x, y);
 	}
@@ -62,7 +91,7 @@ public abstract class Carte implements IConfig, ICarte{
 	}
 	
 	
-	public Heros trouverHeros() {
+	public Heros trouveHeros() {
 		int indiceHeros = 0;
 		Heros[] listeHeros = new Heros[NB_HEROS];
 		int x, y;
@@ -82,7 +111,7 @@ public abstract class Carte implements IConfig, ICarte{
 		return listeHeros[(int)(Math.random()*indiceHeros - 1)];
 	}
 
-	public Heros trouverHeros(Position pos) {
+	public Heros trouveHeros(Position pos) {
 		int indiceHeros = 0;
 		int dx, dy;
 		Heros[] listeHeros = new Heros[NB_HEROS];
@@ -136,6 +165,13 @@ public abstract class Carte implements IConfig, ICarte{
 		nb_heros_restant--
         */
 	}
+	
+	public boolean actionHeros(Position pos, Position pos2) {
+		return true;
+	}
+	
+	public void jouerSoldats(PanneauJeu pj) {}
+	public void toutDessiner(Graphics g) {}
 	
 	
 	
