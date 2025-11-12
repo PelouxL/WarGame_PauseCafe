@@ -1,11 +1,10 @@
 package wargame;
 
 public interface ISoldat {
-
     static enum TypesH {
       	HUMAIN (40,3,10,2), NAIN (80,1,20,0), ELF (70,5,10,6), HOBBIT (20,3,5,2);
 
-      	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR;
+      	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT = 8;
 
       	TypesH(int points, int portee, int puissance, int tir) {
     	  	POINTS_DE_VIE = points; PORTEE_VISUELLE = portee;
@@ -25,7 +24,7 @@ public interface ISoldat {
    	public static enum TypesM {
       	TROLL (100,1,30,0), ORC (40,2,10,3), GOBELIN (20,2,5,2);
 
-      	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR;
+      	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT = 8;
 
       	TypesM(int points, int portee, int puissance, int tir) {
     	 	POINTS_DE_VIE = points; PORTEE_VISUELLE = portee;
@@ -42,8 +41,9 @@ public interface ISoldat {
       	}
    	}
 	
-	int getPoints(); int getTour(); int getPortee();
+	int getPoints(); int getTour(); int getPortee(); int getDeplacement();
 	void joueTour(int tour);
 	void combat(Soldat soldat);
+	Position[] zoneDeplacement();
 	void seDeplace(Position newPos);
 }
