@@ -1,7 +1,7 @@
 package wargame;
 
 public abstract class Soldat extends Element implements ISoldat{
-	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE;
+	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 8;
 	private int pointsDeVie;
 	private Position pos;
 	private Carte carte;
@@ -66,13 +66,13 @@ public abstract class Soldat extends Element implements ISoldat{
 	
 	// PUISSANCE
 	public int getPuissance() {
-		return PUISSANCE;
+		return this.PUISSANCE;
 	}
 	// PUISSANCE
 	
 	// TIR
 	public int getTir() {
-		return TIR;
+		return this.TIR;
 	}
 	//TIR
 	
@@ -86,6 +86,32 @@ public abstract class Soldat extends Element implements ISoldat{
 	// COMBAT
 
 	// DEPLACEMENT
+	public int getDeplacement() {
+		return this.DEPLACEMENT;
+	}
+	
+	public Position[] zoneDeplacement() {
+		int posMax = 2*this.DEPLACEMENT*(this.DEPLACEMENT+1);
+		Position[] listePos = new Position[posMax];
+		
+		zoneDeplacementAux(this.pos, this.DEPLACEMENT, listePos);
+		
+		return listePos;
+	}
+
+	private void zoneDeplacementAux(Position pos, int deplacement, Position[] listePos) {
+		if (deplacement == 0 || this.carte.getElement(pos) instanceof Obstacle || pos.appartient(listePos)) {
+			return;
+		}
+		
+		pos.ajouterPos(listePos);
+		for (int i = -1; i <= 1; i += 1) {
+			for (int j = -1; i <= 1; i += 1) {
+				zoneDeplacementAux(new Position(i, j), deplacement - 1, listePos);
+			}
+		}
+	}
+	
 	public void seDeplace(Position newPos) {
 		if (newPos.estValide()) {
 			this.pos.setX(newPos.getX());

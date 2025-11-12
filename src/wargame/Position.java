@@ -18,4 +18,21 @@ public class Position implements IConfig {
 	public boolean estVoisine(Position pos) {
 		return ((Math.abs(x-pos.x)<=1) && (Math.abs(y-pos.y)<=1));
 	}
+	public boolean equals(Position pos) {
+		return (this.x == pos.x && this.y == pos.y);
+	}
+	public boolean appartient(Position[] listePos) {
+		int i = 0;
+		while(i < listePos.length && listePos[i++] != null) {
+			if (this == listePos[i]) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public void ajouterPos(Position[] listePos) {
+		int i = 0;
+		while(i < listePos.length && listePos[i++] != null);
+		listePos[i] = this;
+	}
 }
