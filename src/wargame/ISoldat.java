@@ -2,7 +2,8 @@ package wargame;
 
 public interface ISoldat {
     static enum TypesH {
-      	HUMAIN (40,3,10,2), NAIN (80,1,20,0), ELF (70,5,10,6), HOBBIT (20,3,5,2);
+      	HUMAIN (40,3,10,2), NAIN (80,1,20,0), ELF (70,5,10,6), HOBBIT (20,3,5,2),
+      	ANGE (80, 3, 5, 3), POUBELLEMALICIEUSE (30, 1, 20, 2);
 
       	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT = 8;
 
@@ -22,7 +23,8 @@ public interface ISoldat {
    	}
 
    	public static enum TypesM {
-      	TROLL (100,1,30,0), ORC (40,2,10,3), GOBELIN (20,2,5,2);
+      	TROLL (100,1,30,0), ORC (40,2,10,3), GOBELIN (20,2,5,2),
+      	DEMON (50, 3, 5, 1), MAITREDUCAFE (80, 8, 10, 5);
 
       	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT = 8;
 
@@ -46,4 +48,5 @@ public interface ISoldat {
 	void combat(Soldat soldat);
 	Position[] zoneDeplacement();
 	void seDeplace(Position newPos);
+
 }
