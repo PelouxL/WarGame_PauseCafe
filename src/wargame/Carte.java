@@ -49,14 +49,13 @@ public class Carte implements IConfig, ICarte {
 	// a Verifier si un typeH/M/Obstacle peut être null 
 	public Position trouvePositionVide() {
 		int x, y;
-		Position pos;
 		
 		do {
-			x = (int) (Math.random()*LARGEUR_CARTE);
-			y = (int) (Math.random()*HAUTEUR_CARTE);
-			pos = new Position(x, y);
+			x = (int) (Math.random()*LARGEUR_CARTE - 1);
+			y = (int) (Math.random()*HAUTEUR_CARTE - 1);
 			
-		} while (pos.estValide());
+			
+		} while ( x<0 || x>=LARGEUR_CARTE || y<0 || y>=HAUTEUR_CARTE);
 		
 		return new Position(x, y);
 	}

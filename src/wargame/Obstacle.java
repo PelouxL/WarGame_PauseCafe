@@ -22,10 +22,6 @@ public class Obstacle extends Element implements IConfig {
 		this.pos = pos;
 	}
 	
-	public TypeObstacle getType() {
-		return this.TYPE;
-	}
-	
 	public String toString() { 
 		return ""+TYPE;
 	}
