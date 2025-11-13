@@ -90,24 +90,24 @@ public abstract class Soldat extends Element implements ISoldat{
 		return this.DEPLACEMENT;
 	}
 	
-	public Position[] zoneDeplacement() {
-		int posMax = 2*this.DEPLACEMENT*(this.DEPLACEMENT+1);
-		Position[] listePos = new Position[posMax];
+	public EnsemblePosition zoneDeplacement() {
+		int nbPosMax = 2*this.DEPLACEMENT*(this.DEPLACEMENT+1);
+		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
 		
-		zoneDeplacementAux(this.pos, this.DEPLACEMENT, listePos);
+		zoneDeplacementAux(this.pos, this.DEPLACEMENT, ePos);
 		
-		return listePos;
+		return ePos;
 	}
 
-	private void zoneDeplacementAux(Position pos, int deplacement, Position[] listePos) {
-		if (deplacement == 0 || this.carte.getElement(pos) instanceof Obstacle || pos.appartient(listePos)) {
+	private void zoneDeplacementAux(Position pos, int deplacement, EnsemblePosition ePos) {
+		if (deplacement == 0 || this.carte.getElement(pos) instanceof Obstacle || ePos.contient(pos) || pos.estValide() == false) {
 			return;
 		}
 		
-		pos.ajouterPos(listePos);
+		ePos.ajouterPos(pos);
 		for (int i = -1; i <= 1; i += 1) {
 			for (int j = -1; i <= 1; i += 1) {
-				zoneDeplacementAux(new Position(i, j), deplacement - 1, listePos);
+				zoneDeplacementAux(new Position(pos.getX()+i, pos.getY()+j), deplacement - 1, ePos);
 			}
 		}
 	}
