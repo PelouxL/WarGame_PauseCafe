@@ -37,4 +37,8 @@ public class EnsemblePosition {
 		return (i < this.nbPos);
 	}
 	
+	public Position getPosition(int i) {
+		return this.ePos[i];
+	}
+	
 }
