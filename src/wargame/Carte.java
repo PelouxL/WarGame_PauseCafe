@@ -54,9 +54,8 @@ public class Carte implements IConfig, ICarte {
 		do {
 			x = (int) (Math.random()*LARGEUR_CARTE);
 			y = (int) (Math.random()*HAUTEUR_CARTE);
-			pos = new Position(x, y);
-			
-		} while (pos.estValide());
+			pos = new Position(x, y);			
+		} while (!pos.estValide());
 		
 		return new Position(x, y);
 	}
