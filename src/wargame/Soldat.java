@@ -100,7 +100,7 @@ public abstract class Soldat extends Element implements ISoldat{
 	}
 
 	private void zoneDeplacementAux(Position pos, int deplacement, EnsemblePosition ePos) {
-		if (deplacement == 0 || this.carte.getElement(pos) instanceof Obstacle || ePos.contient(pos)) {
+		if (deplacement == 0 || this.carte.getElement(pos) instanceof Obstacle || ePos.contient(pos) || pos.estValide() == false) {
 			return;
 		}
 		
