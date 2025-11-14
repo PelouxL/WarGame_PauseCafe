@@ -11,31 +11,71 @@ public class Carte implements IConfig, ICarte {
 
 	public Carte() {
 		carte = new Element[LARGEUR_CARTE][HAUTEUR_CARTE];
-		// on parcours la table
+		Position p;
+		
+		// Parcours de la matrice d'elements
 		for(int i = 0; i < LARGEUR_CARTE; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
 				carte[i][j] = null;
 			}
 		}
-				// on place nos heros
-	    for(int k = 0; k < NB_HEROS; k++) {
-			Position p = trouvePositionVide();
+		
+		// Placement des obstacles Aleatoirement
+		// Placement de la riviere
+		p = trouvePositionVide();
+		carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
+		riviere(p); // Ajouter des ponts
+		
+		//Placement des autres obstacles
+		for(int i = 0; i < NB_OBSTACLES; i++) {
+			p = trouvePositionVide();
+			carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.getObstacleAlea(), p);
+		}
+		
+		// Placement des heros aleatoirement
+	    for(int i = 0; i < NB_HEROS; i++) {
+			p = trouvePositionVide();
 			carte[p.getX()][p.getY()] = new Heros(this, TypesH.getTypeHAlea(), "blabla", p);
 		}
-		// on place nos heros
-		for(int k = 0; k < NB_MONSTRES; k++) {
-			Position p = trouvePositionVide();
+	    
+		// Placement des monstres Aleatoirement
+		for(int i = 0; i < NB_MONSTRES; i++) {
+			p = trouvePositionVide();
 			carte[p.getX()][p.getY()] = new Monstre(this, TypesM.getTypeMAlea(), "blabla", p);
 		}
 				
-		// on place nos obstacle
-		for(int k = 0; k < NB_OBSTACLES; k++) {
-			Position p = trouvePositionVide();
-			carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.getObstacleAlea(), p);
+	}
+	
+	// Riviere
+	private void riviere(Position pos) {
+		int r = (int)(Math.random()*3);
+		switch(r) {
+		case 0: riviereV(pos); break;
+		case 1: riviereH(pos); break;
+		case 2: riviereV(pos); riviereH(pos); break;
 		}
 	}
-		
-		
+	
+	private void riviereV(Position pos) {
+		for (int i = 0; i < HAUTEUR_CARTE; i++) {
+			Position p = new Position(pos.getX(), i);
+			carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
+		}
+		// Ponts
+		carte[pos.getX()][(int)(Math.random()*pos.getY())] = null;
+		carte[pos.getX()][(int)(Math.random() * (HAUTEUR_CARTE - pos.getY()) + pos.getY())] = null;
+	}
+	
+	private void riviereH(Position pos) {	
+		for (int i = 0; i < LARGEUR_CARTE; i++) {
+			Position p = new Position(i, pos.getY());
+			carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
+		}
+		// Ponts
+		carte[(int)(Math.random()*pos.getX())][pos.getY()] = null;
+		carte[(int)(Math.random() * (LARGEUR_CARTE - pos.getX()) + pos.getX())][pos.getY()] = null;
+	}
+	// Riviere
 	
 	public Element getElement(Position pos) {
 		if (pos.estValide()) {
@@ -55,7 +95,7 @@ public class Carte implements IConfig, ICarte {
 			x = (int) (Math.random()*LARGEUR_CARTE);
 			y = (int) (Math.random()*HAUTEUR_CARTE);
 			pos = new Position(x, y);			
-		} while (!pos.estValide());
+		} while (!pos.estValide() || this.getElement(pos) != null);
 		
 		return new Position(x, y);
 	}
