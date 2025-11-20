@@ -30,6 +30,7 @@ public class Carte implements IConfig, ICarte {
 		for(int i = 0; i < NB_OBSTACLES; i++) {
 			p = trouvePositionVide();
 			carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.getObstacleAlea(), p);
+			
 		}
 		
 		// Placement des heros aleatoirement
@@ -183,18 +184,15 @@ public class Carte implements IConfig, ICarte {
 	// Version très légère qui ne gère pas les endroits bloqués par une rivière ou CAYOU
 	// en gros on peut traverser les obstacles mais se poser dessus
 	public boolean deplaceSoldat(Position pos, Soldat soldat) {
-		int diffDeplacement;
-		Position posSoldat = soldat.getPos();
-		
-		if (pos.estValide() && getElement(pos) == null) {
-			diffDeplacement = Math.abs(pos.getX() - posSoldat.getX()) + Math.abs(pos.getY() - posSoldat.getY());
-			if (diffDeplacement > 8) {
-				return false;
+			EnsemblePosition ep = soldat.zoneDeplacement();
+			
+			if(ep.contient(pos)) {
+				this.carte[soldat.getPos().getX()][soldat.getPos().getY()] = null;
+				this.carte[pos.getX()][pos.getY()] = soldat;
+				soldat.seDeplace(pos);
+				return true;
 			}
-			carte[pos.getX()][pos.getY()] = soldat;
-			carte[posSoldat.getX()][posSoldat.getY()] = null;
-		}
-		return true;
+		return false;
 		
 	}
 	// comprends pas trop la methode, je suppose qu'elle met un mort sur la carte
@@ -208,6 +206,13 @@ public class Carte implements IConfig, ICarte {
 	}
 	
 	public boolean actionHeros(Position pos, Position pos2) {
+		
+		if((getElement(pos) instanceof Heros) ) {
+			
+			
+		}else {
+			return false;
+		}
 		return true;
 	}
 	
