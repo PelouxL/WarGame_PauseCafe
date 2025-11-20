@@ -46,4 +46,13 @@ public class Position implements IConfig {
 	public boolean equals(Position pos) {
 		return (this.x == pos.x && this.y == pos.y);
 	}
+	
+	public boolean adjacent(Position p) {
+		if ((Math.abs(this.x - p.x) == 1 && this.y == p.y)
+			|| (Math.abs(this.y - p.y) == 1 && this.x == p.x)) {
+			return true;
+		}
+		return false;
+	}
+	
 }

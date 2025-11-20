@@ -29,26 +29,26 @@ public class Carte implements IConfig, ICarte {
 		// Placement des obstacles Aleatoirement
 		// Placement de la riviere
 		p = trouvePositionVide();
-		carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
+		this.carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
 		riviere(p); // Ajouter des ponts
 		
 		//Placement des autres obstacles
 		for(int i = 0; i < NB_OBSTACLES; i++) {
 			p = trouvePositionVide();
-			carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.getObstacleAlea(), p);
+			this.carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.getObstacleAlea(), p);
 			
 		}
 		
 		// Placement des heros aleatoirement
 	    for(int i = 0; i < NB_HEROS; i++) {
 			p = trouvePositionVide();
-			carte[p.getX()][p.getY()] = new Heros(this, TypesH.getTypeHAlea(), "blabla", p);
+			this.carte[p.getX()][p.getY()] = new Heros(this, TypesH.getTypeHAlea(), "blabla", p);
 		}
 	    
 		// Placement des monstres Aleatoirement
 		for(int i = 0; i < NB_MONSTRES; i++) {
 			p = trouvePositionVide();
-			carte[p.getX()][p.getY()] = new Monstre(this, TypesM.getTypeMAlea(), "blabla", p);
+			this.carte[p.getX()][p.getY()] = new Monstre(this, TypesM.getTypeMAlea(), "blabla", p);
 		}
 				
 	}
@@ -67,27 +67,27 @@ public class Carte implements IConfig, ICarte {
 	private void riviereV(Position pos) {
 		for (int i = 0; i < HAUTEUR_CARTE; i++) {
 			Position p = new Position(pos.getX(), i);
-			carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
+			this.carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
 		}
 		// Ponts
-		carte[pos.getX()][(int)(Math.random()*pos.getY())] = null;
-		carte[pos.getX()][(int)(Math.random() * (HAUTEUR_CARTE - pos.getY()) + pos.getY())] = null;
+		this.carte[pos.getX()][(int)(Math.random()*pos.getY())] = null;
+		this.carte[pos.getX()][(int)(Math.random() * (HAUTEUR_CARTE - pos.getY()) + pos.getY())] = null;
 	}
 	
 	private void riviereH(Position pos) {	
 		for (int i = 0; i < LARGEUR_CARTE; i++) {
 			Position p = new Position(i, pos.getY());
-			carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
+			this.carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
 		}
 		// Ponts
-		carte[(int)(Math.random()*pos.getX())][pos.getY()] = null;
-		carte[(int)(Math.random() * (LARGEUR_CARTE - pos.getX()) + pos.getX())][pos.getY()] = null;
+		this.carte[(int)(Math.random()*pos.getX())][pos.getY()] = null;
+		this.carte[(int)(Math.random() * (LARGEUR_CARTE - pos.getX()) + pos.getX())][pos.getY()] = null;
 	}
 	// Riviere
 	
 	public Element getElement(Position pos) {
 		if (pos.estValide()) {
-			return carte[pos.getX()][pos.getY()];
+			return this.carte[pos.getX()][pos.getY()];
 		}
 		System.out.println("Erreur : getElement :  0 <= x < " + LARGEUR_CARTE + " | 0 <= y < " + HAUTEUR_CARTE);
 		return null;
@@ -146,7 +146,7 @@ public class Carte implements IConfig, ICarte {
 		
 		for(x = 0 ; x < LARGEUR_CARTE ; x++) {
 			for(y = 0 ; y < HAUTEUR_CARTE ; y++) {
-				Element e = carte[x][y];
+				Element e = this.carte[x][y];
 				// on verifie si e est une instanciation de Heros
 				if (e instanceof Heros) {
 					// /!\ ATTENTION
@@ -171,7 +171,7 @@ public class Carte implements IConfig, ICarte {
 					continue;
 				}
 				
-				Element e = carte[pos.getX() + dx][pos.getY() + dy];
+				Element e = this.carte[pos.getX() + dx][pos.getY() + dy];
 				if (e.pos.estValide()) {
 					// on verifie si e est une instanciation de Heros
 					if (e instanceof Heros) {
@@ -201,14 +201,11 @@ public class Carte implements IConfig, ICarte {
 	// deplaceSoldat
 	
 	// mort
-	// comprends pas trop la methode, je suppose qu'elle met un mort sur la carte
-	// celui ci doit compter comme obstacle ???
 	public void mort(Soldat perso) {
-		/*
-		carte[perso.getPos().getX()][perso.getPos().getY()] = mort;
-		// avoir une variable global hero restant ? 
-		nb_heros_restant--
-        */
+		if (perso.getPointsActuels() <= 0) {
+			this.carte[perso.getPos().getX()][perso.getPos().getY()] = null;
+			// nb_heros_restant--;
+		}
 	}
 	// mort
 	

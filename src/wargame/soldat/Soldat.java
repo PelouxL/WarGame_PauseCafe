@@ -84,16 +84,37 @@ public abstract class Soldat extends Element implements ISoldat{
 	
 	// COMBAT
 	public void combat(Soldat soldat) {
+		Carte carte = this.carte;
+		
+		// Combat en melee : l'adversaire rend les coups
+		// Combat a distance : l'adversaire ne rend pas les coups
+		if (this.pos.adjacent(soldat.pos)) {
+			this.combatMelee(soldat);
+		} else {
+			this.combatDistance(soldat);
+		}
+		
+		// On retire les soldats de la carte si ils sont morts
+		carte.mort(this);
+		carte.mort(soldat);
+	}
+	
+	private void combatMelee(Soldat soldat) {
 		int dgts_atq = this.getPuissance();
-	    int pv_def = soldat.getPointsActuels();
-	    pv_ennemi -= degats_joueur;
-	    soldat.setPointsActuels(pv_ennemi);
-	    
-	    if () {
-	    	this.combatMelee(soldat);
-	    } else {
-	    	this.combatDistance(soldat);
-	    }   
+		int pv_def = soldat.getPointsActuels();
+		soldat.setPointsActuels(pv_def - dgts_atq);
+		
+		if (pv_def > 0) {
+			int dgts_def = soldat.getPuissance();
+			int pv_atq = this.getPointsActuels();
+			this.setPointsActuels(pv_atq - dgts_def);
+		}
+	}
+	
+	private void combatDistance(Soldat soldat) {
+		int dgts_atq = this.getTir();
+		int pv_def = soldat.getPointsActuels();
+		soldat.setPointsActuels(pv_def - dgts_atq);
 	}
 	// COMBAT
 
