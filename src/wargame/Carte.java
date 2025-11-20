@@ -46,6 +46,7 @@ public class Carte implements IConfig, ICarte {
 		}
 				
 	}
+
 	
 	// Riviere
 	private void riviere(Position pos) {
@@ -87,6 +88,7 @@ public class Carte implements IConfig, ICarte {
 	}
 
 	
+	// positionVide
 	// a Verifier si un typeH/M/Obstacle peut être null 
 	public Position trouvePositionVide() {
 		int x, y;
@@ -98,43 +100,41 @@ public class Carte implements IConfig, ICarte {
 			pos = new Position(x, y);			
 		} while (!pos.estValide() || this.getElement(pos) != null);
 		
-		return new Position(x, y);
+		return pos;
 	}
 
 
 	public Position trouvePositionVide(Position pos) {
-		Position[] listePos = new Position[8];
-		int indicePos = 0;
+		EnsemblePosition listePos = new EnsemblePosition(8);
 		int dx, dy;
 		
-		// on regarde les 8 cases autour de la position originale
+		// On regarde les 8 cases autour pos
 		for(dx = -1 ; dx <= 1 ; dx++) {
 			for(dy = -1 ; dy <= 1 ; dy++) {
-				// on ne regarde pas la position originale
+				// On passe pos
 				if (dx == 0 && dy == 0) {
 					continue;
 				}
+				
 				// on cree une position et verifie qu'elle correspond si oui alors inserer dans liste
-				Position p = new Position(pos.getX() + dx, pos.getY() + dy);
-				if (p.estValide() && getElement(p) == null) {
-					listePos[indicePos] = p;
-					indicePos++;
+				int x = pos.getX() + dx;
+				int y = pos.getY() + dy;
+				Position newp = new Position(x, y);
+				if (newp.estValide() && getElement(newp) == null) {
+					listePos.ajouterPos(newp);
 				}
 			}
 				
 		}
-		if (indicePos == 0) {
+		if (listePos.getNbPos() == 0) {
 			return null;
 		}
-		if (indicePos == 1) {
-			return listePos[0];
-		}		
-		return listePos[(int) (Math.random()*indicePos - 1)];
+		return listePos.getPosition((int)(Math.random()*listePos.getNbPos()-1));
 	}
 	
-	
+	// trouveHeros
 	public Heros trouveHeros() {
-		int indiceHeros = 0;
+		int nbHeros = 0;
 		Heros[] listeHeros = new Heros[NB_HEROS];
 		int x, y;
 		
@@ -145,16 +145,16 @@ public class Carte implements IConfig, ICarte {
 				if (e instanceof Heros) {
 					// /!\ ATTENTION
 					// GROS GROS DOUTES sur le faite de cast e avec Heros
-					listeHeros[indiceHeros] = (Heros) e;
-					indiceHeros++;
+					listeHeros[nbHeros] = (Heros) e;
+					nbHeros++;
 				}
 			}
 		}
-		return listeHeros[(int)(Math.random()*indiceHeros - 1)];
+		return listeHeros[(int)(Math.random()*nbHeros - 1)];
 	}
 
 	public Heros trouveHeros(Position pos) {
-		int indiceHeros = 0;
+		int nbHeros = 0;
 		int dx, dy;
 		Heros[] listeHeros = new Heros[NB_HEROS];
 		
@@ -171,18 +171,16 @@ public class Carte implements IConfig, ICarte {
 					if (e instanceof Heros) {
 						// /!\ ATTENTION
 						// GROS GROS DOUTES sur le faite de cast e avec Heros
-						listeHeros[indiceHeros] = (Heros) e;
-						indiceHeros++;
+						listeHeros[nbHeros++] = (Heros) e;
 					}
 				}
 			}
 		}
-		return listeHeros[(int) (Math.random()*indiceHeros - 1)];
+		return listeHeros[(int) (Math.random()*nbHeros - 1)];
 	}
+	// trouveHeros
 	
-	
-	// Version très légère qui ne gère pas les endroits bloqués par une rivière ou CAYOU
-	// en gros on peut traverser les obstacles mais se poser dessus
+	// deplaceSoldat
 	public boolean deplaceSoldat(Position pos, Soldat soldat) {
 			EnsemblePosition ep = soldat.zoneDeplacement();
 			
@@ -193,8 +191,9 @@ public class Carte implements IConfig, ICarte {
 				return true;
 			}
 		return false;
-		
 	}
+	// deplaceSoldat
+	
 	// comprends pas trop la methode, je suppose qu'elle met un mort sur la carte
 	// celui ci doit compter comme obstacle ???
 	public void mort(Soldat perso) {
