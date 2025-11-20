@@ -14,15 +14,18 @@ import wargame.soldat.ISoldat.TypesM;
 
 public class Carte implements IConfig, ICarte {
 	private Element[][] carte;
+	private int[][] visibilite;
 
 	public Carte() {
 		carte = new Element[LARGEUR_CARTE][HAUTEUR_CARTE];
+		visibilite = new int[LARGEUR_CARTE][HAUTEUR_CARTE];
 		Position p;
 		
-		// Parcours de la matrice d'elements
+		// Parcours des matrices
 		for(int i = 0; i < LARGEUR_CARTE; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
 				carte[i][j] = null;
+				visibilite[i][j] = 0;
 			}
 		}
 		
@@ -43,6 +46,7 @@ public class Carte implements IConfig, ICarte {
 	    for(int i = 0; i < NB_HEROS; i++) {
 			p = trouvePositionVide();
 			this.carte[p.getX()][p.getY()] = new Heros(this, TypesH.getTypeHAlea(), "blabla", p);
+			this.visibilite = ((Soldat) this.carte[p.getX()][p.getY()]).setCasesVisibles(this.visibilite);
 		}
 	    
 		// Placement des monstres Aleatoirement
@@ -92,6 +96,22 @@ public class Carte implements IConfig, ICarte {
 		System.out.println("Erreur : getElement :  0 <= x < " + LARGEUR_CARTE + " | 0 <= y < " + HAUTEUR_CARTE);
 		return null;
 	}
+	
+	public int getVisibilite(Position pos) {
+		if (pos.estValide()) {
+			return this.visibilite[pos.getX()][pos.getY()];
+		}
+		System.out.println("Erreur : getVisibilite :  0 <= x < " + LARGEUR_CARTE + " | 0 <= y < " + HAUTEUR_CARTE);
+		return -1;
+	}
+	
+	// CETTE FONCTION NE DEVRAIT PAS SERVIR, JE LA LAISSE AU CAS OU C'EST POUR LA VISIBILITE
+	// On pourra peut-être enlever le param, et faire en sorte que cette fonction y mette à 1
+	// Et à chaque fois avant de mettre à jour on remet toute la matrice à 0
+	// Comme ça on a juste à remettre les visibilités actuelles (pas d'ennui à se dire est-ce que ça ça devient invisible)
+	// public void setVisibilite(Position pos, int visibilite) {
+	//  	this.visibilite[pos.getX()][pos.getY()] = visibilite;
+	// }
 
 	
 	// positionVide

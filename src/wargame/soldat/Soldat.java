@@ -68,6 +68,22 @@ public abstract class Soldat extends Element implements ISoldat{
 	public int getPortee() {
 		return this.PORTEE_VISUELLE;
 	}
+	
+	public int[][] setCasesVisibles(int[][] visibilite) {
+		int i, j;
+		int x = this.pos.getX();
+		int y = this.pos.getY();
+		int portee = this.getPortee();
+		for (i = -portee ; i <= portee ; i++) {
+			for (j = -portee ; j <= portee ; j++) {
+				if (i + x >= 0 && i + x < Carte.LARGEUR_CARTE
+				  && j + y >= 0 && j + y < Carte.HAUTEUR_CARTE) {
+					visibilite[i+x][j+y] = 1;
+				}
+			}
+		}
+		return visibilite;
+	}
 	// PORTEE
 	
 	// PUISSANCE
@@ -149,6 +165,7 @@ public abstract class Soldat extends Element implements ISoldat{
 		if (newPos.estValide()) {
 			this.pos.setX(newPos.getX());
 			this.pos.setY(newPos.getY());
+			//this.setCasesVisibles();
 		} else {
 			System.out.println("Erreur seDeplace : position invalide.");
 		}
