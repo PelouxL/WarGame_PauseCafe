@@ -2,9 +2,15 @@ package wargame;
 
 import java.awt.Graphics;
 
-import wargame.ISoldat.TypesH;
-import wargame.ISoldat.TypesM;
-import wargame.Obstacle.TypeObstacle;
+import wargame.obstacle.Obstacle;
+import wargame.obstacle.Obstacle.TypeObstacle;
+import wargame.position.EnsemblePosition;
+import wargame.position.Position;
+import wargame.soldat.Heros;
+import wargame.soldat.Monstre;
+import wargame.soldat.Soldat;
+import wargame.soldat.ISoldat.TypesH;
+import wargame.soldat.ISoldat.TypesM;
 
 public class Carte implements IConfig, ICarte {
 	private Element[][] carte;

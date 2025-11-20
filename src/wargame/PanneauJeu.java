@@ -8,9 +8,14 @@ import javax.swing.JTable;
 
 import java.awt.Graphics;
 
-import wargame.ISoldat.TypesH;
-import wargame.ISoldat.TypesM;
-import wargame.Obstacle.TypeObstacle;
+import wargame.obstacle.Obstacle;
+import wargame.obstacle.Obstacle.TypeObstacle;
+import wargame.position.Position;
+import wargame.soldat.Heros;
+import wargame.soldat.Monstre;
+import wargame.soldat.ISoldat.TypesH;
+import wargame.soldat.ISoldat.TypesM;
+
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.*;

@@ -1,9 +1,12 @@
-package wargame;
+package wargame.position;
+
+import wargame.IConfig;
+
 public class Position implements IConfig {
 	private int x, y;
 	
 	// Constructeur
-	Position(int x, int y) { 
+	public Position(int x, int y) { 
 		this.x = x; 
 		this.y = y; 
 	

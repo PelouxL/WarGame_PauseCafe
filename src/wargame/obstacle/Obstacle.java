@@ -1,5 +1,9 @@
-package wargame;
+package wargame.obstacle;
 import java.awt.Color;
+
+import wargame.Element;
+import wargame.IConfig;
+import wargame.position.Position;
 
 public class Obstacle extends Element implements IConfig {
 	
@@ -17,7 +21,7 @@ public class Obstacle extends Element implements IConfig {
 
 	private TypeObstacle TYPE;
 	
-	Obstacle(TypeObstacle type, Position pos) { 
+	public Obstacle(TypeObstacle type, Position pos) { 
 		TYPE = type;
 		this.pos = pos;
 	}

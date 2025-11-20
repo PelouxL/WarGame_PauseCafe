@@ -1,4 +1,7 @@
-package wargame;
+package wargame.soldat;
+
+import wargame.position.EnsemblePosition;
+import wargame.position.Position;
 
 public interface ISoldat {
     static enum TypesH {
@@ -27,7 +30,7 @@ public interface ISoldat {
       	DEMON (50, 3, 5, 1), MAITREDUCAFE (80, 8, 10, 5);
 
       	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT = 8;
-
+      	
       	TypesM(int points, int portee, int puissance, int tir) {
     	 	POINTS_DE_VIE = points; PORTEE_VISUELLE = portee;
     	  	PUISSANCE = puissance; TIR = tir;

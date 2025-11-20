@@ -1,4 +1,4 @@
-package wargame;
+package wargame.position;
 
 public class EnsemblePosition {
 	private Position[] ePos;

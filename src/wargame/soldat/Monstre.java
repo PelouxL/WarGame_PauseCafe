@@ -1,22 +1,24 @@
-package wargame;
+package wargame.soldat;
 
-import wargame.ISoldat.TypesH;
+import wargame.Carte;
+import wargame.position.Position;
+import wargame.soldat.ISoldat.TypesM;
 
-public class Heros extends Soldat{
-	private final TypesH TYPE;
+public class Monstre extends Soldat {
+	private final TypesM TYPE;
 	private final String NOM;
 	private Carte carte;
 	private Position pos;
 	private boolean joue;
-	
-	public Heros(Carte carte, TypesH type, String nom, Position pos) {
+
+	public Monstre(Carte carte, TypesM type, String nom, Position pos) {
 		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), pos);
 		NOM = nom;
 		TYPE = type;
 	}
 
 	public void setJoue() {
-		if (this.getTour() == 1) {
+		if (this.getTour() == 0) {
 			this.joue = true;
 		} else {
 			this.joue = false;
@@ -25,5 +27,5 @@ public class Heros extends Soldat{
 
 	public boolean getJoue() {
 		return this.joue;
-	}  
+	}
 }

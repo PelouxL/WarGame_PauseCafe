@@ -1,4 +1,10 @@
-package wargame;
+package wargame.soldat;
+
+import wargame.Carte;
+import wargame.Element;
+import wargame.obstacle.Obstacle;
+import wargame.position.EnsemblePosition;
+import wargame.position.Position;
 
 public abstract class Soldat extends Element implements ISoldat{
 	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 8;
@@ -7,7 +13,7 @@ public abstract class Soldat extends Element implements ISoldat{
 	private Carte carte;
 	private int tour = 1; // 1 = joueur ; 0 = IA
 	
-	Soldat(Carte carte, int pts, int portee, int puiss, int tir, Position pos) {
+	public Soldat(Carte carte, int pts, int portee, int puiss, int tir, Position pos) {
 		POINT_DE_VIE = pointsDeVie = pts;
 		PORTEE_VISUELLE = portee;
 		PUISSANCE = puiss;
@@ -78,11 +84,17 @@ public abstract class Soldat extends Element implements ISoldat{
 	
 	// COMBAT
 	public void combat(Soldat soldat) {
-		int degats_joueur = this.getPuissance();
-	    int pv_ennemi = soldat.getPointsActuels();
+		int dgts_atq = this.getPuissance();
+	    int pv_def = soldat.getPointsActuels();
 	    pv_ennemi -= degats_joueur;
 	    soldat.setPointsActuels(pv_ennemi);
-    }
+	    
+	    if () {
+	    	this.combatMelee(soldat);
+	    } else {
+	    	this.combatDistance(soldat);
+	    }   
+	}
 	// COMBAT
 
 	// DEPLACEMENT
