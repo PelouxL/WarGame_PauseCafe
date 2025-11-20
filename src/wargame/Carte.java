@@ -194,6 +194,7 @@ public class Carte implements IConfig, ICarte {
 	}
 	// deplaceSoldat
 	
+	// mort
 	// comprends pas trop la methode, je suppose qu'elle met un mort sur la carte
 	// celui ci doit compter comme obstacle ???
 	public void mort(Soldat perso) {
@@ -203,17 +204,16 @@ public class Carte implements IConfig, ICarte {
 		nb_heros_restant--
         */
 	}
+	// mort
 	
+	// actionHeros
 	public boolean actionHeros(Position pos, Position pos2) {
 		
-		if((getElement(pos) instanceof Heros) ) {
-			
-			
-		}else {
-			return false;
-		}
+		if(!(getElement(pos) instanceof Heros)) return false;
+		
 		return true;
 	}
+	// actionHeros
 	
 	public void jouerSoldats(PanneauJeu pj) {}
 	public void toutDessiner(Graphics g) {}
