@@ -141,9 +141,10 @@ public abstract class Soldat extends Element implements ISoldat{
 	
 	public EnsemblePosition zoneDeplacement() {
 		int nbPosMax = 2*this.DEPLACEMENT*(this.DEPLACEMENT+1);
-		EnsemblePosition ePos = new EnsemblePosition(1000);
+		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
 		
 		zoneDeplacementAux(this.pos, this.pos, this.DEPLACEMENT, ePos);
+		// Penser a retirer la pos initiale de la liste
 		
 		return ePos;
 	}

@@ -19,6 +19,7 @@ import wargame.soldat.ISoldat.TypesM;
 import wargame.soldat.*;
 
 import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import java.awt.event.MouseEvent;
@@ -40,10 +41,16 @@ public class PanneauJeu extends JPanel implements IConfig {
 				int y = e.getY()/NB_PIX_CASE;
 				caseSurvolee = new Position(x, y);
 				// System.out.println(caseSurvolee.getX()+","+caseSurvolee.getY());
-				if (caseSurvolee.estValide()) repaint();
+				if (caseSurvolee.estValide()) {
+					// PanneauInfo pi = new PanneauInfo();
+					// pi.setCaseSurvoleePI(caseSurvolee);
+					// add(pi, BorderLayout.SOUTH);
+					repaint();
+				}
 			}
 		});
-		setPreferredSize(new Dimension(LARGEUR_CARTE*NB_PIX_CASE, HAUTEUR_CARTE*NB_PIX_CASE ));
+		
+		setPreferredSize(new Dimension(LARGEUR_CARTE*NB_PIX_CASE, (HAUTEUR_CARTE+1)*NB_PIX_CASE ));
 		
 	}
 	
@@ -92,16 +99,21 @@ public class PanneauJeu extends JPanel implements IConfig {
 		if (caseSurvolee != null 
 			&& caseSurvolee.estValide() 
 			&& carte.getElement(caseSurvolee) instanceof Soldat) {
+			
 			// System.out.println("Coor x : "+x+", y : "+y);
 			Soldat soldat = (Soldat)carte.getElement(caseSurvolee);
-			EnsemblePosition ePos = soldat.zoneDeplacement();
 			
-			for (int i = 0; i < ePos.getNbPos(); i++) {
-				this.dessineCase(g, Color.PINK, ePos.getPosition(i));
-			}
+			this.dessineZoneDeplacement(g, soldat);
+			this.afficheInfos(g, soldat);
 		}
 	}
 	
+	// Accesseur
+	public Position getCaseSurvolee() {
+		return this.caseSurvolee;
+	}	
+	
+	// Fonctions graphiques
 	public void dessineCase(Graphics g, Color couleur, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
@@ -111,6 +123,19 @@ public class PanneauJeu extends JPanel implements IConfig {
 		g.setColor(Color.BLACK);
 		g.drawRect(x*NB_PIX_CASE, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
 	}
+	
+	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
+		EnsemblePosition ePos = soldat.zoneDeplacement();
 		
+		for (int i = 0; i < ePos.getNbPos(); i++) {
+			this.dessineCase(g, Color.PINK, ePos.getPosition(i));
+		}
+	}
+	
+	public void afficheInfos(Graphics g, Soldat soldat) {
+		String s = "("+soldat.getClass().getSimpleName()+") "+soldat.getPos()+" "+soldat.getPointsActuels()+"/"+soldat.getPoints();
+		
+		g.drawString(s, 5, (HAUTEUR_CARTE+1)*NB_PIX_CASE-5);
+	}
 }    
 

@@ -1,5 +1,6 @@
 package wargame;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JFrame;
@@ -29,7 +30,7 @@ public class FenetreJeu {
 		
 		// Ajout du JPanel
 		PanneauJeu PanneauCarte = new PanneauJeu(carte);
-		frame.add(PanneauCarte);
+		frame.add(PanneauCarte, BorderLayout.CENTER);
 		
 		// Visibilité de la Jframe
 		frame.pack();
