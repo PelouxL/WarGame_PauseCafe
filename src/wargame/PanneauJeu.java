@@ -59,7 +59,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 					}
 					// /!\ IMPORTANT POUR LES TESTS /!\
 					// Décommenter le && en-dessous si on veut tester la carte en voyant tout
-					if (carte.getVisibilite(new Position(i,j)) == 0 /*&& carte.getVisibilite(new Position(i,j)) == 1*/) {
+					if (carte.getVisibilite(new Position(i,j)) == 0 
+							&& carte.getVisibilite(new Position(i,j)) == 1 // Ligne pour activer/desactiver le brouillard de guerre
+							) {
 						g.setColor(COULEUR_INCONNU);
 					}
 					g.fillRect(i*NB_PIX_CASE, j*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
