@@ -1,5 +1,6 @@
 package wargame;
 import javax.swing.JButton;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -10,72 +11,106 @@ import java.awt.Graphics;
 
 import wargame.obstacle.Obstacle;
 import wargame.obstacle.Obstacle.TypeObstacle;
-import wargame.position.Position;
+import wargame.position.*;
 import wargame.soldat.Heros;
 import wargame.soldat.Monstre;
 import wargame.soldat.ISoldat.TypesH;
 import wargame.soldat.ISoldat.TypesM;
+import wargame.soldat.*;
 
-import java.awt.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.*;
+import java.awt.Dimension;
+import java.awt.Color;
+
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 public class PanneauJeu extends JPanel implements IConfig {
 	private Carte carte;
-	
+	private Position caseSurvolee;
 	
 	public PanneauJeu(Carte c) {
 		this.carte = new Carte();
+		
+		// Ajout ecouteur
+		this.addMouseMotionListener(new MouseMotionAdapter() {
+			
+			// Effet au deplacement de la souris
+			public void mouseMoved(MouseEvent e) {
+				int x = e.getX()/NB_PIX_CASE;
+				int y = e.getY()/NB_PIX_CASE;
+				caseSurvolee = new Position(x, y);
+				// System.out.println(caseSurvolee.getX()+","+caseSurvolee.getY());
+				if (caseSurvolee.estValide()) repaint();
+			}
+		});
 		setPreferredSize(new Dimension(LARGEUR_CARTE*NB_PIX_CASE, HAUTEUR_CARTE*NB_PIX_CASE ));
 		
 	}
 	
 	public void paintComponent(Graphics g){
-			super.paintComponent(g);
+		super.paintComponent(g);
 			
-			for(int i = 0; i < LARGEUR_CARTE; i++) {
-				for(int j = 0; j < HAUTEUR_CARTE; j++) {
-					
-					Element e = carte.getElement(new Position(i,j));
-					if(e instanceof Heros) {
-						g.setColor(COULEUR_HEROS);
-					}else if(e instanceof Monstre) {
-						g.setColor(COULEUR_MONSTRES);
-					}else if(e instanceof Obstacle) {
-						switch(((Obstacle)e).getType()) {
-						case ROCHER:
-							g.setColor(COULEUR_ROCHER);
-							break;
-						case EAU:
-							g.setColor(COULEUR_EAU);
-							break;
-						case FORET:
-							g.setColor(COULEUR_FORET);
-							break;
-						}
-					}else {
-						g.setColor(COULEUR_VIDE);
-						
+		for(int i = 0; i < LARGEUR_CARTE; i++) {
+			for(int j = 0; j < HAUTEUR_CARTE; j++) {
+				
+				Position pos = new Position(i, j);
+				Element e = carte.getElement(pos);
+				Color couleur = COULEUR_VIDE;
+				
+				if(e instanceof Heros) {
+					couleur = COULEUR_HEROS;
+				}else if(e instanceof Monstre) {
+					couleur = COULEUR_MONSTRES;
+				}else if(e instanceof Obstacle) {
+					switch(((Obstacle)e).getType()) {
+					case ROCHER:
+						couleur = COULEUR_ROCHER;
+						break;
+					case EAU:
+						couleur = COULEUR_EAU;
+						break;
+					case FORET:
+						couleur = COULEUR_FORET;
+						break;
 					}
-					// /!\ IMPORTANT POUR LES TESTS /!\
-					// Décommenter le && en-dessous si on veut tester la carte en voyant tout
-					if (carte.getVisibilite(new Position(i,j)) == 0 
-							&& carte.getVisibilite(new Position(i,j)) == 1 // Ligne pour activer/desactiver le brouillard de guerre
-							) {
-						g.setColor(COULEUR_INCONNU);
-					}
-					g.fillRect(i*NB_PIX_CASE, j*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
-					
-					// Bord de la case
-					g.setColor(Color.BLACK);
-					g.drawRect(i*NB_PIX_CASE, j*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
 				}
+				
+				// /!\ IMPORTANT POUR LES TESTS /!\
+				// Décommenter le && en-dessous si on veut tester la carte en voyant tout
+				if (carte.getVisibilite(pos) == 0
+					&& carte.getVisibilite(pos) == 1
+					) {
+					couleur = COULEUR_INCONNU;
+				}
+				
+				dessineCase(g, couleur, pos);
+				
 			}
-
+		}
+		
+		// Ajout de la zone des deplacements de la case survolee si cest un soldat
+		if (caseSurvolee != null 
+			&& caseSurvolee.estValide() 
+			&& carte.getElement(caseSurvolee) instanceof Soldat) {
+			// System.out.println("Coor x : "+x+", y : "+y);
+			Soldat soldat = (Soldat)carte.getElement(caseSurvolee);
+			EnsemblePosition ePos = soldat.zoneDeplacement();
+			
+			for (int i = 0; i < ePos.getNbPos(); i++) {
+				this.dessineCase(g, Color.PINK, ePos.getPosition(i));
+			}
+		}
 	}
 	
+	public void dessineCase(Graphics g, Color couleur, Position pos) {
+		int x = pos.getX(),
+			y = pos.getY();
 		
+		g.setColor(couleur);
+		g.fillRect(x*NB_PIX_CASE, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+		g.setColor(Color.BLACK);
+		g.drawRect(x*NB_PIX_CASE, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+	}
 		
-}
-	      
+}    
 

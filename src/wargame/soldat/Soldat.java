@@ -141,24 +141,37 @@ public abstract class Soldat extends Element implements ISoldat{
 	
 	public EnsemblePosition zoneDeplacement() {
 		int nbPosMax = 2*this.DEPLACEMENT*(this.DEPLACEMENT+1);
-		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
+		EnsemblePosition ePos = new EnsemblePosition(1000);
 		
-		zoneDeplacementAux(this.pos, this.DEPLACEMENT, ePos);
+		zoneDeplacementAux(this.pos, this.pos, this.DEPLACEMENT, ePos);
 		
 		return ePos;
 	}
 
-	private void zoneDeplacementAux(Position pos, int deplacement, EnsemblePosition ePos) {
-		if (deplacement == 0 || this.carte.getElement(pos) instanceof Obstacle || ePos.contient(pos) || pos.estValide() == false) {
+	private void zoneDeplacementAux(Position posInit, Position pos, int deplacement, EnsemblePosition ePos) {
+		if (pos.estValide() == false
+			|| deplacement <= -1 
+			|| this.carte.getElement(pos) instanceof Obstacle
+			|| (this.carte.getElement(pos) instanceof Soldat && !(pos.equals(posInit)))
+			) {
 			return;
 		}
-		
-		ePos.ajouterPos(pos);
-		for (int i = -1; i <= 1; i += 1) {
-			for (int j = -1; i <= 1; i += 1) {
-				zoneDeplacementAux(new Position(pos.getX()+i, pos.getY()+j), deplacement - 1, ePos);
-			}
+
+		if (!(ePos.contient(pos))) {
+			ePos.ajouterPos(pos);
 		}
+		
+		int x = pos.getX();
+		int y = pos.getY();
+		// System.out.println("x = "+x+", y = "+y);
+		// Droite
+		zoneDeplacementAux(posInit, new Position(x+1, y), deplacement-1, ePos);
+		// Bas
+		zoneDeplacementAux(posInit, new Position(x, y+1), deplacement-1, ePos);
+		// Gauche
+		zoneDeplacementAux(posInit, new Position(x-1, y), deplacement-1, ePos);
+		// Haut
+				zoneDeplacementAux(posInit, new Position(x, y-1), deplacement-1, ePos);
 	}
 	
 	public void seDeplace(Position newPos) {
@@ -171,5 +184,4 @@ public abstract class Soldat extends Element implements ISoldat{
 		}
 	}
 	// DEPLACEMENT
-	
 }

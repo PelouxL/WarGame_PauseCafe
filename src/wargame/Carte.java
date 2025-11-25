@@ -238,6 +238,12 @@ public class Carte implements IConfig, ICarte {
 	}
 	// actionHeros
 	
+	public Position coorToPos(int x, int y) {
+		int px = x/NB_PIX_CASE,
+			py = y/NB_PIX_CASE ;
+		return new Position(px, py);
+	}
+	
 	public void jouerSoldats(PanneauJeu pj) {}
 	public void toutDessiner(Graphics g) {}
 	
