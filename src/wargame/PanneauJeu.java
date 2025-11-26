@@ -1,25 +1,10 @@
 package wargame;
-import javax.swing.JButton;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import java.awt.Graphics;
 
-import wargame.obstacle.Obstacle;
-import wargame.obstacle.Obstacle.TypeObstacle;
-import wargame.position.*;
-import wargame.soldat.Heros;
-import wargame.soldat.Monstre;
-import wargame.soldat.ISoldat.TypesH;
-import wargame.soldat.ISoldat.TypesM;
-import wargame.soldat.*;
-
 import java.awt.Dimension;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

@@ -2,15 +2,8 @@ package wargame;
 
 import java.awt.Graphics;
 
-import wargame.obstacle.Obstacle;
-import wargame.obstacle.Obstacle.TypeObstacle;
-import wargame.position.EnsemblePosition;
-import wargame.position.Position;
-import wargame.soldat.Heros;
-import wargame.soldat.Monstre;
-import wargame.soldat.Soldat;
-import wargame.soldat.ISoldat.TypesH;
-import wargame.soldat.ISoldat.TypesM;
+import wargame.ISoldat.TypesH;
+import wargame.ISoldat.TypesM;
 
 public class Carte implements IConfig, ICarte {
 	private Element[][] carte;
@@ -32,13 +25,13 @@ public class Carte implements IConfig, ICarte {
 		// Placement des obstacles Aleatoirement
 		// Placement de la riviere
 		p = trouvePositionVide();
-		this.carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
+		this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
 		riviere(p); // Ajouter des ponts
 		
 		//Placement des autres obstacles
 		for(int i = 0; i < NB_OBSTACLES; i++) {
 			p = trouvePositionVide();
-			this.carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.getObstacleAlea(), p);
+			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.getObstacleAlea(), p);
 			
 		}
 		
@@ -71,7 +64,7 @@ public class Carte implements IConfig, ICarte {
 	private void riviereV(Position pos) {
 		for (int i = 0; i < HAUTEUR_CARTE; i++) {
 			Position p = new Position(pos.getX(), i);
-			this.carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
+			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
 		}
 		// Ponts
 		this.carte[pos.getX()][(int)(Math.random()*pos.getY())] = null;
@@ -81,7 +74,7 @@ public class Carte implements IConfig, ICarte {
 	private void riviereH(Position pos) {	
 		for (int i = 0; i < LARGEUR_CARTE; i++) {
 			Position p = new Position(i, pos.getY());
-			this.carte[p.getX()][p.getY()] = new Obstacle(TypeObstacle.EAU, p);
+			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
 		}
 		// Ponts
 		this.carte[(int)(Math.random()*pos.getX())][pos.getY()] = null;

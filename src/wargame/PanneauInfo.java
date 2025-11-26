@@ -4,7 +4,6 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Dimension;
 
-import wargame.position.*;
 
 public class PanneauInfo extends JPanel implements IConfig {
 	private Position caseSurvoleePI;
