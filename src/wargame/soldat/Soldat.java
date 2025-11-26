@@ -11,7 +11,7 @@ public abstract class Soldat extends Element implements ISoldat{
 	private int pointsDeVie;
 	private Position pos;
 	private Carte carte;
-	private int action = 2; // 1 = joueur ; 0 = IA
+	private int action = 2; // nb d'action possible pour un soldat par tour
 	private int tour;
 	
 	public Soldat(Carte carte, int pts, int portee, int puiss, int tir, Position pos) {
@@ -98,6 +98,12 @@ public abstract class Soldat extends Element implements ISoldat{
 		return this.TIR;
 	}
 	//TIR
+	
+	// ACTION
+	public int getAction() {
+		return this.action;
+	}
+	// ACTION
 	
 	// COMBAT
 	public void combat(Soldat soldat) {

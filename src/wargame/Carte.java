@@ -232,7 +232,23 @@ public class Carte implements IConfig, ICarte {
 	// actionHeros
 	public boolean actionHeros(Position pos, Position pos2) {
 		
-		if(!(getElement(pos) instanceof Heros)) return false;
+		Element heros = this.getElement(pos);
+		
+		if (!(heros instanceof Heros) || ((Heros)heros).getAction() <= 0) return false;
+		
+		Element caseCible = this.getElement(pos2);
+		
+		if (caseCible == null 
+			// && dans la zone de deplacement	
+			) {
+			// se deplacer
+		} else {
+			if (caseCible instanceof Monstre
+				// && case du monstre en rangede tir ou moins
+				) {
+				// attaquer
+			}
+		}
 		
 		return true;
 	}
