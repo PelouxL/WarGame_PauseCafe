@@ -114,7 +114,7 @@ public abstract class Soldat extends Element implements ISoldat{
 		// On retire les soldats de la carte si ils sont morts
 		carte.mort(this);
 		carte.mort(soldat);
-	}
+	} 
 	
 	private void combatMelee(Soldat soldat) {
 		int dgts_atq = this.getPuissance();
@@ -194,13 +194,13 @@ public abstract class Soldat extends Element implements ISoldat{
 	}
 	
 	public String toString() {
-		String chaine = ""+this.getClass().getSimpleName()+": Position :"+pos+" PV : ("+this.getPoints()+"\\"+this.getPointsActuels()+") Capacité de déplacement : "+DEPLACEMENT;
+		String chaine = ""+this.getClass().getSimpleName()+": Position :"+pos+",  PV : ("+this.getPoints()+"\\"+this.getPointsActuels()+"),  Capacité de déplacement : "+DEPLACEMENT;
 		
 		if(action > 0) {
 			chaine+=",  action(s) restante : "+action;
 			
 		}else {
-			chaine+=" plus d'actions restante";
+			chaine+=", plus d'actions restante";
 		}
 		return chaine;
 	}
