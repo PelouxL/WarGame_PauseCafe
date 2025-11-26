@@ -151,13 +151,16 @@ public abstract class Soldat extends Element implements ISoldat{
 
 	private void zoneDeplacementAux(Position posInit, Position pos, int deplacement, EnsemblePosition ePos) {
 		
+		if (!(pos.estValide())) {
+			return;
+		}
+		
 		Element e = this.carte.getElement(pos);
 		
-		if (pos.estValide() == false
-			|| deplacement <= -1 
+		if (deplacement <= -1 
 			|| e instanceof Obstacle
-			|| (this instanceof Heros && e instanceof Monstre && !(pos.equals(posInit)))
-			|| (this instanceof Monstre && e instanceof Soldat && !(pos.equals(posInit)))
+			|| (this instanceof Heros && e instanceof Monstre)
+			|| (this instanceof Monstre && e instanceof Heros)
 			) {
 			return;
 		}
