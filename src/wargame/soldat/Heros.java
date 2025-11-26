@@ -27,5 +27,5 @@ public class Heros extends Soldat{
 
 	public boolean getJoue() {
 		return this.joue;
-	}  
+	}
 }

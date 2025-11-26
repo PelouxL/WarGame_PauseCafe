@@ -11,7 +11,8 @@ public abstract class Soldat extends Element implements ISoldat{
 	private int pointsDeVie;
 	private Position pos;
 	private Carte carte;
-	private int tour = 1; // 1 = joueur ; 0 = IA
+	private int action = 2; // 1 = joueur ; 0 = IA
+	private int tour;
 	
 	public Soldat(Carte carte, int pts, int portee, int puiss, int tir, Position pos) {
 		POINT_DE_VIE = pointsDeVie = pts;
@@ -183,6 +184,18 @@ public abstract class Soldat extends Element implements ISoldat{
 		} else {
 			System.out.println("Erreur seDeplace : position invalide.");
 		}
+	}
+	
+	public String toString() {
+		String chaine = ""+this.getClass().getSimpleName()+": Position :"+pos+" PV : ("+this.getPoints()+"\\"+this.getPointsActuels()+") Capacité de déplacement : "+DEPLACEMENT;
+		
+		if(action > 0) {
+			chaine+=",  action(s) restante : "+action;
+			
+		}else {
+			chaine+=" plus d'actions restante";
+		}
+		return chaine;
 	}
 	// DEPLACEMENT
 }

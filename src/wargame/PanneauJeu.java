@@ -133,7 +133,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	}
 	
 	public void afficheInfos(Graphics g, Soldat soldat) {
-		String s = "("+soldat.getClass().getSimpleName()+") "+soldat.getPos()+" "+soldat.getPointsActuels()+"/"+soldat.getPoints();
+		String s = ""+soldat;
 		
 		g.drawString(s, 5, (HAUTEUR_CARTE+1)*NB_PIX_CASE-5);
 	}
