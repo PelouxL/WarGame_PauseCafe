@@ -21,13 +21,14 @@ import wargame.soldat.*;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Color;
-
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
 public class PanneauJeu extends JPanel implements IConfig {
 	private Carte carte;
 	private Position caseSurvolee;
+	private Position caseCliquee;
 	
 	public PanneauJeu(Carte c) {
 		this.carte = new Carte();
@@ -45,8 +46,31 @@ public class PanneauJeu extends JPanel implements IConfig {
 					// PanneauInfo pi = new PanneauInfo();
 					// pi.setCaseSurvoleePI(caseSurvolee);
 					// add(pi, BorderLayout.SOUTH);
-					repaint();
+					//repaint();
 				}
+				repaint();
+			}
+		});
+		
+		// Ecouteur clic souris
+		this.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				int x = e.getX()/NB_PIX_CASE;
+				int y = e.getY()/NB_PIX_CASE;
+				Element elem;
+				caseCliquee = new Position(x, y);
+				elem = carte.getElement(caseCliquee);
+				// System.out.println(caseCliquee.getX()+","+caseCliquee.getY());
+				if (caseCliquee.estValide() && elem instanceof Heros) {
+					//repaint();
+				} else {
+					caseCliquee = null;
+					//repaint();
+				}
+				repaint();
+			}
+			
+			public void mouseReleased(MouseEvent e) {
 			}
 		});
 		
@@ -97,6 +121,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		
 		// Ajout de la zone des deplacements de la case survolee si cest un soldat
 		if (caseSurvolee != null 
+			&& caseCliquee == null
 			&& caseSurvolee.estValide() 
 			&& carte.getElement(caseSurvolee) instanceof Soldat) {
 			
@@ -105,6 +130,18 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 			this.dessineZoneDeplacement(g, soldat);
 			this.afficheInfos(g, soldat);
+		}
+		
+		// Ajout de la case cliquée
+		if (caseCliquee != null
+			&& caseCliquee.estValide()
+			&& carte.getElement(caseCliquee) instanceof Heros) {
+			
+			Soldat soldatClic = (Soldat) carte.getElement(caseCliquee);
+			
+			this.dessineZoneDeplacement(g, soldatClic);
+			this.dessineCaseCliquee(g, caseCliquee);
+			this.afficheInfos(g, soldatClic);
 		}
 	}
 	
@@ -133,9 +170,16 @@ public class PanneauJeu extends JPanel implements IConfig {
 	}
 	
 	public void afficheInfos(Graphics g, Soldat soldat) {
-		String s = ""+soldat;
-		
+		String s = "(" + soldat.getClass().getSimpleName() + ") " + soldat.getPos() + " " + soldat.getPointsActuels() + "/" + soldat.getPoints();
 		g.drawString(s, 5, (HAUTEUR_CARTE+1)*NB_PIX_CASE-5);
 	}
+	
+	public void dessineCaseCliquee(Graphics g, Position pos) {
+		int x = pos.getX(),
+			y = pos.getY();
+		Color couleur = new Color(0,0,0,100); // Noir mais faible opacité
+		g.setColor(couleur);
+		// Obligé de faire un +1 quand opacité pas au max ???
+		g.fillRect(x*NB_PIX_CASE + 1, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+	}
 }    
-
