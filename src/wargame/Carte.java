@@ -51,7 +51,7 @@ public class Carte implements IConfig, ICarte {
 	}
 
 	
-	// Riviere
+	// RIVIERE
 	private void riviere(Position pos) {
 		int r = (int)(Math.random()*3);
 		switch(r) {
@@ -80,16 +80,26 @@ public class Carte implements IConfig, ICarte {
 		this.carte[(int)(Math.random()*pos.getX())][pos.getY()] = null;
 		this.carte[(int)(Math.random() * (LARGEUR_CARTE - pos.getX()) + pos.getX())][pos.getY()] = null;
 	}
-	// Riviere
+	// RIVIERE
 	
+	
+	// ELEMENT
 	public Element getElement(Position pos) {
+		
+		int x = pos.getX();
+		int y = pos.getY();
+		
 		if (pos.estValide()) {
-			return this.carte[pos.getX()][pos.getY()];
+			return this.carte[x][y];
 		}
-		System.out.println("Erreur : getElement :  0 <= x < " + LARGEUR_CARTE + " | 0 <= y < " + HAUTEUR_CARTE);
+		
+		System.out.println("Erreur getElement() : x = "+x+", y = "+y);
 		return null;
 	}
+	// ELEMENT
 	
+	
+	// VISIBILITE
 	public int getVisibilite(Position pos) {
 		if (pos.estValide()) {
 			return this.visibilite[pos.getX()][pos.getY()];
@@ -105,10 +115,10 @@ public class Carte implements IConfig, ICarte {
 	// public void setVisibilite(Position pos, int visibilite) {
 	//  	this.visibilite[pos.getX()][pos.getY()] = visibilite;
 	// }
-
+	// VISIBILITE
 	
-	// positionVide
-	// a Verifier si un typeH/M/Obstacle peut être null 
+	
+	// POSITION VIDE
 	public Position trouvePositionVide() {
 		int x, y;
 		Position pos;
@@ -121,7 +131,6 @@ public class Carte implements IConfig, ICarte {
 		
 		return pos;
 	}
-
 
 	public Position trouvePositionVide(Position pos) {
 		EnsemblePosition listePos = new EnsemblePosition(8);
@@ -150,8 +159,10 @@ public class Carte implements IConfig, ICarte {
 		}
 		return listePos.getPosition((int)(Math.random()*listePos.getNbPos()-1));
 	}
+	// POSITION VIDE
 	
-	// trouveHeros
+	
+	// TROUVE HEROS
 	public Heros trouveHeros() {
 		int nbHeros = 0;
 		Heros[] listeHeros = new Heros[NB_HEROS];
@@ -197,55 +208,56 @@ public class Carte implements IConfig, ICarte {
 		}
 		return listeHeros[(int) (Math.random()*nbHeros - 1)];
 	}
-	// trouveHeros
+	// TROUVE HEROS
 	
-	// deplaceSoldat
+	
+	// ACTION SOLDAT (actionHeros a revoir surement)
+	public boolean actionHeros(Position pos, Position pos2) {
+		
+		Element e = this.getElement(pos);
+		
+		if (!(e instanceof Heros) || ((Heros)e).getAction() <= 0) return false;
+		
+		Heros heros = (Heros)e;
+		Element caseCible = this.getElement(pos2);
+		
+		// Deplacement si case vide
+		if (caseCible == null) {
+			return this.deplaceSoldat(pos2, heros);
+		} 
+		
+		if (caseCible instanceof Monstre && pos.distance(pos2) <= heros.getTir()) { // on regarde que tir
+			Monstre monstre = (Monstre)caseCible;
+			heros.combat(monstre);
+		}
+		
+		return true;
+	}
+	
 	public boolean deplaceSoldat(Position pos, Soldat soldat) {
-			EnsemblePosition ep = soldat.zoneDeplacement();
+		
+			EnsemblePosition ePos = soldat.zoneDeplacement();
 			
-			if(ep.contient(pos)) {
+			if(ePos.contient(pos)) {
 				this.carte[soldat.getPos().getX()][soldat.getPos().getY()] = null;
 				this.carte[pos.getX()][pos.getY()] = soldat;
 				soldat.seDeplace(pos);
 				return true;
 			}
+			
 		return false;
 	}
-	// deplaceSoldat
+	// ACTION SOLDAT
 	
-	// mort
+	
+	// MORT
 	public void mort(Soldat perso) {
 		if (perso.getPointsActuels() <= 0) {
 			this.carte[perso.getPos().getX()][perso.getPos().getY()] = null;
 			// nb_heros_restant--;
 		}
 	}
-	// mort
-	
-	// actionHeros
-	public boolean actionHeros(Position pos, Position pos2) {
-		
-		Element heros = this.getElement(pos);
-		
-		if (!(heros instanceof Heros) || ((Heros)heros).getAction() <= 0) return false;
-		
-		Element caseCible = this.getElement(pos2);
-		
-		if (caseCible == null 
-			// && dans la zone de deplacement	
-			) {
-			// se deplacer
-		} else {
-			if (caseCible instanceof Monstre
-				// && case du monstre en rangede tir ou moins
-				) {
-				// attaquer
-			}
-		}
-		
-		return true;
-	}
-	// actionHeros
+	// MORT
 	
 	public Position coorToPos(int x, int y) {
 		int px = x/NB_PIX_CASE,

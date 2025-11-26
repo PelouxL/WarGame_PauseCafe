@@ -23,8 +23,7 @@ public abstract class Soldat extends Element implements ISoldat{
 	}
 	
 	public void setPos(Position pos) {
-		this.pos.setX(pos.getX());
-		this.pos.setY(pos.getY());
+		this.pos = pos;
 	}
 	// POSITION
 	

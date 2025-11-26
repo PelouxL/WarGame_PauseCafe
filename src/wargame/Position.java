@@ -54,4 +54,7 @@ public class Position implements IConfig {
 		return false;
 	}
 	
+	public int distance(Position p) {
+		return Math.abs(this.getX() - p.getX()) + Math.abs(this.getY() - p.getY());
+	}
 }
