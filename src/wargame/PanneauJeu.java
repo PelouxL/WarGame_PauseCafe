@@ -14,9 +14,20 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private Carte carte;
 	private Position caseSurvolee;
 	private Position caseCliquee;
+	private JPanel panelInfos;
 	
 	public PanneauJeu(Carte c) {
 		this.carte = new Carte();
+		
+	    panelInfos = new JPanel() {
+	    	protected void paintComponent(Graphics g) {
+	    		
+	    	}
+	    	
+	    	
+	    };
+		
+			 
 		
 		// Ajout ecouteur
 		this.addMouseMotionListener(new MouseMotionAdapter() {
