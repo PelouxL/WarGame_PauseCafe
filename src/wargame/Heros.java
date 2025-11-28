@@ -13,7 +13,7 @@ public class Heros extends Soldat{
 		NOM = nom;
 		TYPE = type;
 	}
-
+	
 	public void setJoue() {
 		if (this.getTour() == 1) {
 			this.joue = true;

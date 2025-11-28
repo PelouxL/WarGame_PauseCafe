@@ -96,6 +96,17 @@ public class Carte implements IConfig, ICarte {
 		System.out.println("Erreur getElement() : x = "+x+", y = "+y);
 		return null;
 	}
+	
+	public boolean caseDisponible(Position pos) {
+		if (!pos.estValide()
+			|| this.getElement(pos) != null
+			|| this.getElement(pos) instanceof Soldat
+			|| this.getElement(pos) instanceof Obstacle) {
+			return false;
+		}
+		return true;
+	}
+		
 	// ELEMENT
 	
 	
