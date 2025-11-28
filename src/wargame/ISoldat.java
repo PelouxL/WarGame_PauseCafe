@@ -16,6 +16,7 @@ public interface ISoldat {
 		public int getPortee() { return PORTEE_VISUELLE; }
 		public int getPuissance() { return PUISSANCE; }
 		public int getTir() { return TIR; }
+		public int getDeplacement() { return DEPLACEMENT; }
 
 		public static TypesH getTypeHAlea() {
          	return values()[(int)(Math.random()*values().length)];
@@ -36,14 +37,15 @@ public interface ISoldat {
 		public int getPoints() { return POINTS_DE_VIE; }
 		public int getPortee() { return PORTEE_VISUELLE; }
 		public int getPuissance() { return PUISSANCE; }
-		public int getTir() { return TIR; } 
+		public int getTir() { return TIR; }
+		public int getDeplacement() { return DEPLACEMENT; }
 
 		public static TypesM getTypeMAlea() {
          	return values()[(int)(Math.random()*values().length)];
       	}
    	}
 	
-	int getPoints(); int getTour(); int getPortee(); int getDeplacement();
+	int getPoints(); int getTour(); int getPortee(); int getDeplacement(); // vraiment utile? elles sont definies dans les enum
 	void joueTour(int tour);
 	void combat(Soldat soldat);
 	EnsemblePosition zoneDeplacement();
