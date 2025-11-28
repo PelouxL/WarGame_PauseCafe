@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 
 import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,56 +16,104 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private Position caseSurvolee;
 	private Position caseCliquee;
 	
+	private String infoTexte ="";
+	private String infoTexte2 ="";
+	
+	private JPanel panneauCarte;
+	private JPanel panneauInfos;
+	
 	public PanneauJeu(Carte c) {
 		this.carte = new Carte();
+		setLayout( new BorderLayout());
 		
-		// Ajout ecouteur
-		this.addMouseMotionListener(new MouseMotionAdapter() {
+		// ------ creation de la Carte ---- //
+		
+		panneauCarte = new JPanel() {
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				dessinableCarte(g);
+			}
+		};
+		
+		panneauCarte.setPreferredSize(new Dimension(LARGEUR_CARTE * NB_PIX_CASE, HAUTEUR_CARTE * NB_PIX_CASE));
+		
+		// ------ creation du panneau d'info ----- //
+	    panneauInfos = new JPanel() {
+	    	protected void paintComponent(Graphics g) {
+	    		super.paintComponent(g);
+	    		g.setColor(Color.black);
+	    		if(infoTexte2 != "" && !(infoTexte2.equals(infoTexte))) {
+	    			g.drawString(infoTexte2,10, 15);
+	    			g.drawString(infoTexte,10, 30);
+	    		}else {
+	    			g.drawString(infoTexte,10, 15);
+	    		}
+	    	}
+	    	
+	    };
+			 
+	    panneauInfos.setPreferredSize(new Dimension(LARGEUR_CARTE, NB_PIX_CASE*4));
+		panneauInfos.setBackground(Color.white);
+		
+		// ------- Mises en place des layout ------//
+		add(panneauCarte, BorderLayout.CENTER);
+		add(panneauInfos, BorderLayout.SOUTH);
+		
+		
+		// ------- Ajout des ecouteur ---------- //
+		panneauCarte.addMouseMotionListener(new MouseMotionAdapter() {
 			
 			// Effet au deplacement de la souris
 			public void mouseMoved(MouseEvent e) {
 				int x = e.getX()/NB_PIX_CASE;
 				int y = e.getY()/NB_PIX_CASE;
 				caseSurvolee = new Position(x, y);
-				// System.out.println(caseSurvolee.getX()+","+caseSurvolee.getY());
+				
 				if (caseSurvolee.estValide()) {
-					// PanneauInfo pi = new PanneauInfo();
-					// pi.setCaseSurvoleePI(caseSurvolee);
-					// add(pi, BorderLayout.SOUTH);
-					//repaint();
+					Element elem = carte.getElement(caseSurvolee);
+					if(elem instanceof Soldat) {
+						infoTexte = elem.toString();
+					}else {
+						infoTexte ="";
+					}
+				}else {
+					infoTexte ="";
 				}
-				repaint();
+				panneauInfos.repaint();
+				panneauCarte.repaint();
 			}
 		});
 		
 		// Ecouteur clic souris
-		this.addMouseListener(new MouseAdapter() {
+		panneauCarte.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				int x = e.getX()/NB_PIX_CASE;
 				int y = e.getY()/NB_PIX_CASE;
-				Element elem;
+				
 				caseCliquee = new Position(x, y);
-				elem = carte.getElement(caseCliquee);
+				Element elem = carte.getElement(caseCliquee);
 				// System.out.println(caseCliquee.getX()+","+caseCliquee.getY());
-				if (caseCliquee.estValide() && elem instanceof Heros) {
-					//repaint();
+				if (caseCliquee.estValide() && elem instanceof Soldat) {
+					infoTexte2 = elem.toString();
 				} else {
 					caseCliquee = null;
-					//repaint();
+					infoTexte2 ="";
+					
 				}
-				repaint();
+				panneauInfos.repaint();
+				panneauCarte.repaint();
 			}
 			
 			public void mouseReleased(MouseEvent e) {
 			}
 		});
 		
-		setPreferredSize(new Dimension(LARGEUR_CARTE*NB_PIX_CASE, (HAUTEUR_CARTE+1)*NB_PIX_CASE ));
+		setPreferredSize(new Dimension(LARGEUR_CARTE*NB_PIX_CASE, (HAUTEUR_CARTE)*NB_PIX_CASE ));
 		
 	}
 	
-	public void paintComponent(Graphics g){
-		super.paintComponent(g);
+	public void dessinableCarte(Graphics g){
+		
 			
 		for(int i = 0; i < LARGEUR_CARTE; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
@@ -114,7 +163,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 			Soldat soldat = (Soldat)carte.getElement(caseSurvolee);
 			
 			this.dessineZoneDeplacement(g, soldat);
-			this.afficheInfos(g, soldat);
 		}
 		
 		// Ajout de la case cliquée
@@ -126,7 +174,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 			this.dessineZoneDeplacement(g, soldatClic);
 			this.dessineCaseCliquee(g, caseCliquee);
-			this.afficheInfos(g, soldatClic);
 		}
 	}
 	
@@ -154,10 +201,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 		}
 	}
 	
-	public void afficheInfos(Graphics g, Soldat soldat) {
-		String s = ""+soldat;
-		g.drawString(s, 5, (HAUTEUR_CARTE+1)*NB_PIX_CASE-5);
-	}
 	
 	public void dessineCaseCliquee(Graphics g, Position pos) {
 		int x = pos.getX(),
