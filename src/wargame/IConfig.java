@@ -3,11 +3,27 @@ import java.awt.Color;
 
 public interface IConfig {
 	int LARGEUR_CARTE = 35; int HAUTEUR_CARTE = 25; // en nombre de cases
-	int NB_PIX_CASE = 20;
+	int NB_PIX_CASE = 20; //taille des cases
 	int POSITION_X = 100; int POSITION_Y = 50; // Position de la fen�tre
 	int NB_HEROS = 6; int NB_MONSTRES = 15; int NB_OBSTACLES = 20;
-	Color COULEUR_VIDE = Color.white, COULEUR_INCONNU = Color.lightGray;
-	Color COULEUR_TEXTE = Color.black, COULEUR_MONSTRES = Color.black;
-	Color COULEUR_HEROS = Color.red, COULEUR_HEROS_DEJA_JOUE = Color.pink;
-	Color COULEUR_EAU = Color.blue, COULEUR_FORET = Color.green, COULEUR_ROCHER = Color.gray;
+	
+	// COULEURS
+	Color COULEUR_VIDE = Color.white;
+	Color COULEUR_INCONNU = Color.lightGray;
+	Color COULEUR_TEXTE = Color.black;
+	
+	// Couleur Soldats
+	Color COULEUR_HEROS = Color.red;
+	Color COULEUR_HEROS_DEJA_JOUE = Color.pink;
+	Color COULEUR_MONSTRES = Color.black;
+	
+	// Couleur Obstacles
+	Color COULEUR_EAU = Color.blue;
+	Color COULEUR_FORET = Color.decode("#0A5C36"); // vert fonce 
+	Color COULEUR_ROCHER = Color.gray;
+	
+	// Couleur Terrains
+	Color COULEUR_PONT = Color.decode("#8B4513"); // marron
+	Color COULEUR_HERBE = Color.green; // vert clair
+	
 }
