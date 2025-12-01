@@ -1,6 +1,8 @@
 package wargame;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 
 import wargame.ISoldat.TypesH;
 import wargame.ISoldat.TypesM;
@@ -8,6 +10,8 @@ import wargame.ISoldat.TypesM;
 public class Carte implements IConfig, ICarte {
 	private Element[][] carte;
 	private int[][] visibilite;
+	private List<String> combatLog = new ArrayList<>();
+	private int nbLog = 1;
 
 	public Carte() {
 		carte = new Element[LARGEUR_CARTE][HAUTEUR_CARTE];
@@ -50,7 +54,22 @@ public class Carte implements IConfig, ICarte {
 				
 	}
 
+	// LOG DES COMBATS
+	public void addCombatMessage(String msg) {
+		combatLog.add(nbLog + " - " + msg);
+		nbLog++;
+	}
 	
+	public List<String> getCombatLog(){
+		return combatLog;
+	}
+	
+	 public void clearCombatLog() {
+	        combatLog.clear();
+	 }
+	
+	 
+	 
 	// RIVIERE
 	private void riviere(Position pos) {
 		int r = (int)(Math.random()*3);
@@ -234,14 +253,14 @@ public class Carte implements IConfig, ICarte {
 		
 		// Deplacement si case vide
 		if (caseCible == null) {
-			return this.deplaceSoldat(pos2, heros);
-		} 
-		
-		if (caseCible instanceof Monstre && pos.distance(pos2) <= heros.getTir()) { // on regarde que tir
+			if(this.deplaceSoldat(pos2, heros)) heros.setAction((heros.getAction() - 1));
+		// Combat
+		} else if (caseCible instanceof Monstre && pos.distance(pos2) <= heros.getTir()) { // on regarde que tir
+			System.out.println("on commence le combat ! ");
 			Monstre monstre = (Monstre)caseCible;
 			heros.combat(monstre);
+			heros.setAction((heros.getAction() - 1));
 		}
-		
 		return true;
 	}
 	

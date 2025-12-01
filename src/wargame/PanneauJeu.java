@@ -1,15 +1,18 @@
 package wargame;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import java.awt.Graphics;
-
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.List;
 
 public class PanneauJeu extends JPanel implements IConfig {
 	private Carte carte;
@@ -24,12 +27,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 	
 	private JPanel panneauCarte;
 	private JPanel panneauInfos;
+	private JPanel panneauLog;
+	private JTextArea logArea;
 	
 	public PanneauJeu(Carte c) {
-		this.carte = new Carte();
+		this.carte = c;
 		setLayout( new BorderLayout());
 		
-		// ------ creation de la Carte ---- //
+		// ------ creation de la Carte ---------- //
 		
 		panneauCarte = new JPanel() {
 			protected void paintComponent(Graphics g) {
@@ -40,6 +45,20 @@ public class PanneauJeu extends JPanel implements IConfig {
 		
 		panneauCarte.setPreferredSize(new Dimension(LARGEUR_CARTE * NB_PIX_CASE, HAUTEUR_CARTE * NB_PIX_CASE));
 		
+		// ------ creation du panneau log -------- //
+		
+		logArea = new JTextArea();
+		logArea.setEditable(false);
+		logArea.setBackground(Color.decode("#8B4513"));
+		logArea.setForeground(Color.WHITE);
+		logArea.setBorder(BorderFactory.createLineBorder(Color.decode("#663300"), 2));
+		
+		panneauLog = new JPanel(new BorderLayout());
+		panneauLog.add(new JScrollPane(logArea), BorderLayout.CENTER);
+		panneauLog.setPreferredSize(new Dimension(300, HAUTEUR_CARTE * NB_PIX_CASE));
+		panneauLog.setBackground(Color.decode("#8B4513"));
+		
+	
 		// ------ creation du panneau d'info ----- //
 	    panneauInfos = new JPanel() {
 	    	protected void paintComponent(Graphics g) {
@@ -55,13 +74,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    	
 	    };
 			 
-	    panneauInfos.setPreferredSize(new Dimension(LARGEUR_CARTE, NB_PIX_CASE*4));
-		panneauInfos.setBackground(Color.white);
+	    panneauInfos.setPreferredSize(new Dimension(LARGEUR_CARTE, NB_PIX_CASE*5));
+		panneauInfos.setBackground(Color.decode("#8B4513"));
+		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.decode("#663300"), 2));
 		
 		// ------- Mises en place des layout ------//
 		add(panneauCarte, BorderLayout.CENTER);
 		add(panneauInfos, BorderLayout.SOUTH);
-		
+		add(panneauLog, BorderLayout.WEST);
 		
 		// ------- Ajout des ecouteur ---------- //
 		panneauCarte.addMouseMotionListener(new MouseMotionAdapter() {
@@ -93,22 +113,33 @@ public class PanneauJeu extends JPanel implements IConfig {
 				int x = e.getX()/NB_PIX_CASE;
 				int y = e.getY()/NB_PIX_CASE;
 				
+				Element elem = carte.getElement(new Position(x,y));
+				//petit bémole, quand on fait un combat , on affiche le deplacement et info sur le monstre cliquer donc bizzarre
+				// si on est sur le point de deplacé un Heros
 				if(deplacePerso) {
 					caseAction = new Position(x, y);
 					carte.actionHeros(caseCliquee, caseAction);
+					if(elem instanceof Monstre) {
+						updateCombatLog();
+					}
+					infoTexte2 ="";
 					deplacePerso = false;
+					caseCliquee = null;
+					caseAction = null;
+				// si c'est le premier clique
 				}else {
-					caseCliquee = new Position(x, y);
-					Element elem = carte.getElement(caseCliquee);
+					caseCliquee = new Position(x, y);		
 					// System.out.println(caseCliquee.getX()+","+caseCliquee.getY());
+					// on initalise le deplacement
 					if (caseCliquee.estValide() && elem instanceof Soldat) {
+						deplacePerso = true;
 						infoTexte2 = elem.toString();
 					} else {
 						caseCliquee = null;
+						deplacePerso = false;
 						infoTexte2 ="";
 						
 					}
-					deplacePerso = true;
 				}
 				
 				panneauInfos.repaint();
@@ -137,6 +168,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					couleur = COULEUR_HEROS;
 				}else if(e instanceof Monstre) {
 					couleur = COULEUR_MONSTRES;
+					
 				}else if(e instanceof Obstacle) {
 					switch(((Obstacle)e).getType()) {
 					case ROCHER:
@@ -202,6 +234,16 @@ public class PanneauJeu extends JPanel implements IConfig {
 		g.fillRect(x*NB_PIX_CASE, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
 		g.setColor(Color.BLACK);
 		g.drawRect(x*NB_PIX_CASE, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+		
+		// Ajout des numeros 
+		Element elem = carte.getElement(pos);
+		g.setColor(Color.WHITE);
+		if(elem instanceof Monstre) {
+			g.drawString(""+((Soldat)elem).getNum(),x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
+		}else if(elem instanceof Heros) {
+			char lettre = (char)('A' + ((Soldat)elem).getNum());
+			g.drawString(""+lettre, x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
+		}
 	}
 	
 	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
@@ -221,4 +263,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 		// Obligé de faire un +1 quand opacité pas au max ???
 		g.fillRect(x*NB_PIX_CASE + 1, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
 	}
+	
+	private void updateCombatLog() {
+		List<String> log = carte.getCombatLog();
+		logArea.setText("");
+		for(String s : log) {
+			logArea.append(s + "\n");
+		}
+	}
+	
+	
 }    

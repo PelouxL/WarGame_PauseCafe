@@ -12,6 +12,7 @@ public class Heros extends Soldat{
 		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), pos);
 		NOM = nom;
 		TYPE = type;
+
 	}
 	
 	public void setJoue() {

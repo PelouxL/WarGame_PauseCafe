@@ -8,6 +8,11 @@ public abstract class Soldat extends Element implements ISoldat{
 	private int action = 2; // nb d'action possible pour un soldat par tour
 	private int tour;
 	
+	
+	private static int compteurHeros = 0;
+	private static int compteurMonstre = 1;
+	private final int NUM;
+	
 	public Soldat(Carte carte, int pts, int portee, int puiss, int tir, Position pos) {
 		POINT_DE_VIE = pointsDeVie = pts;
 		PORTEE_VISUELLE = portee;
@@ -15,6 +20,20 @@ public abstract class Soldat extends Element implements ISoldat{
 		TIR = tir;
 		this.carte = carte;
 		this.pos = pos;
+		
+		if(this instanceof Heros) {
+			NUM = compteurHeros++;
+			System.out.println("Création d'un Héros - Numéro: " + NUM + " - Compteur Héros: " + compteurHeros);
+		}else if( this instanceof Monstre) {
+			NUM = compteurMonstre++;
+			 System.out.println("Création d'un Monstre - Numéro: " + NUM + " - Compteur Monstre: " + compteurMonstre);
+		}else {
+			NUM = -1;
+		}
+	}
+	
+	public int getNum() {
+		return this.NUM;
 	}
 	
 	// POSITION
@@ -97,7 +116,9 @@ public abstract class Soldat extends Element implements ISoldat{
 		return this.action;
 	}
 	// ACTION
-	
+	public void setAction(int action) {
+		this.action = action;
+	}
 	// COMBAT
 	public void combat(Soldat soldat) {
 		Carte carte = this.carte;
@@ -116,21 +137,60 @@ public abstract class Soldat extends Element implements ISoldat{
 	} 
 	
 	private void combatMelee(Soldat soldat) {
+		Carte carte = this.carte;
+		String msgLog = null;
+		
 		int dgts_atq = this.getPuissance();
 		int pv_def = soldat.getPointsActuels();
 		soldat.setPointsActuels(pv_def - dgts_atq);
+	
+		// ------------- GESTION DES LOGS -------------
+		msgLog = this.getClass().getSimpleName() + " ";
+		if(this instanceof Monstre) {
+			 msgLog += this.getNum()  + " : ";
+			 
+		}else if(this instanceof Heros) {
+			char lettre = (char)('A' + this.getNum());
+			
+			msgLog += lettre + " : ";
+		}
+		msgLog += " attaque en melee "+ soldat.getClass().getSimpleName() +
+				" pour " + dgts_atq + " dégats !\n";
+		// ------------- GESTION DES LOGS -------------
 		
+		
+		pv_def = soldat.getPointsActuels();
 		if (pv_def > 0) {
 			int dgts_def = soldat.getPuissance();
 			int pv_atq = this.getPointsActuels();
 			this.setPointsActuels(pv_atq - dgts_def);
+			
+			
+			
+			// ------------- GESTION DES LOGS -------------
+			if(soldat instanceof Monstre) {
+				msgLog += soldat.getClass().getSimpleName() + " " + ((Monstre)soldat).getNum()  + " : ";
+			}else if(soldat instanceof Heros) {
+				char lettre = (char)('A' + (soldat).getNum());
+				msgLog += soldat.getClass().getSimpleName() + " " + lettre + " : ";
+			}
+			msgLog +=  " riposte et inflige " + dgts_def + " dégâts!";
+		}else {
+			msgLog += " Il a tué(e) sa cible sans riposte !";
 		}
+		carte.addCombatMessage(msgLog);
+		// ------------- GESTION DES LOGS -------------
 	}
 	
 	private void combatDistance(Soldat soldat) {
+		Carte carte = this.carte;
+		
 		int dgts_atq = this.getTir();
 		int pv_def = soldat.getPointsActuels();
 		soldat.setPointsActuels(pv_def - dgts_atq);
+		carte.addCombatMessage(this.getClass().getSimpleName() + " attaque en melee "+ soldat.getClass().getSimpleName() +
+				" pour " + dgts_atq + " dégats !");
+		
 	}
 	// COMBAT
 
