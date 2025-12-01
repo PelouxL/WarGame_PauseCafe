@@ -15,6 +15,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private Carte carte;
 	private Position caseSurvolee;
 	private Position caseCliquee;
+	private Position caseAction;
+	
+	private boolean deplacePerso = false;
 	
 	private String infoTexte ="";
 	private String infoTexte2 ="";
@@ -90,16 +93,24 @@ public class PanneauJeu extends JPanel implements IConfig {
 				int x = e.getX()/NB_PIX_CASE;
 				int y = e.getY()/NB_PIX_CASE;
 				
-				caseCliquee = new Position(x, y);
-				Element elem = carte.getElement(caseCliquee);
-				// System.out.println(caseCliquee.getX()+","+caseCliquee.getY());
-				if (caseCliquee.estValide() && elem instanceof Soldat) {
-					infoTexte2 = elem.toString();
-				} else {
-					caseCliquee = null;
-					infoTexte2 ="";
-					
+				if(deplacePerso) {
+					caseAction = new Position(x, y);
+					carte.actionHeros(caseCliquee, caseAction);
+					deplacePerso = false;
+				}else {
+					caseCliquee = new Position(x, y);
+					Element elem = carte.getElement(caseCliquee);
+					// System.out.println(caseCliquee.getX()+","+caseCliquee.getY());
+					if (caseCliquee.estValide() && elem instanceof Soldat) {
+						infoTexte2 = elem.toString();
+					} else {
+						caseCliquee = null;
+						infoTexte2 ="";
+						
+					}
+					deplacePerso = true;
 				}
+				
 				panneauInfos.repaint();
 				panneauCarte.repaint();
 			}
