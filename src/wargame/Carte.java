@@ -11,13 +11,22 @@ import wargame.ISoldat.TypesM;
 public class Carte implements IConfig, ICarte {
 	private Element[][] carte;
 	private int[][] visibilite;
+	// private int[][] terrain;
+	
+	private Heros[] listeHeros;
+	private int nbHeros = 0;
+	private Monstre[] listeMonstres;
+	private int nbMonstre = 0;
+	
 	private List<String> combatLog = new ArrayList<>();
 	private int nbLog = 1;
 
 	public Carte() {
 		carte = new Element[LARGEUR_CARTE][HAUTEUR_CARTE];
 		visibilite = new int[LARGEUR_CARTE][HAUTEUR_CARTE];
-		Position p;
+		
+		listeHeros = new Heros[NB_HEROS];
+		listeMonstres = new Monstre[NB_MONSTRES];
 		
 		// Parcours des matrices
 		for(int i = 0; i < LARGEUR_CARTE; i++) {
@@ -27,7 +36,9 @@ public class Carte implements IConfig, ICarte {
 			}
 		}
 		
-		// Placement des obstacles Aleatoirement
+		Position p;
+		
+		// OBSTACLES
 		// Placement de la riviere
 		p = trouvePositionVide();
 		this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
@@ -39,38 +50,37 @@ public class Carte implements IConfig, ICarte {
 			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.getObstacleAlea(), p);
 			
 		}
+		// OBSTACLES
 		
-		// Placement des heros aleatoirement
+		// HEROS
 	    for(int i = 0; i < NB_HEROS; i++) {
 			p = trouvePositionVide();
-			this.carte[p.getX()][p.getY()] = new Heros(this, TypesH.getTypeHAlea(), "blabla", p);
+			Heros heros = new Heros(this, TypesH.getTypeHAlea(), "Goat"+i, p);
+			this.listeHeros[nbHeros++] = heros;
+			this.carte[p.getX()][p.getY()] = heros;
 			this.visibilite = ((Soldat) this.carte[p.getX()][p.getY()]).setCasesVisibles(this.visibilite);
 		}
+	    // HEROS
 	    
-		// Placement des monstres Aleatoirement
+	    // MONSTRES
 		for(int i = 0; i < NB_MONSTRES; i++) {
 			p = trouvePositionVide();
-			this.carte[p.getX()][p.getY()] = new Monstre(this, TypesM.getTypeMAlea(), "blabla", p);
+			Monstre monstre = new Monstre(this, TypesM.getTypeMAlea(), "Kostine"+i, p);
+			this.listeMonstres[nbMonstre++] = monstre;
+			this.carte[p.getX()][p.getY()] = monstre;
 		}
+		// MONSTRES
 				
 	}
 
+	
 	// LOG DES COMBATS
-	public void addCombatMessage(String msg) {
-		combatLog.add(nbLog + " - " + msg);
-		nbLog++;
-	}
-	
-	public List<String> getCombatLog(){
-		return combatLog;
-	}
-	
-	 public void clearCombatLog() {
-	        combatLog.clear();
-	 }
-	
+	public void addCombatMessage(String msg) { combatLog.add(nbLog + " - " + msg); nbLog++; }
+	public List<String> getCombatLog(){ return combatLog; }
+	public void clearCombatLog() { combatLog.clear(); }
+	// LOG DES COMBATS
 	 
-	 
+	
 	// RIVIERE
 	private void riviere(Position pos) {
 		int r = (int)(Math.random()*3);
@@ -104,8 +114,7 @@ public class Carte implements IConfig, ICarte {
 	
 	
 	// ELEMENT
-	public Element getElement(Position pos) {
-		
+	public Element getElement(Position pos) {	
 		int x = pos.getX();
 		int y = pos.getY();
 		
@@ -125,8 +134,7 @@ public class Carte implements IConfig, ICarte {
 			return false;
 		}
 		return true;
-	}
-		
+	}	
 	// ELEMENT
 	
 	
@@ -193,25 +201,8 @@ public class Carte implements IConfig, ICarte {
 	// POSITION VIDE
 	
 	
-	// TROUVE HEROS
-	public Heros trouveHeros() {
-		int nbHeros = 0;
-		Heros[] listeHeros = new Heros[NB_HEROS];
-		int x, y;
-		
-		for(x = 0 ; x < LARGEUR_CARTE ; x++) {
-			for(y = 0 ; y < HAUTEUR_CARTE ; y++) {
-				Element e = this.carte[x][y];
-				// on verifie si e est une instanciation de Heros
-				if (e instanceof Heros) {
-
-					listeHeros[nbHeros] = (Heros) e;
-					nbHeros++;
-				}
-			}
-		}
-		return listeHeros[(int)(Math.random()*nbHeros - 1)];
-	}
+	// HEROS
+	public Heros trouveHeros() { return this.listeHeros[(int)(Math.random()*nbHeros-1)]; }
 
 	public Heros trouveHeros(Position pos) {
 		int nbHeros = 0;
@@ -236,7 +227,7 @@ public class Carte implements IConfig, ICarte {
 		}
 		return listeHeros[(int) (Math.random()*nbHeros - 1)];
 	}
-	// TROUVE HEROS
+	// HEROS
 	
 	
 	// ACTION SOLDAT (actionHeros a revoir surement)
@@ -251,14 +242,14 @@ public class Carte implements IConfig, ICarte {
 		
 		// Deplacement si case vide
 		if (caseCible == null) {
-			if(this.deplaceSoldat(pos2, heros)) heros.setAction((heros.getAction() - 1));
+			this.deplaceSoldat(pos2, heros);
 		// Combat
 		} else if (caseCible instanceof Monstre && pos.distance(pos2) <= heros.getTir()) { // on regarde que tir
-			System.out.println("on commence le combat ! ");
 			Monstre monstre = (Monstre)caseCible;
 			heros.combat(monstre);
-			heros.setAction((heros.getAction() - 1));
 		}
+		
+		
 		return true;
 	}
 	
@@ -270,6 +261,7 @@ public class Carte implements IConfig, ICarte {
 				this.carte[soldat.getPos().getX()][soldat.getPos().getY()] = null;
 				this.carte[pos.getX()][pos.getY()] = soldat;
 				soldat.seDeplace(pos);
+				soldat.ajouterAction(-1);
 				return true;
 			}
 			
@@ -293,8 +285,14 @@ public class Carte implements IConfig, ICarte {
 		return new Position(px, py);
 	}
 	
+	
+	// TOUR DES MONSTRES
 	public void jouerSoldats(PanneauJeu pj) {}
 	
+	// TOUR DES MONSTRES
+	
+	
+	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee) {
 		for(int i = 0; i < LARGEUR_CARTE; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
@@ -334,47 +332,47 @@ public class Carte implements IConfig, ICarte {
 			}
 			
 			if (caseSurvolee != null 
-					&& caseCliquee == null
-					&& caseSurvolee.estValide() 
-					&& getElement(caseSurvolee) instanceof Soldat) {
+				&& caseCliquee == null
+				&& caseSurvolee.estValide() 
+				&& getElement(caseSurvolee) instanceof Soldat) {
 					
-					// System.out.println("Coor x : "+x+", y : "+y);
-					Soldat soldat = (Soldat)getElement(caseSurvolee);
+				// System.out.println("Coor x : "+x+", y : "+y);
+				Soldat soldat = (Soldat)getElement(caseSurvolee);
 					
-					dessineZoneDeplacement(g, soldat);
-				}
-				
-				// Ajout de la case cliquée
-				if (caseCliquee != null
-					&& caseCliquee.estValide()
-					&& getElement(caseCliquee) instanceof Heros) {
-					
-					Soldat soldatClic = (Soldat) getElement(caseCliquee);
-					
-					dessineZoneDeplacement(g, soldatClic);
-					dessineCaseCliquee(g, caseCliquee);
-				}
+				dessineZoneDeplacement(g, soldat);
 			}
-		
+				
+			// Ajout de la case cliquée
+			if (caseCliquee != null
+				&& caseCliquee.estValide()
+				&& getElement(caseCliquee) instanceof Heros) {
+					
+				Soldat soldatClic = (Soldat) getElement(caseCliquee);
+					
+				dessineZoneDeplacement(g, soldatClic);
+				dessineCaseCliquee(g, caseCliquee);
+			}
 		}
+		
+	}
 			
 	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
-				EnsemblePosition ePos = soldat.zoneDeplacement();
+		EnsemblePosition ePos = soldat.zoneDeplacement();
 				
-				for (int i = 0; i < ePos.getNbPos(); i++) {
-					this.dessineCase(g, Color.PINK, ePos.getPosition(i));
-				}
-			}
+		for (int i = 0; i < ePos.getNbPos(); i++) {
+			this.dessineCase(g, Color.PINK, ePos.getPosition(i));
+		}
+	}
 			
 			
-			public void dessineCaseCliquee(Graphics g, Position pos) {
-				int x = pos.getX(),
-					y = pos.getY();
-				Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
-				g.setColor(couleur);
-				// Obligé de faire un +1 quand opacité pas au max ???
-				g.fillRect(x*NB_PIX_CASE + 1, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
-			}
+	public void dessineCaseCliquee(Graphics g, Position pos) {
+		int x = pos.getX(),
+			y = pos.getY();
+		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
+		g.setColor(couleur);
+		// Obligé de faire un +1 quand opacité pas au max ???
+		g.fillRect(x*NB_PIX_CASE + 1, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+	}
 	
 	public void dessineCase(Graphics g, Color couleur, Position pos) {
 		int x = pos.getX(),
@@ -395,6 +393,7 @@ public class Carte implements IConfig, ICarte {
 			g.drawString(""+lettre, x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
 		}
 	}
+	// DESSIN
 	
 	
 }

@@ -93,33 +93,38 @@ public abstract class Soldat extends Element implements ISoldat{
 	
 	
 	// COMBAT
-	public void combat(Soldat soldat) {
+	public boolean combat(Soldat soldat) {
 		Carte carte = this.carte;
-		// boolean combat = false;
+		boolean combat = false;
 		
 		// Combat en melee : l'adversaire rend les coups, melee = case collee
 		// Combat a distance : l'adversaire ne rend pas les coups
 		if (this.pos.adjacent(soldat.pos)) {
-			this.combatMelee(soldat);
+			combat = this.combatMelee(soldat);
 		} else {
-			this.combatDistance(soldat);
+			combat = this.combatDistance(soldat);
 		}
 		
-		/* if (!combat) {
-			System.out.println("LE HEROS N'A PAS COMBATT");
-		} */
+		if (!combat) {
+			System.out.println("LE HEROS N'A PAS COMBATTU");
+			return false;
+		}
+		
+		this.ajouterAction(-1);
 		
 		// On retire les soldats de la carte si ils sont morts
 		carte.mort(this);
 		carte.mort(soldat);
+		
+		return true;
 	} 
 	
 	private boolean combatMelee(Soldat soldat) {
 		Carte carte = this.carte;
 		String msgLog = "";
 		
-		if (this.getPuissance() == 0) {
-			System.out.println("CE heros ne peu pas combattre en melee");
+		if (this.getPuissance() <= 0) {
+			System.out.println("Cette unite ne peu pas combattre en melee");
 			return false;
 		}
 		
@@ -139,8 +144,8 @@ public abstract class Soldat extends Element implements ISoldat{
 		Carte carte = this.carte;
 		String msgLog = "";
 		
-		if (this.getTir() == 0) {
-			System.out.println("Ce heros ne peut pas combattre a distance");
+		if (this.getTir() <= 0) {
+			System.out.println("Cette unite ne peut pas combattre a distance");
 			return false;
 		}
 		

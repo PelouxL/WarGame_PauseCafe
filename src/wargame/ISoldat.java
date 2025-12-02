@@ -47,7 +47,7 @@ public interface ISoldat {
 	
 	int getPoints(); int getTour(); int getPortee(); int getDeplacement(); // vraiment utile? elles sont definies dans les enum
 	void joueTour(int tour);
-	void combat(Soldat soldat);
+	boolean combat(Soldat soldat);
 	EnsemblePosition zoneDeplacement();
 	void seDeplace(Position newPos);
 
