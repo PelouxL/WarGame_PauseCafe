@@ -4,9 +4,6 @@ package wargame;
 public class Heros extends Soldat{
 	private final TypesH TYPE;
 	private final String NOM;
-	private Carte carte;
-	private Position pos;
-	private boolean joue;
 	
 	public Heros(Carte carte, TypesH type, String nom, Position pos) {
 		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), pos);
@@ -15,15 +12,19 @@ public class Heros extends Soldat{
 
 	}
 	
-	public void setJoue() {
-		if (this.getTour() == 1) {
-			this.joue = true;
-		} else {
-			this.joue = false;
-		}
+	public TypesH getType() {
+		return this.TYPE;
 	}
-
-	public boolean getJoue() {
-		return this.joue;
+	
+	public String getNom() {
+		return this.NOM;
+	}
+	
+	public String toStrin() { // si je l'appel toString ca remplace lors de l'affichage dans le panneau info
+		
+		String classe = this.getClass().getSimpleName();
+		char num = (char)('A' + this.getNum());
+		
+		return "("+classe+" "+num+" "+this.TYPE+") "+this.NOM;
 	}
 }
