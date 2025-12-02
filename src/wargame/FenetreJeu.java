@@ -17,7 +17,7 @@ public class FenetreJeu {
 		JFrame frame = new JFrame("Wargame le 2: La pause café, l'affrontement final");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
-		frame.setPreferredSize(new Dimension(1080,640));
+		frame.setPreferredSize(new Dimension(IConfig.LARGEUR_FENETRE, IConfig.HAUTEUR_FENETRE));
 		frame.setLocation(IConfig.POSITION_X, IConfig.POSITION_Y );
 		
 		// Ajout du JPanel

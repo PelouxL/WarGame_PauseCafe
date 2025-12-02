@@ -43,7 +43,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 			}
 		};
 		
-		panneauCarte.setPreferredSize(new Dimension(LARGEUR_CARTE * NB_PIX_CASE, HAUTEUR_CARTE * NB_PIX_CASE));
+		panneauCarte.setPreferredSize(new Dimension(LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE));
 		
 		// ------ creation du panneau log -------- //
 		
@@ -55,7 +55,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		
 		panneauLog = new JPanel(new BorderLayout());
 		panneauLog.add(new JScrollPane(logArea), BorderLayout.CENTER);
-		panneauLog.setPreferredSize(new Dimension(300, HAUTEUR_CARTE * NB_PIX_CASE));
+		panneauLog.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));
 		panneauLog.setBackground(Color.decode("#8B4513"));
 		
 	
@@ -74,7 +74,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    	
 	    };
 			 
-	    panneauInfos.setPreferredSize(new Dimension(LARGEUR_CARTE, NB_PIX_CASE*5));
+	    panneauInfos.setPreferredSize(new Dimension(LARGEUR_PANNEAU_BAS, HAUTEUR_PANNEAU_BAS));
 		panneauInfos.setBackground(Color.decode("#8B4513"));
 		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.decode("#663300"), 2));
 		
