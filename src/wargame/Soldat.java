@@ -23,10 +23,8 @@ public abstract class Soldat extends Element implements ISoldat{
 		
 		if(this instanceof Heros) {
 			NUM = compteurHeros++;
-			System.out.println("Création d'un Héros - Numéro: " + NUM + " - Compteur Héros: " + compteurHeros);
 		}else if( this instanceof Monstre) {
 			NUM = compteurMonstre++;
-			 System.out.println("Création d'un Monstre - Numéro: " + NUM + " - Compteur Monstre: " + compteurMonstre);
 		}else {
 			NUM = -1;
 		}
