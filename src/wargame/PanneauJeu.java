@@ -19,12 +19,17 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private Position caseSurvolee;
 	private Position caseCliquee;
 	private Position caseAction;
+	private Position dragPersoInit = null;
 	
+	// action et deplacement
 	private boolean deplacePerso = false;
+	private boolean dragPerso = false;
 	
+	// information du panneauInfo
 	private String infoTexte ="";
 	private String infoTexte2 ="";
 	
+	// different sections
 	private JPanel panneauCarte;
 	private JPanel panneauInfos;
 	private JPanel panneauLog;
@@ -106,6 +111,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 				panneauInfos.repaint();
 				panneauCarte.repaint();
 			}
+			// pensez a dessiner le drag //
+			public void mouseDrag(MouseEvent e) {
+				if(dragPerso) {
+					dragPersoInit.setX(e.getX()); 
+					dragPersoInit.setY(e.getY());
+					repaint();
+				}
+			}
 		});
 		
 		// Ecouteur clic souris
@@ -115,7 +128,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 				int y = e.getY()/NB_PIX_CASE;
 				
 				Element elem = carte.getElement(new Position(x,y));
-				//petit bémole, quand on fait un combat , on affiche le deplacement et info sur le monstre cliquer donc bizzarre
 				// si on est sur le point de deplacé un Heros
 				if(deplacePerso) {
 					caseAction = new Position(x, y);
@@ -135,6 +147,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 					if (caseCliquee.estValide() && elem instanceof Soldat) {
 						deplacePerso = true;
 						infoTexte2 = elem.toString();
+						dragPerso = true;
+						dragPersoInit = caseCliquee;
 					} else {
 						caseCliquee = null;
 						deplacePerso = false;
@@ -148,6 +162,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 			}
 			
 			public void mouseReleased(MouseEvent e) {
+				dragPerso = false;
 			}
 		});
 		
@@ -160,6 +175,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		return this.caseSurvolee;
 	}	
 	
+	// tiens le journal a jour
 	private void updateCombatLog() {
 		List<String> log = carte.getCombatLog();
 		logArea.setText("");
