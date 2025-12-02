@@ -1,5 +1,6 @@
 package wargame;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -203,8 +204,7 @@ public class Carte implements IConfig, ICarte {
 				Element e = this.carte[x][y];
 				// on verifie si e est une instanciation de Heros
 				if (e instanceof Heros) {
-					// /!\ ATTENTION
-					// GROS GROS DOUTES sur le faite de cast e avec Heros
+
 					listeHeros[nbHeros] = (Heros) e;
 					nbHeros++;
 				}
@@ -229,8 +229,6 @@ public class Carte implements IConfig, ICarte {
 				if (e.pos.estValide()) {
 					// on verifie si e est une instanciation de Heros
 					if (e instanceof Heros) {
-						// /!\ ATTENTION
-						// GROS GROS DOUTES sur le faite de cast e avec Heros
 						listeHeros[nbHeros++] = (Heros) e;
 					}
 				}
@@ -296,8 +294,107 @@ public class Carte implements IConfig, ICarte {
 	}
 	
 	public void jouerSoldats(PanneauJeu pj) {}
-	public void toutDessiner(Graphics g) {}
 	
+	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee) {
+		for(int i = 0; i < LARGEUR_CARTE; i++) {
+			for(int j = 0; j < HAUTEUR_CARTE; j++) {
+				
+				Position pos = new Position(i, j);
+				Element e = getElement(pos);
+				Color couleur = COULEUR_VIDE;
+				
+				if(e instanceof Heros) {
+					couleur = COULEUR_HEROS;
+				}else if(e instanceof Monstre) {
+					couleur = COULEUR_MONSTRES;
+					
+				}else if(e instanceof Obstacle) {
+					switch(((Obstacle)e).getType()) {
+					case ROCHER:
+						couleur = COULEUR_ROCHER;
+						break;
+					case EAU:
+						couleur = COULEUR_EAU;
+						break;
+					case FORET:
+						couleur = COULEUR_FORET;
+						break;
+					}
+				}
+				
+				// /!\ IMPORTANT POUR LES TESTS /!\
+				// Décommenter le && en-dessous si on veut tester la carte en voyant tout
+				if (getVisibilite(pos) == 0
+					&& getVisibilite(pos) == 1
+					) {
+					couleur = COULEUR_INCONNU;
+				}
+				
+				dessineCase(g, couleur, pos);
+			}
+			
+			if (caseSurvolee != null 
+					&& caseCliquee == null
+					&& caseSurvolee.estValide() 
+					&& getElement(caseSurvolee) instanceof Soldat) {
+					
+					// System.out.println("Coor x : "+x+", y : "+y);
+					Soldat soldat = (Soldat)getElement(caseSurvolee);
+					
+					dessineZoneDeplacement(g, soldat);
+				}
+				
+				// Ajout de la case cliquée
+				if (caseCliquee != null
+					&& caseCliquee.estValide()
+					&& getElement(caseCliquee) instanceof Heros) {
+					
+					Soldat soldatClic = (Soldat) getElement(caseCliquee);
+					
+					dessineZoneDeplacement(g, soldatClic);
+					dessineCaseCliquee(g, caseCliquee);
+				}
+			}
+		
+		}
+			
+	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
+				EnsemblePosition ePos = soldat.zoneDeplacement();
+				
+				for (int i = 0; i < ePos.getNbPos(); i++) {
+					this.dessineCase(g, Color.PINK, ePos.getPosition(i));
+				}
+			}
+			
+			
+			public void dessineCaseCliquee(Graphics g, Position pos) {
+				int x = pos.getX(),
+					y = pos.getY();
+				Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
+				g.setColor(couleur);
+				// Obligé de faire un +1 quand opacité pas au max ???
+				g.fillRect(x*NB_PIX_CASE + 1, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+			}
+	
+	public void dessineCase(Graphics g, Color couleur, Position pos) {
+		int x = pos.getX(),
+			y = pos.getY();
+		
+		g.setColor(couleur);
+		g.fillRect(x*NB_PIX_CASE, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+		g.setColor(Color.BLACK);
+		g.drawRect(x*NB_PIX_CASE, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+		
+		// Ajout des numeros 
+		Element elem = getElement(pos);
+		g.setColor(Color.WHITE);
+		if(elem instanceof Monstre) {
+			g.drawString(""+((Soldat)elem).getNum(),x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
+		}else if(elem instanceof Heros) {
+			char lettre = (char)('A' + ((Soldat)elem).getNum());
+			g.drawString(""+lettre, x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
+		}
+	}
 	
 	
 }
