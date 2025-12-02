@@ -19,6 +19,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private Position caseSurvolee;
 	private Position caseCliquee;
 	private Position caseAction;
+	private Position dragPersoFin = null;
 	private Position dragPersoInit = null;
 	
 	// action et deplacement
@@ -45,6 +46,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				c.toutDessiner(g, caseSurvolee, caseCliquee);
+				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
+					g.setColor(new Color(100,0,0,40));
+					g.fillRect(dragPersoFin.getX()*NB_PIX_CASE, dragPersoFin.getY()*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+				}
 				
 			}
 		};
@@ -112,10 +117,22 @@ public class PanneauJeu extends JPanel implements IConfig {
 				panneauCarte.repaint();
 			}
 			// pensez a dessiner le drag //
-			public void mouseDrag(MouseEvent e) {
+			public void mouseDragged(MouseEvent e) {
 				if(dragPerso) {
-					dragPersoInit.setX(e.getX()); 
-					dragPersoInit.setY(e.getY());
+					int x = e.getX()/NB_PIX_CASE;
+			        int y = e.getY()/NB_PIX_CASE;
+					
+			        Position essaie = new Position(x, y);
+			        
+			        Soldat s =(Soldat)carte.getElement(dragPersoInit);
+			        
+			        if(!s.zoneDeplacement().contient(essaie) && dragPersoInit.equals(dragPersoFin)) {
+			        	return;
+			        	// gerer exeption
+			        }
+					dragPersoFin.setX(x);
+					dragPersoFin.setY(y);
+					deplacePerso = false;
 					repaint();
 				}
 			}
@@ -142,13 +159,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 				// si c'est le premier clique
 				}else {
 					caseCliquee = new Position(x, y);		
-					// System.out.println(caseCliquee.getX()+","+caseCliquee.getY());
 					// on initalise le deplacement
-					if (caseCliquee.estValide() && elem instanceof Soldat) {
+					if (caseCliquee.estValide() && elem instanceof Soldat && dragPerso == false) {
 						deplacePerso = true;
 						infoTexte2 = elem.toString();
 						dragPerso = true;
-						dragPersoInit = caseCliquee;
+						dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
+						dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
+
 					} else {
 						caseCliquee = null;
 						deplacePerso = false;
@@ -162,7 +180,17 @@ public class PanneauJeu extends JPanel implements IConfig {
 			}
 			
 			public void mouseReleased(MouseEvent e) {
+				if(dragPerso && dragPersoFin != null) {
+					if(!(dragPersoFin.estValide())){
+						dragPerso = false;
+						return;
+						// surement gerer l'exeptionnelle 
+					}
+					c.deplaceSoldat(dragPersoFin, ((Soldat)c.getElement(dragPersoInit)));	
+					
+				}		
 				dragPerso = false;
+				
 			}
 		});
 		
