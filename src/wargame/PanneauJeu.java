@@ -1,10 +1,11 @@
 package wargame;
 
-import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.BorderFactory;
 
 import java.awt.Graphics;
 import java.awt.Dimension;
@@ -37,12 +38,18 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private JPanel panneauCarte;
 	private JPanel panneauInfos;
 	private JPanel panneauLog;
+	private JPanel panneauDroit;
+	private JPanel panneauHaut;
 	private JTextArea logArea;
+
+	// bouton
+	private JButton boutonFin;
 	
 	public PanneauJeu(Carte c) {
 		this.carte = c;
 		setLayout( new BorderLayout());
 		
+
 		// ------ creation de la Carte ---------- //
 		
 		panneauCarte = new JPanel() {
@@ -58,21 +65,24 @@ public class PanneauJeu extends JPanel implements IConfig {
 			}
 		};
 		
-		panneauCarte.setPreferredSize(new Dimension(LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE));
-		
+		add(panneauCarte, BorderLayout.CENTER);
 		// ------ creation du panneau log -------- //
 		
 		logArea = new JTextArea();
 		logArea.setEditable(false);
+		
 		logArea.setBackground(Color.decode("#8B4513"));
-		logArea.setForeground(Color.WHITE);
-		logArea.setBorder(BorderFactory.createLineBorder(Color.decode("#663300"), 2));
 		
 		panneauLog = new JPanel(new BorderLayout());
-		panneauLog.add(new JScrollPane(logArea), BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane(logArea);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		panneauLog.add(scrollPane, BorderLayout.CENTER);
+		panneauLog.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		
 		panneauLog.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));
 		panneauLog.setBackground(Color.decode("#8B4513"));
-		
+
+		add(panneauLog, BorderLayout.WEST);
 	
 		// ------ creation du panneau d'info ----- //
 	    panneauInfos = new JPanel() {
@@ -91,13 +101,42 @@ public class PanneauJeu extends JPanel implements IConfig {
 			 
 	    panneauInfos.setPreferredSize(new Dimension(LARGEUR_PANNEAU_BAS, HAUTEUR_PANNEAU_BAS));
 		panneauInfos.setBackground(Color.decode("#8B4513"));
-		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.decode("#663300"), 2));
+		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		add(panneauInfos, BorderLayout.SOUTH);
+	
+		// ------- Creation du panneau droit --------- //		
+		panneauDroit = new JPanel();
+		
+		panneauDroit.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));	
+		panneauDroit.setBackground(Color.decode("#8B4513"));
+		panneauDroit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		add(panneauDroit, BorderLayout.EAST);
+		
+		// ------- Creation de panneau haut --------//	
+		JPanel panneauHaut = new JPanel();
+			
+        panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_JMENU));
+		panneauHaut.setBackground(Color.decode("#8B4513"));
+		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+
+		
+		boutonFin = new JButton("Fin de tour");
+		panneauHaut.add(boutonFin);
+		add(panneauHaut, BorderLayout.NORTH);
 		
 		// ------- Mises en place des layout ------//
-		add(panneauCarte, BorderLayout.CENTER);
-		add(panneauInfos, BorderLayout.SOUTH);
 		add(panneauLog, BorderLayout.WEST);
+		add(panneauInfos, BorderLayout.SOUTH);
+		add(panneauDroit, BorderLayout.EAST);
+		add(panneauHaut, BorderLayout.NORTH);
+		add(panneauCarte, BorderLayout.CENTER);
 		
+		// ------- Taile du panneau principal ---- //
+		
+		setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
+        setMinimumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
+        setMaximumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
+        
 		// ------- Ajout des ecouteur ---------- //
 		panneauCarte.addMouseMotionListener(new MouseMotionAdapter() {
 			
@@ -225,7 +264,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 		});
 		
-		setPreferredSize(new Dimension(LARGEUR_CARTE*NB_PIX_CASE, (HAUTEUR_CARTE)*NB_PIX_CASE ));	
 	}
 	
 	
