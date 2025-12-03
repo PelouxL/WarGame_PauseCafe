@@ -165,11 +165,11 @@ public abstract class Soldat extends Element implements ISoldat{
 		if (riposte) msg_riposte = " riposte et";
 		
 		if (this instanceof Monstre) {
-			atq += ((Monstre)this).toStrin();
-			def += ((Heros)soldat).toStrin();
+			atq += ((Monstre)this).getNom();
+			def += ((Heros)soldat).getNom();
 		} else {
-			atq += ((Heros)this).toStrin();
-			def += ((Monstre)soldat).toStrin();
+			atq += ((Heros)this).getNom();
+			def += ((Monstre)soldat).getNom();
 		}
 		
 		log += atq+msg_riposte+" inflige "+this.getPuissance()+" degats a "+def+"\n";
