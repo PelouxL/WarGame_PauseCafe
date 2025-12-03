@@ -4,6 +4,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 import java.awt.Graphics;
 import java.awt.Dimension;
@@ -19,6 +20,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private Position caseSurvolee;
 	private Position caseCliquee;
 	private Position caseAction;
+	
+	// position pour le drag&drop
 	private Position dragPersoFin = null;
 	private Position dragPersoInit = null;
 	
@@ -104,6 +107,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				int y = e.getY()/NB_PIX_CASE;
 				caseSurvolee = new Position(x, y);
 				
+				// affichage des infos des soldats
 				if (caseSurvolee.estValide()) {
 					Element elem = carte.getElement(caseSurvolee);
 					if(elem instanceof Soldat) {
@@ -117,7 +121,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 				panneauInfos.repaint();
 				panneauCarte.repaint();
 			}
-			// pensez a dessiner le drag //
+			
+			// creation de l'evenement du dragg 
 			public void mouseDragged(MouseEvent e) {
 				if(dragPerso) {
 					int x = e.getX()/NB_PIX_CASE;
@@ -127,10 +132,12 @@ public class PanneauJeu extends JPanel implements IConfig {
 			        
 			        Soldat s =(Soldat)carte.getElement(dragPersoInit);
 			        
-			        if(!s.zoneDeplacement().contient(essaie) && dragPersoInit.equals(dragPersoFin)) {
+			        // permet de ne pas sortir des deplacements
+			        if(!s.zoneDeplacement().contient(essaie) && !(essaie.equals(dragPersoInit))) {
 			        	return;
 			        	// gerer exeption
 			        }
+			        // mise a niveau des positions
 					dragPersoFin.setX(x);
 					dragPersoFin.setY(y);
 					deplacePerso = false;
@@ -146,34 +153,53 @@ public class PanneauJeu extends JPanel implements IConfig {
 				int y = e.getY()/NB_PIX_CASE;
 				
 				Element elem = carte.getElement(new Position(x,y));
-				// si on est sur le point de deplacé un Heros
-				if(deplacePerso) {
-					caseAction = new Position(x, y);
-					carte.actionHeros(caseCliquee, caseAction);
-					if(elem instanceof Monstre) {
-						updateCombatLog();
+				
+				// si on fait un clique gauche
+				if(SwingUtilities.isLeftMouseButton(e)) {
+					// si on est sur le point de deplacé un Heros
+					if(deplacePerso) {
+						caseAction = new Position(x, y);
+						carte.actionHeros(caseCliquee, caseAction);
+						// si on a lancé un combat
+						if(elem instanceof Monstre) {
+							updateCombatLog();
+						}
+						
+						// on réenitialise après deplacement
+						infoTexte2 ="";
+						deplacePerso = false;
+						caseCliquee = null;
+						caseAction = null;
+					// si c'est le premier clique, initialisation deplacement
+					}else {
+						caseCliquee = new Position(x, y);		
+						// on initalise le deplacement
+						if (caseCliquee.estValide() && elem instanceof Soldat && dragPerso == false) {
+							deplacePerso = true;
+							infoTexte2 = elem.toString();
+							
+							// initie le dragg
+							dragPerso = true;
+							dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
+							dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
+	
+						} else {
+							// renitialise une fois clique en dehors 
+							caseCliquee = null;
+							deplacePerso = false;
+							infoTexte2 ="";
+							
+						}
 					}
-					infoTexte2 ="";
-					deplacePerso = false;
+				}else {
+					// annulement deplacement
 					caseCliquee = null;
 					caseAction = null;
-				// si c'est le premier clique
-				}else {
-					caseCliquee = new Position(x, y);		
-					// on initalise le deplacement
-					if (caseCliquee.estValide() && elem instanceof Soldat && dragPerso == false) {
-						deplacePerso = true;
-						infoTexte2 = elem.toString();
-						dragPerso = true;
-						dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
-						dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
-
-					} else {
-						caseCliquee = null;
-						deplacePerso = false;
-						infoTexte2 ="";
-						
-					}
+					deplacePerso = false;
+					// annulement drag
+					dragPerso = false;
+					dragPersoInit = null;
+					dragPersoFin = null;
 				}
 				
 				panneauInfos.repaint();
@@ -181,18 +207,22 @@ public class PanneauJeu extends JPanel implements IConfig {
 			}
 			
 			public void mouseReleased(MouseEvent e) {
+				// si on est entrain de dragg une unité
 				if(dragPerso && dragPersoFin != null) {
 					if(!(dragPersoFin.estValide())){
 						dragPerso = false;
 						return;
 						// surement gerer l'exeptionnelle 
 					}
+					// on pose
 					c.deplaceSoldat(dragPersoFin, ((Soldat)c.getElement(dragPersoInit)));	
-					
+					infoTexte2="";
+					infoTexte="";
 				}		
 				dragPerso = false;
-				
+				repaint();
 			}
+			
 		});
 		
 		setPreferredSize(new Dimension(LARGEUR_CARTE*NB_PIX_CASE, (HAUTEUR_CARTE)*NB_PIX_CASE ));	
