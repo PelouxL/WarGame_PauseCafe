@@ -55,7 +55,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauCarte = new JPanel() {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				c.toutDessiner(g, caseSurvolee, caseCliquee);
+				carte.toutDessiner(g, caseSurvolee, caseCliquee);
 				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
 					g.setColor(new Color(100,0,0,40));
 					g.fillRect(dragPersoFin.getX()*NB_PIX_CASE, dragPersoFin.getY()*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
@@ -64,7 +64,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				
 			}
 		};
-		
+		panneauCarte.setPreferredSize(new Dimension(LARGEUR_CARTE, HAUTEUR_CARTE));
 		add(panneauCarte, BorderLayout.CENTER);
 		// ------ creation du panneau log -------- //
 		
@@ -115,7 +115,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		// ------- Creation de panneau haut --------//	
 		JPanel panneauHaut = new JPanel();
 			
-        panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_JMENU));
+        panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
 		panneauHaut.setBackground(Color.decode("#8B4513"));
 		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
@@ -254,7 +254,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 						// surement gerer l'exeptionnelle 
 					}
 					// on pose
-					c.deplaceSoldat(dragPersoFin, ((Soldat)c.getElement(dragPersoInit)));	
+					carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getElement(dragPersoInit)));	
 					infoTexte2="";
 					infoTexte="";
 				}		
@@ -271,6 +271,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 	public Position getCaseSurvolee() {
 		return this.caseSurvolee;
 	}	
+
+	public void setCarte(Carte c) {
+	    this.carte = c;
+	}
 	
 	// tiens le journal a jour
 	private void updateCombatLog() {

@@ -1,7 +1,8 @@
 package wargame;
 
+import java.io.Serializable;
 
-public class Position implements IConfig {
+public class Position implements IConfig, Serializable {
 	private int x, y;
 	
 	// Constructeur

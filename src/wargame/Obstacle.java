@@ -1,7 +1,8 @@
 package wargame;
 import java.awt.Color;
+import java.io.Serializable;
 
-public class Obstacle extends Element implements IConfig {
+public class Obstacle extends Element implements IConfig, Serializable {
 	
 	public enum TypeObstacle {
 		ROCHER (COULEUR_ROCHER), FORET (COULEUR_FORET), EAU (COULEUR_EAU);
