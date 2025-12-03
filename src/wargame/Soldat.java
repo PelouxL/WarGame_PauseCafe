@@ -1,6 +1,8 @@
 package wargame;
 
-public abstract class Soldat extends Element implements ISoldat{
+import java.io.Serializable;
+
+public abstract class Soldat extends Element implements ISoldat, Serializable{
 	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 8;
 	private int pointsDeVie;
 	private Position pos;

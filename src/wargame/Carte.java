@@ -2,13 +2,14 @@ package wargame;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import wargame.ISoldat.TypesH;
 import wargame.ISoldat.TypesM;
 
-public class Carte implements IConfig, ICarte {
+public class Carte implements IConfig, ICarte, Serializable {
 	private Element[][] carte;
 	private int[][] visibilite;
 	// private int[][] terrain;
