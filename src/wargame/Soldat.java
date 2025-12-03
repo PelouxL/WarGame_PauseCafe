@@ -79,11 +79,13 @@ public abstract class Soldat extends Element implements ISoldat{
 		int x = this.pos.getX();
 		int y = this.pos.getY();
 		int portee = this.getPortee();
-		for (i = -portee ; i <= portee ; i++) {
-			for (j = -portee ; j <= portee ; j++) {
-				if (i + x >= 0 && i + x < Carte.LARGEUR_CARTE
+		for (i = -portee*2 ; i <= portee*2 ; i++) {
+			for (j = -portee*2 ; j <= portee*2 ; j++) {
+				if (i + x >= 0 && i + x < Carte.LARGEUR_CARTE*2
 				  && j + y >= 0 && j + y < Carte.HAUTEUR_CARTE) {
-					visibilite[i+x][j+y] = 1;
+					if (this.pos.distance(new Position(i+x, j+y)) <= portee) {
+						visibilite[i+x][j+y] = 1;
+					}
 				}
 			}
 		}
@@ -99,7 +101,7 @@ public abstract class Soldat extends Element implements ISoldat{
 		
 		// Combat en melee : l'adversaire rend les coups, melee = case collee
 		// Combat a distance : l'adversaire ne rend pas les coups
-		if (this.pos.adjacent(soldat.pos)) {
+		if (this.pos.estVoisine(soldat.pos)) {
 			combat = this.combatMelee(soldat);
 		} else {
 			combat = this.combatDistance(soldat);
@@ -220,13 +222,17 @@ public abstract class Soldat extends Element implements ISoldat{
 		int y = pos.getY();
 		
 		// Droite
-		this.zoneDeplacementAux(posInit, new Position(x+1, y), deplacement-1, ePos);
-		// Bas
-		this.zoneDeplacementAux(posInit, new Position(x, y+1), deplacement-1, ePos);
+		this.zoneDeplacementAux(posInit, new Position(x+2, y), deplacement-1, ePos);
 		// Gauche
-		this.zoneDeplacementAux(posInit, new Position(x-1, y), deplacement-1, ePos);
-		// Haut
-		this.zoneDeplacementAux(posInit, new Position(x, y-1), deplacement-1, ePos);
+		this.zoneDeplacementAux(posInit, new Position(x-2, y), deplacement-1, ePos);
+		// Bas Gauche
+		this.zoneDeplacementAux(posInit, new Position(x-1, y+1), deplacement-1, ePos);
+		// Bas Droite
+		this.zoneDeplacementAux(posInit, new Position(x+1, y+1), deplacement-1, ePos);
+		// Haut Gauche
+		this.zoneDeplacementAux(posInit, new Position(x-1, y-1), deplacement-1, ePos);
+		// Haut Droite
+		this.zoneDeplacementAux(posInit, new Position(x+1, y-1), deplacement-1, ePos);
 	}
 	
 	public void seDeplace(Position newPos) {
