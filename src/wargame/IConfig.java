@@ -56,4 +56,7 @@ public interface IConfig {
 	Color COULEUR_PONT = Color.decode("#8B4513"); // marron
 	Color COULEUR_HERBE = Color.green; // vert clair
 	
+	// Chemin des sauvagardes
+	//String PATHSAVING = ./
+	
 }

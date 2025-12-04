@@ -14,6 +14,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.awt.Color;
 
 
@@ -78,11 +81,17 @@ public class FenetreJeu {
 			public void actionPerformed(ActionEvent e) {
 				FileInputStream fichier;
 				try {
+					// Creation du dossier save
+;
+					
 					fichier = new FileInputStream("Carte.ser");
 					ObjectInputStream ois = new ObjectInputStream(fichier);
 					carteActive[0] = (Carte) ois.readObject();
 					panneauCarte.setCarte(carteActive[0]);
+					
+					panneauCarte. updaterCombatLogPostChargement();
 					panneauCarte.repaint();
+					
 					
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block

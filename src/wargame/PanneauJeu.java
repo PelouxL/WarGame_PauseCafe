@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -44,13 +46,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 
 	// bouton
 	private JButton boutonFin;
+	private JButton boutonRetour;
 	
 	public PanneauJeu(Carte c) {
 		this.carte = c;
 		setLayout( new BorderLayout());
 		
 
-		// ------ creation de la Carte ---------- //
+		// ------------------------ creation de la Carte ----------------------- //
 		
 		panneauCarte = new JPanel() {
 			protected void paintComponent(Graphics g) {
@@ -66,8 +69,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 		};
 		panneauCarte.setPreferredSize(new Dimension(LARGEUR_CARTE, HAUTEUR_CARTE));
 		add(panneauCarte, BorderLayout.CENTER);
-		// ------ creation du panneau log -------- //
 		
+		// ------------------------ creation du panneau log ------------------------ //	
 		logArea = new JTextArea();
 		logArea.setEditable(false);
 		
@@ -84,7 +87,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 
 		add(panneauLog, BorderLayout.WEST);
 	
-		// ------ creation du panneau d'info ----- //
+		// ----------------------- creation du panneau d'info ----------------------- //
 	    panneauInfos = new JPanel() {
 	    	protected void paintComponent(Graphics g) {
 	    		super.paintComponent(g);
@@ -104,7 +107,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		add(panneauInfos, BorderLayout.SOUTH);
 	
-		// ------- Creation du panneau droit --------- //		
+		// --------------------------- Creation du panneau droit -------------------- //		
 		panneauDroit = new JPanel();
 		
 		panneauDroit.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));	
@@ -112,32 +115,48 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauDroit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		add(panneauDroit, BorderLayout.EAST);
 		
-		// ------- Creation de panneau haut --------//	
+		// --------------------------- Creation de panneau haut ---------------------//	
 		JPanel panneauHaut = new JPanel();
 			
         panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
 		panneauHaut.setBackground(Color.decode("#8B4513"));
 		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
-		
+		// ---------- Creation des boutons de la carte ---------- //
 		boutonFin = new JButton("Fin de tour");
+		boutonRetour = new JButton("Retour arrière");
+		panneauHaut.add(boutonRetour);
 		panneauHaut.add(boutonFin);
+		
+		boutonFin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Ajouter des vrai méthodes
+				System.out.println("Termine-moi !");
+			}
+		});
+		
+		boutonRetour.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Ajouter des vrai méthodes 
+				System.out.println("Retourne moi !");
+			}
+		});
+		
 		add(panneauHaut, BorderLayout.NORTH);
 		
-		// ------- Mises en place des layout ------//
+		// ------------------------ Mises en place des layout ----------------------//
 		add(panneauLog, BorderLayout.WEST);
 		add(panneauInfos, BorderLayout.SOUTH);
 		add(panneauDroit, BorderLayout.EAST);
 		add(panneauHaut, BorderLayout.NORTH);
 		add(panneauCarte, BorderLayout.CENTER);
 		
-		// ------- Taile du panneau principal ---- //
-		
+		// ------------------------- Taile du panneau principal ------------------- //		
 		setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
         setMinimumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
         setMaximumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
         
-		// ------- Ajout des ecouteur ---------- //
+		// ------------------------- Ajout des ecouteur -------------------------- //
 		panneauCarte.addMouseMotionListener(new MouseMotionAdapter() {
 			
 			// Effet au deplacement de la souris
@@ -285,5 +304,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 		}
 	}
 	
+	public void updaterCombatLogPostChargement() {
+		updateCombatLog();
+		panneauLog.repaint();
+	}
 	
 }    

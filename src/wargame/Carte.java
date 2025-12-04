@@ -258,7 +258,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		
 			EnsemblePosition ePos = soldat.zoneDeplacement();
 			
-			if(ePos.contient(pos)) {
+			if(ePos.contient(pos) && soldat.getAction() > 0) {
 				this.carte[soldat.getPos().getX()][soldat.getPos().getY()] = null;
 				this.carte[pos.getX()][pos.getY()] = soldat;
 				soldat.seDeplace(pos);
