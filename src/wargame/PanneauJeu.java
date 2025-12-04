@@ -1,6 +1,7 @@
 package wargame;
 
 import javax.swing.JButton;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -28,9 +29,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private Position dragPersoFin = null;
 	private Position dragPersoInit = null;
 	
-	// action et deplacement
+	// action et boolean
 	private boolean deplacePerso = false;
 	private boolean dragPerso = false;
+	private boolean afficheLog = false;
 	
 	// information du panneauInfo
 	private String infoTexte ="";
@@ -42,19 +44,24 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private JPanel panneauLog;
 	private JPanel panneauDroit;
 	private JPanel panneauHaut;
+	private JPanel panneauTrans;
 	private JTextArea logArea;
 
 	// bouton
 	private JButton boutonFin;
 	private JButton boutonRetour;
+	private JButton boutonAffiche;
 	
 	public PanneauJeu(Carte c) {
 		this.carte = c;
 		setLayout( new BorderLayout());
 		
-
-		// ------------------------ creation de la Carte ----------------------- //
+		// ------------------------ creation d'un layer ------------------------ //		
+		JLayeredPane layers = new JLayeredPane();
+		layers.setPreferredSize(new Dimension(LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE));
+		layers.setLayout(null);
 		
+		// ------------------------ creation de la Carte ----------------------- //		
 		panneauCarte = new JPanel() {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
@@ -62,31 +69,87 @@ public class PanneauJeu extends JPanel implements IConfig {
 				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
 					g.setColor(new Color(100,0,0,40));
 					g.fillRect(dragPersoFin.getX()*NB_PIX_CASE, dragPersoFin.getY()*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
-				}
+				}			
+			}
+		};
+		
+		panneauCarte.setBounds(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
+		layers.add(panneauCarte, Integer.valueOf(JLayeredPane.DEFAULT_LAYER));
 
+		// -------------------- Creation du Panneau log --------------------------------------- //
+		// ----- creation du textArea ------- //
+		logArea = new JTextArea();
+		logArea.setEditable(false);
+		logArea.setOpaque(false);
+		logArea.setForeground(COULEUR_TEXTE);
+		
+		
+		JScrollPane scrollPane = new JScrollPane(logArea);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setOpaque(false);
+		scrollPane.getViewport().setOpaque(false);
+		
+		// ------ creation du JPanel ------- //
+		panneauTrans = new JPanel(new BorderLayout()) {
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+
+					g.setColor(COULEUR_PANNEAU_TRANSPARENT); 
+					g.fillRect(0, 0, LARGEUR_PANNEAU_LOG, HAUTEUR_PANNEAU_LOG);
+					g.setColor(Color.black);
+					g.drawRect(0, 0, LARGEUR_PANNEAU_LOG, HAUTEUR_PANNEAU_LOG);
 				
 			}
 		};
-		panneauCarte.setPreferredSize(new Dimension(LARGEUR_CARTE, HAUTEUR_CARTE));
-		add(panneauCarte, BorderLayout.CENTER);
 		
-		// ------------------------ creation du panneau log ------------------------ //	
-		logArea = new JTextArea();
-		logArea.setEditable(false);
+		// ----- SECTION : mini panneau pour bouton ------- //
+		JPanel panneauBouton = new JPanel(new BorderLayout());
+		panneauBouton.setOpaque(false);
+		panneauTrans.setVisible(afficheLog);
+		panneauTrans.add(panneauBouton,BorderLayout.NORTH);
 		
-		logArea.setBackground(Color.decode("#8B4513"));
+		// ----- bouton affiche/desaffiche -- //
+		JButton boutonAfficheLog = new JButton("");
+		// initialisation si on affiche log au debut ou non
+		if(afficheLog) {
+			panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
+		}else {
+			layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));
+			boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
+		}
 		
-		panneauLog = new JPanel(new BorderLayout());
-		JScrollPane scrollPane = new JScrollPane(logArea);
-		scrollPane.setBorder(BorderFactory.createEmptyBorder());
-		panneauLog.add(scrollPane, BorderLayout.CENTER);
-		panneauLog.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		// ----- action d'affichage/désaffichage ---- //
+		boutonAfficheLog.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				afficheLog = !afficheLog;
+				
+				if(afficheLog) {
+					panneauTrans.setVisible(true);
+					panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
+					
+					panneauTrans.revalidate();
+					panneauTrans.repaint();
+				}else {
+					// on cache et supprime les panneaux
+					panneauTrans.setVisible(false);
+					panneauBouton.remove(boutonAfficheLog);
+					
+					// on ajout notre bouton au dessus de nos layer et definit où il se place
+					layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));				
+					boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
+				}
+				// on repaint uniquement notre layer
+				layers.repaint();
+			}
+		});
 		
-		panneauLog.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));
-		panneauLog.setBackground(Color.decode("#8B4513"));
-
-		add(panneauLog, BorderLayout.WEST);
-	
+		panneauTrans.setPreferredSize(new Dimension(100, 50));
+		panneauTrans.setOpaque(false);
+		panneauTrans.add(scrollPane, BorderLayout.CENTER);
+		panneauTrans.setBounds(POSITION_LOG_X, POSITION_LOG_Y, LARGEUR_PANNEAU_LOG, HAUTEUR_PANNEAU_LOG);
+		layers.add(panneauTrans, Integer.valueOf(JLayeredPane.PALETTE_LAYER));
+		
+		
 		// ----------------------- creation du panneau d'info ----------------------- //
 	    panneauInfos = new JPanel() {
 	    	protected void paintComponent(Graphics g) {
@@ -105,7 +168,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    panneauInfos.setPreferredSize(new Dimension(LARGEUR_PANNEAU_BAS, HAUTEUR_PANNEAU_BAS));
 		panneauInfos.setBackground(Color.decode("#8B4513"));
 		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-		add(panneauInfos, BorderLayout.SOUTH);
 	
 		// --------------------------- Creation du panneau droit -------------------- //		
 		panneauDroit = new JPanel();
@@ -113,7 +175,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauDroit.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));	
 		panneauDroit.setBackground(Color.decode("#8B4513"));
 		panneauDroit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-		add(panneauDroit, BorderLayout.EAST);
 		
 		// --------------------------- Creation de panneau haut ---------------------//	
 		JPanel panneauHaut = new JPanel();
@@ -142,14 +203,13 @@ public class PanneauJeu extends JPanel implements IConfig {
 			}
 		});
 		
-		add(panneauHaut, BorderLayout.NORTH);
 		
 		// ------------------------ Mises en place des layout ----------------------//
-		add(panneauLog, BorderLayout.WEST);
+		//add(panneauLog, BorderLayout.WEST);
 		add(panneauInfos, BorderLayout.SOUTH);
 		add(panneauDroit, BorderLayout.EAST);
 		add(panneauHaut, BorderLayout.NORTH);
-		add(panneauCarte, BorderLayout.CENTER);
+		add(layers, BorderLayout.CENTER);
 		
 		// ------------------------- Taile du panneau principal ------------------- //		
 		setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));

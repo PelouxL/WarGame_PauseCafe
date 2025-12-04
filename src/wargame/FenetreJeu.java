@@ -81,9 +81,7 @@ public class FenetreJeu {
 			public void actionPerformed(ActionEvent e) {
 				FileInputStream fichier;
 				try {
-					// Creation du dossier save
-;
-					
+
 					fichier = new FileInputStream("Carte.ser");
 					ObjectInputStream ois = new ObjectInputStream(fichier);
 					carteActive[0] = (Carte) ois.readObject();
@@ -111,6 +109,7 @@ public class FenetreJeu {
 		
 		frame.add(menuBar, BorderLayout.NORTH);
 		frame.add(panneauCarte, BorderLayout.CENTER);
+		
 		
 		// Visibilité de la Jframe
 		frame.pack();
