@@ -1,7 +1,7 @@
 package wargame;
 
 public abstract class Soldat extends Element implements ISoldat{
-	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 8;
+	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3;
 	private int pointsDeVie;
 	private Position pos;
 	private Carte carte;
@@ -189,7 +189,7 @@ public abstract class Soldat extends Element implements ISoldat{
 	public int getDeplacement() { return this.DEPLACEMENT; }
 	
 	public EnsemblePosition zoneDeplacement() {
-		int nbPosMax = 2*this.DEPLACEMENT*(this.DEPLACEMENT+1);
+		int nbPosMax = (int) Math.pow(6, this.DEPLACEMENT); // TEMPORAIRE FAIRE VRAI CALCUL
 		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
 		
 		this.zoneDeplacementAux(this.pos, this.pos, this.DEPLACEMENT, ePos);
@@ -215,6 +215,7 @@ public abstract class Soldat extends Element implements ISoldat{
 		}
 
 		if (!(ePos.contient(pos)) && this.carte.caseDisponible(pos)) {
+			System.out.println("X Y : " + pos.getX() + "  " + pos.getY());
 			ePos.ajouterPos(pos);
 		}
 		

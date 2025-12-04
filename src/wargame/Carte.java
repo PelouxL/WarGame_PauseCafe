@@ -379,7 +379,7 @@ public class Carte implements IConfig, ICarte {
 		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
 		g.setColor(couleur);
 		// Obligé de faire un +1 quand opacité pas au max ???
-		g.fillRect(x*NB_PIX_CASE + 1, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+		this.dessineInterieurHexagone(g, x, y);
 	}
 	
 	public void dessineCase(Graphics g, Color couleur, Position pos) {
@@ -387,12 +387,13 @@ public class Carte implements IConfig, ICarte {
 			y = pos.getY();
 		
 		g.setColor(couleur);
+		this.dessineInterieurHexagone(g, x, y);
 		g.setColor(Color.BLACK);
 		this.dessineContourHexagone(g, x, y);
 		
 		// Ajout des numeros 
 		Element elem = getElement(pos);
-		g.setColor(Color.WHITE);
+		g.setColor(Color.BLACK);
 		if(elem instanceof Monstre) {
 			g.drawString(""+((Soldat)elem).getNum(),x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
 		}else if(elem instanceof Heros) {
@@ -402,36 +403,45 @@ public class Carte implements IConfig, ICarte {
 	}
 	
 	private void dessineContourHexagone(Graphics g, int x, int y) {
-		g.setColor(COULEUR_EAU);
-		g.drawLine(x*NB_PIX_CASE,
-				   y*NB_PIX_CASE + NB_PIX_CASE/4,
-				   x*NB_PIX_CASE + NB_PIX_CASE/2,
-				   y*NB_PIX_CASE);
-		g.setColor(COULEUR_HEROS);
-		g.drawLine(x*NB_PIX_CASE + NB_PIX_CASE/2,
-				   y*NB_PIX_CASE,
-				   x*NB_PIX_CASE + NB_PIX_CASE,
-				   y*NB_PIX_CASE + NB_PIX_CASE/4);
-		g.setColor(COULEUR_EAU);
-		g.drawLine(x*NB_PIX_CASE + NB_PIX_CASE,
-				   y*NB_PIX_CASE + NB_PIX_CASE/4,
-				   x*NB_PIX_CASE + NB_PIX_CASE,
-				   y*NB_PIX_CASE + 15);
-		g.setColor(COULEUR_HEROS);
-		g.drawLine(x*NB_PIX_CASE + NB_PIX_CASE,
-				   y*NB_PIX_CASE + 15,
-				   x*NB_PIX_CASE + NB_PIX_CASE/2,
-				   y*NB_PIX_CASE + NB_PIX_CASE);
-		g.setColor(COULEUR_EAU);
-		g.drawLine(x*NB_PIX_CASE + NB_PIX_CASE/2,
-				   y*NB_PIX_CASE + NB_PIX_CASE,
-				   x*NB_PIX_CASE,
-				   y*NB_PIX_CASE + 15);
-		g.setColor(COULEUR_HEROS);
-		g.drawLine(x*NB_PIX_CASE,
-				   y*NB_PIX_CASE + 15,
-				   x*NB_PIX_CASE,
-				   y*NB_PIX_CASE + NB_PIX_CASE/4);
+		int offset_x = 0;
+		x = x/2;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
+		int [] liste_x = {x*NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + offset_x};
+		int [] liste_y = {y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+				  		  y*NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+						  y*NB_PIX_CASE*3/4 + 15,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
+						  y*NB_PIX_CASE*3/4 + 15};
+		g.drawPolygon(liste_x, liste_y, 6);
+	}
+	
+	private void dessineInterieurHexagone(Graphics g, int x, int y) {
+		int offset_x = 0;
+		x = x/2;
+		if (y % 2 == 1) {
+			offset_x = NB_PIX_CASE / 2;
+		}
+		int [] liste_x = {x*NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + offset_x};
+		int [] liste_y = {y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+				  		  y*NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+						  y*NB_PIX_CASE*3/4 + 15,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
+						  y*NB_PIX_CASE*3/4 + 15};
+		g.fillPolygon(liste_x, liste_y, 6);
 	}
 	
 	// DESSIN

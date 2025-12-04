@@ -33,4 +33,7 @@ public interface IConfig {
 	Color COULEUR_PONT = Color.decode("#8B4513"); // marron
 	Color COULEUR_HERBE = Color.green; // vert clair
 	
+	// OFFSET X POUR AFFICHAGE
+	int OFFSET_X = NB_PIX_CASE / 2;
+	
 }
