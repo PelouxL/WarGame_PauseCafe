@@ -215,7 +215,7 @@ public abstract class Soldat extends Element implements ISoldat{
 		}
 
 		if (!(ePos.contient(pos)) && this.carte.caseDisponible(pos)) {
-			System.out.println("X Y : " + pos.getX() + "  " + pos.getY());
+			//System.out.println("X Y : " + pos.getX() + "  " + pos.getY());
 			ePos.ajouterPos(pos);
 		}
 		

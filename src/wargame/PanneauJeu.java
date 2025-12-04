@@ -100,9 +100,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 			// Effet au deplacement de la souris
 			public void mouseMoved(MouseEvent e) {
-				int x = e.getX()/NB_PIX_CASE;
-				int y = e.getY()/NB_PIX_CASE;
-				caseSurvolee = new Position(x, y);
+				int x = e.getX();
+				int y = e.getY();
+				caseSurvolee = carte.coorToPos(x, y);
 				
 				if (caseSurvolee.estValide()) {
 					Element elem = carte.getElement(caseSurvolee);
@@ -120,10 +120,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 			// pensez a dessiner le drag //
 			public void mouseDragged(MouseEvent e) {
 				if(dragPerso) {
-					int x = e.getX()/NB_PIX_CASE;
-			        int y = e.getY()/NB_PIX_CASE;
+					int x = e.getX();
+			        int y = e.getY();
 					
-			        Position essaie = new Position(x, y);
+			        Position essaie = carte.coorToPos(x, y);
 			        
 			        Soldat s =(Soldat)carte.getElement(dragPersoInit);
 			        
@@ -142,13 +142,13 @@ public class PanneauJeu extends JPanel implements IConfig {
 		// Ecouteur clic souris
 		panneauCarte.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				int x = e.getX()/NB_PIX_CASE;
-				int y = e.getY()/NB_PIX_CASE;
-				
-				Element elem = carte.getElement(new Position(x,y));
+				int x = e.getX();
+				int y = e.getY();
+				Element elem = carte.getElement(carte.coorToPos(x, y));
+				//System.out.println("x = " + carte.coorToPos(x, y).getX() + " / y = " + carte.coorToPos(x, y).getY());
 				// si on est sur le point de deplacé un Heros
 				if(deplacePerso) {
-					caseAction = new Position(x, y);
+					caseAction = carte.coorToPos(x, y);
 					carte.actionHeros(caseCliquee, caseAction);
 					if(elem instanceof Monstre) {
 						updateCombatLog();
@@ -159,7 +159,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					caseAction = null;
 				// si c'est le premier clique
 				}else {
-					caseCliquee = new Position(x, y);		
+					caseCliquee = carte.coorToPos(x, y);		
 					// on initalise le deplacement
 					if (caseCliquee.estValide() && elem instanceof Soldat && dragPerso == false) {
 						deplacePerso = true;

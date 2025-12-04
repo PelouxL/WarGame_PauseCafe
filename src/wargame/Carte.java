@@ -284,11 +284,31 @@ public class Carte implements IConfig, ICarte {
 	}
 	// MORT
 	
+	// Primitif mais ok (gère pas la forme des hexagones)
 	public Position coorToPos(int x, int y) {
+		int offset_x = 0;
 		int px = x/NB_PIX_CASE,
-			py = y/NB_PIX_CASE ;
+			py = y/(NB_PIX_CASE*3/4);
+		if (py % 2 == 1) {
+			offset_x = OFFSET_X;
+			x += offset_x;
+		}
+		
+		px = x/NB_PIX_CASE;
+		px = px * 2 - py % 2;
 		return new Position(px, py);
 	}
+	
+	/*
+	private boolean estDansHexagone(Position posHexa, Position pos) {
+		int hx = posHexa.getX();
+		int hy = posHexa.getY();
+		int offset_x = 0;
+		x = x/2;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
+	}*/
 	
 	
 	// TOUR DES MONSTRES
@@ -376,15 +396,21 @@ public class Carte implements IConfig, ICarte {
 	public void dessineCaseCliquee(Graphics g, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
+		System.out.println("bonjour je passe normalement 1 seule fois, voici mes valeurs : " + x + "   " + y);
 		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
 		g.setColor(couleur);
 		// Obligé de faire un +1 quand opacité pas au max ???
-		this.dessineInterieurHexagone(g, x, y);
+		this.dessineInterieurHexagone(g, x/2, y);
 	}
 	
 	public void dessineCase(Graphics g, Color couleur, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
+		int offset_x = 0;
+		x = x/2;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
 		
 		g.setColor(couleur);
 		this.dessineInterieurHexagone(g, x, y);
@@ -393,18 +419,17 @@ public class Carte implements IConfig, ICarte {
 		
 		// Ajout des numeros 
 		Element elem = getElement(pos);
-		g.setColor(Color.BLACK);
+		g.setColor(Color.WHITE);
 		if(elem instanceof Monstre) {
-			g.drawString(""+((Soldat)elem).getNum(),x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
+			g.drawString("" + ((Soldat)elem).getNum(), x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
 		}else if(elem instanceof Heros) {
 			char lettre = (char)('A' + ((Soldat)elem).getNum());
-			g.drawString(""+lettre, x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
+			g.drawString("" + lettre, x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
 		}
 	}
 	
 	private void dessineContourHexagone(Graphics g, int x, int y) {
 		int offset_x = 0;
-		x = x/2;
 		if (y % 2 == 1) {
 			offset_x = OFFSET_X;
 		}
@@ -417,15 +442,14 @@ public class Carte implements IConfig, ICarte {
 		int [] liste_y = {y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
 				  		  y*NB_PIX_CASE*3/4,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
-						  y*NB_PIX_CASE*3/4 + 15,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
-						  y*NB_PIX_CASE*3/4 + 15};
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
 		g.drawPolygon(liste_x, liste_y, 6);
 	}
 	
 	private void dessineInterieurHexagone(Graphics g, int x, int y) {
 		int offset_x = 0;
-		x = x/2;
 		if (y % 2 == 1) {
 			offset_x = NB_PIX_CASE / 2;
 		}
@@ -438,9 +462,9 @@ public class Carte implements IConfig, ICarte {
 		int [] liste_y = {y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
 				  		  y*NB_PIX_CASE*3/4,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
-						  y*NB_PIX_CASE*3/4 + 15,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
-						  y*NB_PIX_CASE*3/4 + 15};
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
 		g.fillPolygon(liste_x, liste_y, 6);
 	}
 	
