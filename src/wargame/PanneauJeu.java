@@ -191,7 +191,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 		
 		boutonFin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Ajouter des vrai méthodes
+				carte.jouerSoldats();
+				panneauCarte.repaint();
 				System.out.println("Termine-moi !");
 			}
 		});
@@ -366,7 +367,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	
 	public void updaterCombatLogPostChargement() {
 		updateCombatLog();
-		panneauLog.repaint();
+		if (afficheLog) panneauLog.repaint();
 	}
 	
 }    
