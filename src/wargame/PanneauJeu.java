@@ -128,6 +128,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
 					
 					panneauTrans.revalidate();
+					updateCombatLog();
 					panneauTrans.repaint();
 				}else {
 					// on cache et supprime les panneaux
@@ -384,9 +385,5 @@ public class PanneauJeu extends JPanel implements IConfig {
 		}
 	}
 	
-	public void updaterCombatLogPostChargement() {
-		updateCombatLog();
-		if (afficheLog) panneauLog.repaint();
-	}
 	
 }    

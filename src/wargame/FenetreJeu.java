@@ -87,7 +87,6 @@ public class FenetreJeu {
 					carteActive[0] = (Carte) ois.readObject();
 					panneauCarte.setCarte(carteActive[0]);
 					
-					panneauCarte. updaterCombatLogPostChargement();
 					panneauCarte.repaint();
 					
 					

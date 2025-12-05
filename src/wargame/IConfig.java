@@ -2,7 +2,7 @@ package wargame;
 import java.awt.Color;
 
 public interface IConfig {
-	int LARGEUR_CARTE = 45; int HAUTEUR_CARTE = 25; // en nombre de cases
+	int LARGEUR_CARTE = 35; int HAUTEUR_CARTE = 25; // en nombre de cases
 	int NB_PIX_CASE = 20; //taille des cases
 	int NB_HEROS = 6; int NB_MONSTRES = 15; int NB_OBSTACLES = 20;
 	
@@ -37,7 +37,7 @@ public interface IConfig {
 	Color COULEUR_VIDE = Color.white;
 	Color COULEUR_INCONNU = Color.lightGray;
 	Color COULEUR_TEXTE = Color.black;
-	Color COULEUR_PANNEAU_TRANSPARENT = new Color(150,150,150,150);
+	Color COULEUR_PANNEAU_TRANSPARENT = new Color(150,150,150,230);
 	
 	// Couleur Soldats
 	Color COULEUR_HEROS = Color.red;
