@@ -43,6 +43,8 @@ public class Carte implements IConfig, ICarte {
 		p = trouvePositionVide();
 		this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
 		//riviere(p); // Ajouter des ponts
+		System.out.println("x y " + p.getX() + " " + p.getY());
+		riviere(p);
 		
 		// Placement des autres obstacles
 		for(int i = 0; i < NB_OBSTACLES; i++) {
@@ -83,7 +85,7 @@ public class Carte implements IConfig, ICarte {
 	
 	// RIVIERE
 	private void riviere(Position pos) {
-		int r = (int)(Math.random()*3);
+		int r = (int) (Math.random() * 3);
 		switch(r) {
 			case 0: riviereV(pos); break;
 			case 1: riviereH(pos); break;
@@ -92,26 +94,73 @@ public class Carte implements IConfig, ICarte {
 	}
 	
 	private void riviereV(Position pos) {
+		int x_pont1, x_pont2, y_pont1, y_pont2;
+		int debut_x = pos.getX();
 		int i = 0;
+		if (pos.getX() % 2 == 1) {
+			debut_x = pos.getX() - 1;
+		}
 		while (i < HAUTEUR_CARTE) {
-			Position p = new Position(pos.getX() + i%2, i);
+			Position p = new Position(debut_x + i%2, i);
 			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
+			i++;
 		}
 		// Ponts
-		this.carte[pos.getX()][(int)(Math.random()*pos.getY())] = null;
-		this.carte[pos.getX()][(int)(Math.random() * (HAUTEUR_CARTE - pos.getY()) + pos.getY())] = null;
+		y_pont1 = (int) (Math.random() * pos.getY());
+		y_pont2 = (int) (Math.random() * (HAUTEUR_CARTE-pos.getY()) + pos.getY());
+		System.out.println(" pont1 pont2 : " + y_pont1 + "   " + y_pont2);
+		if (y_pont1 % 2 == pos.getY() % 2) {
+			x_pont1 = pos.getX();
+		} else {
+			if (pos.getX() % 2 == 0) {
+				x_pont1 = pos.getX() + 1;
+			} else {
+				x_pont1 = pos.getX() - 1;
+			}
+		}
+		if (y_pont2 % 2 == pos.getY() % 2) {
+			x_pont2 = pos.getX();
+		} else {
+			if (pos.getX() % 2 == 0) {
+				x_pont2 = pos.getX() + 1;
+			} else {
+				x_pont2 = pos.getX() - 1;
+			}
+		}
+		System.out.println(" pont1 pont2 : " + x_pont1 + "   " + x_pont2);
+		this.carte[x_pont1][y_pont1] = null;
+		this.carte[x_pont2][y_pont2] = null;	
 	}
 	
-	private void riviereH(Position pos) {	
-		int i = pos.getY() % 2;
-		while (i < LARGEUR_CARTE*2) {
-			Position p = new Position(i, pos.getY());
+	private void riviereH(Position pos) {
+		int x_pont1, x_pont2;
+		int j = pos.getY() % 2;
+		while (j < LARGEUR_CARTE*2) {
+			Position p = new Position(j, pos.getY());
 			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
-			i += 2;
+			j += 2;
 		}
 		// Ponts
-		this.carte[(int)(Math.random()*pos.getX())][pos.getY()] = null;
-		this.carte[(int)(Math.random() * LARGEUR_CARTE)][pos.getY()] = null;
+		x_pont1 = (int) (Math.random() * pos.getX()/2);
+		x_pont2 = (int) (Math.random() * (LARGEUR_CARTE*2-pos.getX())/2);
+		System.out.println("pont1 pont2 : " + pos.getX() + "   " + pos.getY());
+		x_pont1 *= 2;
+		x_pont2 *= 2;
+		x_pont1 += pos.getY() % 2;
+		x_pont2 += pos.getX();
+		System.out.println("pont1 pont2 : " + x_pont1 + "   " + x_pont2);
+		this.carte[x_pont1][pos.getY()] = null;
+		this.carte[x_pont2][pos.getY()] = null;
+		/*
+		pont1 = (int) (Math.random() * pos.getX() + 1);
+		pont2 = (int) (Math.random() * (LARGEUR_CARTE*2-pos.getX()) + pos.getX());
+		System.out.println("pont1 pont2 : " + pos.getX() + "   " + pos.getY());
+		pont1 = pont1 - (pont1+pos.getY()) % 2;
+		pont2 = pont2 - (pont2+pos.getY()) % 2;
+		System.out.println("pont1 pont2 : " + pont1 + "   " + pont2);
+		this.carte[pont1][pos.getY()] = null;
+		this.carte[pont2][pos.getY()] = null;
+		*/
 	}
 	// RIVIERE
 	
@@ -396,7 +445,7 @@ public class Carte implements IConfig, ICarte {
 	public void dessineCaseCliquee(Graphics g, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
-		System.out.println("bonjour je passe normalement 1 seule fois, voici mes valeurs : " + x + "   " + y);
+		//System.out.println("bonjour je passe normalement 1 seule fois, voici mes valeurs : " + x + "   " + y);
 		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
 		g.setColor(couleur);
 		// Obligé de faire un +1 quand opacité pas au max ???

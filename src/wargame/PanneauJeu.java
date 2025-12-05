@@ -47,8 +47,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				c.toutDessiner(g, caseSurvolee, caseCliquee);
 				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
-					g.setColor(new Color(100,0,0,40));
-					g.fillRect(dragPersoFin.getX()*NB_PIX_CASE, dragPersoFin.getY()*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+					carte.dessineCaseCliquee(g, dragPersoFin);
 				}
 
 				
@@ -131,8 +130,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 			        	return;
 			        	// gerer exeption
 			        }
-					dragPersoFin.setX(x);
-					dragPersoFin.setY(y);
+					dragPersoFin.setX(essaie.getX());
+					dragPersoFin.setY(essaie.getY());
 					deplacePerso = false;
 					repaint();
 				}
