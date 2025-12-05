@@ -202,33 +202,147 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// POSITION VIDE
 	
 	
-	// HEROS
+	// TOUR DES MONSTRES
 	public Heros trouveHeros() { return this.listeHeros[(int)(Math.random()*nbHeros-1)]; }
-
+	
 	public Heros trouveHeros(Position pos) {
-		int nbHeros = 0;
-		int dx, dy;
-		Heros[] listeHeros = new Heros[NB_HEROS];
 		
-		for(dx = -1 ; dx < 1 ; dx++) {
-			for(dy = -1 ; dy < 1 ; dy++) {
-				// on ignore la position actuelle
-				if (dy == 0 && dx == 0) {
-					continue;
-				}
+		/* 
+		 * Ameliorations possibles :
+		 * - Comparer les pdv des heros trouves pour estimer quelles serait la meilleure cible
+		 * - Prioriser un heros que le monstre peut tuer
+		 * - Si aucun heros n'est trouve en melee ou a distance alors chercher le heros 
+		 *   le plus proche ou qui a le moins de vie
+		 * 
+		 */
+		
+		// On regarde d'abord s'il y a des heros adjacents
+		Heros heros = this.trouveHerosMelee(pos);
+		
+		// Si aucun heros n'est trouvé alors on regarde les heros a distance
+		/* if (heros == null) {
+			heros = this.trouveHerosDistance(pos);
+		} */
+		
+		// Si toujours aucun heros n'est trouve alors on cherche un heros sur la carte
+		if (heros == null) {
+			heros = this.trouveHeros();
+		}
+		
+		return heros;
+	}
+	
+	private Heros trouveHerosMelee(Position pos) {
+		int nbHerosMelee = 0;
+		Heros[] HerosMelee = new Heros[4]; // 6 quand hexagones
+		
+		for (int dx = -1; dx <= 1; dx += 2) {
+			for (int dy = -1; dy <= 1; dy += 2) {
 				
 				Element e = this.carte[pos.getX() + dx][pos.getY() + dy];
-				if (e.pos.estValide()) {
-					// on verifie si e est une instanciation de Heros
-					if (e instanceof Heros) {
-						listeHeros[nbHeros++] = (Heros) e;
-					}
+				if (e.pos.estValide() && e != null && e instanceof Heros) {
+					HerosMelee[nbHerosMelee++] = (Heros) e;
 				}
 			}
 		}
-		return listeHeros[(int) (Math.random()*nbHeros - 1)];
+		
+		if (nbHerosMelee == 0) { return null; }
+		
+		return HerosMelee[(int)(Math.random()*nbHerosMelee-1)];
 	}
-	// HEROS
+	
+	/*
+	private Heros trouveHerosDistance(Position pos, Int portee) {
+		int nbHerosDistance = 0;
+		Heros[] HerosDistance = new Heros[NB_HEROS-4]; // 6 quand hexagones
+		
+		// Il faut d'abord savoir gerer les lignes de vue pour pouvoir gerer les heros a distance
+		
+		return null;
+	}
+	*/
+	
+	public void jouerSoldats() { // a quoi sert panneau jeu en param?
+		for (Monstre monstre : this.listeMonstres) {
+			Heros heros = listeHeros[0];
+			int distanceHeros = monstre.getPos().distance(heros.getPos());
+			System.out.println(" -> Debut du tour");
+			
+			// Le monstre cherche le heros le plus proche
+			for (int i=1; i < this.nbHeros; i++) {
+				Heros test = listeHeros[i];
+				int distanceTest = monstre.getPos().distance(test.getPos());
+				if (distanceTest < distanceHeros) {
+					heros = test;
+					distanceHeros = distanceTest;
+				}
+			}
+			
+			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
+			
+			// Tant qu'il reste des actions au monstre il regarde s'il peut attaquer, sinon il avance
+			while(monstre.getAction() > 0) {
+				System.out.println(" -> PA = "+monstre.getAction()+"actions");
+				
+				/*
+				 * 2 cas : 
+				 * - Le monstre peut attaquer le heros
+				 * - Le monstre ne peut pas attaquer le heros
+				 * Amelioration possible : le monstre evalu s'il devrait l'attaquer plutot en melee ou a distance
+				 */
+				
+				Position posHeros = heros.getPos();
+				Position posMonstre = monstre.getPos();
+				boolean peutAttaquer = false;
+				
+				// Verifie la distance d'attaque
+				if (posMonstre.distance(posHeros) <= monstre.getPortee()) {
+					System.out.println(" - il peut attaquer, distance = "+posMonstre.distance(posHeros)+", portee = "+monstre.getPortee());
+					peutAttaquer = true;
+				}
+				
+				if (peutAttaquer) { // 1er cas : le heros est a portee du monstre
+					System.out.println(" - Combat");
+					peutAttaquer = monstre.combat(heros);
+					if (!peutAttaquer) System.out.println(" - n'a aps pu combattre : puis = "+monstre.getPuissance()+", tir = "+monstre.getTir());
+				} 
+				
+				if (!peutAttaquer){ // 2eme cas : le monstre doit se rapprocher de sa cible
+					System.out.println(" - Decide de se rapprocher");
+					
+					// Recuperation la liste des cases accessibles par le monstre
+					EnsemblePosition ePos = monstre.zoneDeplacement();
+					Position plusProche = posMonstre;
+					
+					for (int i=0; i < ePos.getNbPos(); i++) {
+						Position test = ePos.getPosition(i);
+						if (test.distance(posHeros) < plusProche.distance(posHeros) && !(test.equals(posHeros))) {
+							plusProche = test; 
+						}
+					}
+					
+					System.out.println(" - pos la plus proche : "+plusProche.toString()+", pos monstre : "+posMonstre.toString());
+					
+					if (plusProche.equals(posMonstre)) monstre.setAction(0);
+					else {
+						System.out.println(" - se deplace de "+posMonstre.distance(plusProche)+" cases");
+						this.deplaceSoldat(plusProche, monstre);
+						monstre.seDeplace(plusProche);
+					}
+					
+					System.out.println(" -> reste PA = "+monstre.getAction());
+					
+				}
+			}
+			
+			System.out.println(" -> Fin du tour");
+			
+			// Lorsque le tour du monstre est termine on remet ses actions a 2
+			monstre.setAction(2);
+			
+		}
+	}
+	// TOUR DES MONSTRES
 	
 	
 	// ACTION SOLDAT (actionHeros a revoir surement)
@@ -272,10 +386,33 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	
 	// MORT
-	public void mort(Soldat perso) {
-		if (perso.getPointsActuels() <= 0) {
-			this.carte[perso.getPos().getX()][perso.getPos().getY()] = null;
-			// nb_heros_restant--;
+	public void mort(Soldat soldat) {
+		if (soldat.getPointsActuels() <= 0) {
+			if (soldat instanceof Heros) {
+				this.nbHeros--;
+				boolean trouve = false;
+				for (int i=0; i < nbHeros; i++) {
+					if (listeHeros[i].getPos().equals(soldat.getPos())) {
+						trouve = true;
+					}
+					if (trouve) {
+						listeHeros[i] = listeHeros[i+1];
+					}
+				}
+			} else {
+				this.nbMonstre--;
+				boolean trouve = false;
+				for (int i=0; i < nbMonstre; i++) {
+					if (listeMonstres[i].getPos().equals(soldat.getPos())) {
+						trouve = true;
+					}
+					if (trouve) {
+						listeMonstres[i] = listeMonstres[i+1];
+					}
+				}
+			}	
+			
+			this.carte[soldat.getPos().getX()][soldat.getPos().getY()] = null;
 		}
 	}
 	// MORT
@@ -285,13 +422,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 			py = y/NB_PIX_CASE ;
 		return new Position(px, py);
 	}
-	
-	
-	// TOUR DES MONSTRES
-	public void jouerSoldats(PanneauJeu pj) {}
-	
-	// TOUR DES MONSTRES
-	
 	
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee) {
