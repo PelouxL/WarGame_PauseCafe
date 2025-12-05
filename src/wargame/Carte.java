@@ -261,16 +261,27 @@ public class Carte implements IConfig, ICarte {
 	}
 	*/
 	
-	public void jouerSoldats(PanneauJeu pj) { // a quoi sert pj?
+	public void jouerSoldats() { // a quoi sert panneau jeu en param?
 		for (Monstre monstre : this.listeMonstres) {
-			Heros heros;
+			Heros heros = listeHeros[0];
+			int distanceHeros = monstre.getPos().distance(heros.getPos());
+			System.out.println(" -> Debut du tour");
 			
-			// Le monstre cherche un heros
-			heros = trouveHeros();
+			// Le monstre cherche le heros le plus proche
+			for (int i=1; i < this.nbHeros; i++) {
+				Heros test = listeHeros[i];
+				int distanceTest = monstre.getPos().distance(test.getPos());
+				if (distanceTest < distanceHeros) {
+					heros = test;
+					distanceHeros = distanceTest;
+				}
+			}
+			
 			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
 			
 			// Tant qu'il reste des actions au monstre il regarde s'il peut attaquer, sinon il avance
 			while(monstre.getAction() > 0) {
+				System.out.println(" -> PA = "+monstre.getAction()+"actions");
 				
 				/*
 				 * 2 cas : 
@@ -285,54 +296,45 @@ public class Carte implements IConfig, ICarte {
 				
 				// Verifie la distance d'attaque
 				if (posMonstre.distance(posHeros) <= monstre.getPortee()) {
+					System.out.println(" - il peut attaquer, distance = "+posMonstre.distance(posHeros)+", portee = "+monstre.getPortee());
 					peutAttaquer = true;
 				}
 				
 				if (peutAttaquer) { // 1er cas : le heros est a portee du monstre
+					System.out.println(" - Combat");
 					peutAttaquer = monstre.combat(heros);
+					if (!peutAttaquer) System.out.println(" - n'a aps pu combattre : puis = "+monstre.getPuissance()+", tir = "+monstre.getTir());
 				} 
 				
 				if (!peutAttaquer){ // 2eme cas : le monstre doit se rapprocher de sa cible
+					System.out.println(" - Decide de se rapprocher");
 					
-					/*
-					 * Trouver la case atteignalble la plus proche du heros
-					 * 2 cas : 
-					 * - le heros est assez proche : le monstre se positionne sur une case adjacente
-					 * - le heros est trop loin : le monstre se rapproche autant que possible
-					 */
-					
-					boolean estAtteignable = false;
+					// Recuperation la liste des cases accessibles par le monstre
 					EnsemblePosition ePos = monstre.zoneDeplacement();
+					Position plusProche = posMonstre;
 					
-					// Verifie si le heros est atteignable
-					if (ePos.contient(posHeros)) {
-						estAtteignable = true;
-					}
-					
-					if (estAtteignable) { // 1er cas : le heros est assez proche
-						// On recupere les cases voisines du heros
-						EnsemblePosition voisinesHeros = new EnsemblePosition(4);
-						voisinesHeros.ajouterPos(new Position(posHeros.getX()+1, posHeros.getY()));
-						voisinesHeros.ajouterPos(new Position(posHeros.getX(), posHeros.getY()+1));
-						voisinesHeros.ajouterPos(new Position(posHeros.getX()-1, posHeros.getY()));
-						voisinesHeros.ajouterPos(new Position(posHeros.getX(), posHeros.getY()-1));
-						
-						// On regarde chaque case
-						for (int i = 0; i < voisinesHeros.getNbPos(); i++) {
-							Position posVoisine = voisinesHeros.getPosition(i);
-							if (posVoisine.estValide() && ePos.contient(posVoisine)) {
-								monstre.seDeplace(posVoisine);
-								break;
-							}
+					for (int i=0; i < ePos.getNbPos(); i++) {
+						Position test = ePos.getPosition(i);
+						if (test.distance(posHeros) < plusProche.distance(posHeros) && !(test.equals(posHeros))) {
+							plusProche = test; 
 						}
-					} else { // 2eme cas : trouver la case atteignable la plus proche du heros
-						
 					}
 					
+					System.out.println(" - pos la plus proche : "+plusProche.toString()+", pos monstre : "+posMonstre.toString());
 					
+					if (plusProche.equals(posMonstre)) monstre.setAction(0);
+					else {
+						System.out.println(" - se deplace de "+posMonstre.distance(plusProche)+" cases");
+						this.deplaceSoldat(plusProche, monstre);
+						monstre.seDeplace(plusProche);
+					}
+					
+					System.out.println(" -> reste PA = "+monstre.getAction());
 					
 				}
 			}
+			
+			System.out.println(" -> Fin du tour");
 			
 			// Lorsque le tour du monstre est termine on remet ses actions a 2
 			monstre.setAction(2);
@@ -383,10 +385,33 @@ public class Carte implements IConfig, ICarte {
 	
 	
 	// MORT
-	public void mort(Soldat perso) {
-		if (perso.getPointsActuels() <= 0) {
-			this.carte[perso.getPos().getX()][perso.getPos().getY()] = null;
-			// nb_heros_restant--;
+	public void mort(Soldat soldat) {
+		if (soldat.getPointsActuels() <= 0) {
+			if (soldat instanceof Heros) {
+				this.nbHeros--;
+				boolean trouve = false;
+				for (int i=0; i < nbHeros; i++) {
+					if (listeHeros[i].getPos().equals(soldat.getPos())) {
+						trouve = true;
+					}
+					if (trouve) {
+						listeHeros[i] = listeHeros[i+1];
+					}
+				}
+			} else {
+				this.nbMonstre--;
+				boolean trouve = false;
+				for (int i=0; i < nbMonstre; i++) {
+					if (listeMonstres[i].getPos().equals(soldat.getPos())) {
+						trouve = true;
+					}
+					if (trouve) {
+						listeMonstres[i] = listeMonstres[i+1];
+					}
+				}
+			}	
+			
+			this.carte[soldat.getPos().getX()][soldat.getPos().getY()] = null;
 		}
 	}
 	// MORT
