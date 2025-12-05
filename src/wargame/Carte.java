@@ -23,14 +23,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 	private int nbLog = 1;
 
 	public Carte() {
-		carte = new Element[LARGEUR_CARTE][HAUTEUR_CARTE];
-		visibilite = new int[LARGEUR_CARTE][HAUTEUR_CARTE];
+		carte = new Element[LARGEUR_CARTE*2][HAUTEUR_CARTE];
+		visibilite = new int[LARGEUR_CARTE*2][HAUTEUR_CARTE];
 		
 		listeHeros = new Heros[NB_HEROS];
 		listeMonstres = new Monstre[NB_MONSTRES];
 		
 		// Parcours des matrices
-		for(int i = 0; i < LARGEUR_CARTE; i++) {
+		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
 				carte[i][j] = null;
 				visibilite[i][j] = 0;
@@ -43,9 +43,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 		// Placement de la riviere
 		p = trouvePositionVide();
 		this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
-		riviere(p); // Ajouter des ponts
+		//riviere(p); // Ajouter des ponts
+		System.out.println("x y " + p.getX() + " " + p.getY());
+		riviere(p);
 		
-		//Placement des autres obstacles
+		// Placement des autres obstacles
 		for(int i = 0; i < NB_OBSTACLES; i++) {
 			p = trouvePositionVide();
 			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.getObstacleAlea(), p);
@@ -84,32 +86,82 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	// RIVIERE
 	private void riviere(Position pos) {
-		int r = (int)(Math.random()*3);
+		int r = (int) (Math.random() * 3);
 		switch(r) {
-		case 0: riviereV(pos); break;
-		case 1: riviereH(pos); break;
-		case 2: riviereV(pos); riviereH(pos); break;
+			case 0: riviereV(pos); break;
+			case 1: riviereH(pos); break;
+			case 2: riviereV(pos); riviereH(pos); break;
 		}
 	}
 	
 	private void riviereV(Position pos) {
-		for (int i = 0; i < HAUTEUR_CARTE; i++) {
-			Position p = new Position(pos.getX(), i);
+		int x_pont1, x_pont2, y_pont1, y_pont2;
+		int debut_x = pos.getX();
+		int i = 0;
+		if (pos.getX() % 2 == 1) {
+			debut_x = pos.getX() - 1;
+		}
+		while (i < HAUTEUR_CARTE) {
+			Position p = new Position(debut_x + i%2, i);
 			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
+			i++;
 		}
 		// Ponts
-		this.carte[pos.getX()][(int)(Math.random()*pos.getY())] = null;
-		this.carte[pos.getX()][(int)(Math.random() * (HAUTEUR_CARTE - pos.getY()) + pos.getY())] = null;
+		y_pont1 = (int) (Math.random() * pos.getY());
+		y_pont2 = (int) (Math.random() * (HAUTEUR_CARTE-pos.getY()) + pos.getY());
+		System.out.println(" pont1 pont2 : " + y_pont1 + "   " + y_pont2);
+		if (y_pont1 % 2 == pos.getY() % 2) {
+			x_pont1 = pos.getX();
+		} else {
+			if (pos.getX() % 2 == 0) {
+				x_pont1 = pos.getX() + 1;
+			} else {
+				x_pont1 = pos.getX() - 1;
+			}
+		}
+		if (y_pont2 % 2 == pos.getY() % 2) {
+			x_pont2 = pos.getX();
+		} else {
+			if (pos.getX() % 2 == 0) {
+				x_pont2 = pos.getX() + 1;
+			} else {
+				x_pont2 = pos.getX() - 1;
+			}
+		}
+		System.out.println(" pont1 pont2 : " + x_pont1 + "   " + x_pont2);
+		this.carte[x_pont1][y_pont1] = null;
+		this.carte[x_pont2][y_pont2] = null;	
 	}
 	
-	private void riviereH(Position pos) {	
-		for (int i = 0; i < LARGEUR_CARTE; i++) {
-			Position p = new Position(i, pos.getY());
+	private void riviereH(Position pos) {
+		int x_pont1, x_pont2;
+		int j = pos.getY() % 2;
+		while (j < LARGEUR_CARTE*2) {
+			Position p = new Position(j, pos.getY());
 			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
+			j += 2;
 		}
 		// Ponts
-		this.carte[(int)(Math.random()*pos.getX())][pos.getY()] = null;
-		this.carte[(int)(Math.random() * (LARGEUR_CARTE - pos.getX()) + pos.getX())][pos.getY()] = null;
+		x_pont1 = (int) (Math.random() * pos.getX()/2);
+		x_pont2 = (int) (Math.random() * (LARGEUR_CARTE*2-pos.getX())/2);
+		System.out.println("pont1 pont2 : " + pos.getX() + "   " + pos.getY());
+		x_pont1 *= 2;
+		x_pont2 *= 2;
+		x_pont1 += pos.getY() % 2;
+		x_pont2 += pos.getX();
+		System.out.println("pont1 pont2 : " + x_pont1 + "   " + x_pont2);
+		this.carte[x_pont1][pos.getY()] = null;
+		this.carte[x_pont2][pos.getY()] = null;
+		/*
+		pont1 = (int) (Math.random() * pos.getX() + 1);
+		pont2 = (int) (Math.random() * (LARGEUR_CARTE*2-pos.getX()) + pos.getX());
+		System.out.println("pont1 pont2 : " + pos.getX() + "   " + pos.getY());
+		pont1 = pont1 - (pont1+pos.getY()) % 2;
+		pont2 = pont2 - (pont2+pos.getY()) % 2;
+		System.out.println("pont1 pont2 : " + pont1 + "   " + pont2);
+		this.carte[pont1][pos.getY()] = null;
+		this.carte[pont2][pos.getY()] = null;
+		*/
 	}
 	// RIVIERE
 	
@@ -164,8 +216,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 		Position pos;
 		
 		do {
-			x = (int) (Math.random()*LARGEUR_CARTE);
+			x = (int) (Math.random()*LARGEUR_CARTE*2);
 			y = (int) (Math.random()*HAUTEUR_CARTE);
+			if (y % 2 == 0) {
+				x -= x % 2;
+			} else {
+				x += (x+1) % 2;
+			}
 			pos = new Position(x, y);			
 		} while (!pos.estValide() || this.getElement(pos) != null);
 		
@@ -174,25 +231,22 @@ public class Carte implements IConfig, ICarte, Serializable {
 
 	public Position trouvePositionVide(Position pos) {
 		EnsemblePosition listePos = new EnsemblePosition(8);
-		int dx, dy;
+		int i;
+		int dx, dy, x, y;
+		int [] coordsx = {-2, -1, -1, 1, 1, 2};
+		int [] coordsy = {0, 1, -1, 1, -1, 0};
 		
-		// On regarde les 8 cases autour pos
-		for(dx = -1 ; dx <= 1 ; dx++) {
-			for(dy = -1 ; dy <= 1 ; dy++) {
-				// On passe pos
-				if (dx == 0 && dy == 0) {
-					continue;
-				}
-				
-				// on cree une position et verifie qu'elle correspond si oui alors inserer dans liste
-				int x = pos.getX() + dx;
-				int y = pos.getY() + dy;
-				Position newp = new Position(x, y);
-				if (newp.estValide() && getElement(newp) == null) {
-					listePos.ajouterPos(newp);
-				}
+		// On regarde les 6 cases autour de pos
+		for (i = 0 ; i < 6 ; i++) {
+			dx = coordsx[i];
+			dy = coordsy[i];
+			x = pos.getX() + dx;
+			y = pos.getY() + dy;
+			// On cree une position et on verifie qu'elle correspond : si oui alors inserer dans liste
+			Position newp = new Position(x, y);
+			if (newp.estValide() && getElement(newp) == null) {
+				listePos.ajouterPos(newp);
 			}
-				
 		}
 		if (listePos.getNbPos() == 0) {
 			return null;
@@ -233,16 +287,20 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	
 	private Heros trouveHerosMelee(Position pos) {
+		Heros[] HerosMelee = new Heros[6];
 		int nbHerosMelee = 0;
-		Heros[] HerosMelee = new Heros[4]; // 6 quand hexagones
+		int i;
+		int dx, dy;
+		int [] coordsx = {-2, -1, -1, 1, 1, 2};
+		int [] coordsy = {0, 1, -1, 1, -1, 0};
 		
-		for (int dx = -1; dx <= 1; dx += 2) {
-			for (int dy = -1; dy <= 1; dy += 2) {
-				
-				Element e = this.carte[pos.getX() + dx][pos.getY() + dy];
-				if (e.pos.estValide() && e != null && e instanceof Heros) {
-					HerosMelee[nbHerosMelee++] = (Heros) e;
-				}
+		// On regarde les 6 cases autour de pos
+		for (i = 0 ; i < 6 ; i++) {
+			dx = coordsx[i];
+			dy = coordsy[i];
+			Element e = this.carte[pos.getX() + dx][pos.getY() + dy];
+			if (e.pos.estValide() && e != null && e instanceof Heros) {
+				HerosMelee[nbHerosMelee++] = (Heros) e;
 			}
 		}
 		
@@ -417,16 +475,28 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	// MORT
 	
+	// Primitif mais ok (gère pas la forme des hexagones)
 	public Position coorToPos(int x, int y) {
+		int offset_x = 0;
 		int px = x/NB_PIX_CASE,
-			py = y/NB_PIX_CASE ;
+			py = y/(NB_PIX_CASE*3/4);
+		if (py % 2 == 1) {
+			offset_x = OFFSET_X;
+			x += offset_x;
+		}
+		
+		px = x/NB_PIX_CASE;
+		px = px * 2 - py % 2;
 		return new Position(px, py);
 	}
 	
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee) {
-		for(int i = 0; i < LARGEUR_CARTE; i++) {
+		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
+				if ((i+j) % 2 == 1) {
+					continue;
+				}
 				
 				Position pos = new Position(i, j);
 				Element e = getElement(pos);
@@ -499,31 +569,78 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public void dessineCaseCliquee(Graphics g, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
+		//System.out.println("bonjour je passe normalement 1 seule fois, voici mes valeurs : " + x + "   " + y);
 		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
 		g.setColor(couleur);
 		// Obligé de faire un +1 quand opacité pas au max ???
-		g.fillRect(x*NB_PIX_CASE + 1, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+		this.dessineInterieurHexagone(g, x/2, y);
 	}
 	
 	public void dessineCase(Graphics g, Color couleur, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
+		int offset_x = 0;
+		x = x/2;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
 		
 		g.setColor(couleur);
-		g.fillRect(x*NB_PIX_CASE, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+		this.dessineInterieurHexagone(g, x, y);
 		g.setColor(Color.BLACK);
-		g.drawRect(x*NB_PIX_CASE, y*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+		this.dessineContourHexagone(g, x, y);
 		
 		// Ajout des numeros 
 		Element elem = getElement(pos);
 		g.setColor(Color.WHITE);
 		if(elem instanceof Monstre) {
-			g.drawString(""+((Soldat)elem).getNum(),x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
+			g.drawString("" + ((Soldat)elem).getNum(), x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
 		}else if(elem instanceof Heros) {
 			char lettre = (char)('A' + ((Soldat)elem).getNum());
-			g.drawString(""+lettre, x * NB_PIX_CASE + 4,y * NB_PIX_CASE + 15);
+			g.drawString("" + lettre, x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
 		}
 	}
+	
+	private void dessineContourHexagone(Graphics g, int x, int y) {
+		int offset_x = 0;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
+		int [] liste_x = {x*NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + offset_x};
+		int [] liste_y = {y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+				  		  y*NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
+		g.drawPolygon(liste_x, liste_y, 6);
+	}
+	
+	private void dessineInterieurHexagone(Graphics g, int x, int y) {
+		int offset_x = 0;
+		if (y % 2 == 1) {
+			offset_x = NB_PIX_CASE / 2;
+		}
+		int [] liste_x = {x*NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + offset_x};
+		int [] liste_y = {y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+				  		  y*NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
+		g.fillPolygon(liste_x, liste_y, 6);
+	}
+	
 	// DESSIN
 	
 	

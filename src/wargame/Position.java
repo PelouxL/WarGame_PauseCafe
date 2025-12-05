@@ -31,8 +31,15 @@ public class Position implements IConfig, Serializable {
 	
 	// Methodes
 	public boolean estValide() {
-		if (x < 0 || x >= LARGEUR_CARTE || y < 0 || y >= HAUTEUR_CARTE) return false; 
-		else return true;
+		if (x < 0 || x >= LARGEUR_CARTE*2 || y < 0 || y >= HAUTEUR_CARTE) {
+			return false; 
+		} else {
+			if ((x % 2 == 1 && y % 2 == 0) || (x % 2 == 0 && y % 2 == 1)) {
+				return false;
+			} else {
+				return true;
+			}
+		}
 	}
 	
 	public String toString() {
@@ -40,22 +47,44 @@ public class Position implements IConfig, Serializable {
 	}
 	
 	public boolean estVoisine(Position pos) {
-		return ((Math.abs(this.x-pos.x) <= 1) && (Math.abs(this.y-pos.y) <= 1));
+		int i;
+		int dx, dy, x, y;
+		int [] coordsx = {-2, -1, -1, 1, 1, 2};
+		int [] coordsy = {0, 1, -1, 1, -1, 0};
+		boolean voisine = false;
+		
+		// On regarde les 6 cases autour de pos
+		for (i = 0 ; i < 6 ; i++) {
+			dx = coordsx[i];
+			dy = coordsy[i];
+			x = this.getX() + dx;
+			y = this.getY() + dy;
+			if (this.equals(pos)) {
+				voisine = true;
+			}
+		}
+		return voisine;
 	}
 	
 	public boolean equals(Position pos) {
 		return (this.x == pos.x && this.y == pos.y);
 	}
 	
-	public boolean adjacent(Position p) {
-		if ((Math.abs(this.x - p.x) == 1 && this.y == p.y)
-			|| (Math.abs(this.y - p.y) == 1 && this.x == p.x)) {
-			return true;
-		}
-		return false;
+	public int distance(Position p) {
+		int [] cube1 = this.cube();
+		int [] cube2 = p.cube();
+		return (Math.abs(cube1[0] - cube2[0]) +
+				Math.abs(cube1[1] - cube2[1]) +
+				Math.abs(cube1[2] - cube2[2])) / 2;
 	}
 	
-	public int distance(Position p) {
-		return Math.abs(this.getX() - p.getX()) + Math.abs(this.getY() - p.getY());
+	private int[] cube() {
+		int x, y, z;
+		int col = this.getX() / 2;
+		x = col - (this.getY() - (this.getY() % 2)) / 2;
+		z = this.getY();
+		y = -x - z;
+		int [] resultat = {x, y, z};
+		return resultat;
 	}
 }

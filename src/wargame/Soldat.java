@@ -3,7 +3,8 @@ package wargame;
 import java.io.Serializable;
 
 public abstract class Soldat extends Element implements ISoldat, Serializable{
-	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 8;
+	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3;
+
 	private int pointsDeVie;
 	private Position pos;
 	private Carte carte;
@@ -81,11 +82,13 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 		int x = this.pos.getX();
 		int y = this.pos.getY();
 		int portee = this.getPortee();
-		for (i = -portee ; i <= portee ; i++) {
-			for (j = -portee ; j <= portee ; j++) {
-				if (i + x >= 0 && i + x < Carte.LARGEUR_CARTE
+		for (i = -portee*2 ; i <= portee*2 ; i++) {
+			for (j = -portee*2 ; j <= portee*2 ; j++) {
+				if (i + x >= 0 && i + x < Carte.LARGEUR_CARTE*2
 				  && j + y >= 0 && j + y < Carte.HAUTEUR_CARTE) {
-					visibilite[i+x][j+y] = 1;
+					if (this.pos.distance(new Position(i+x, j+y)) <= portee) {
+						visibilite[i+x][j+y] = 1;
+					}
 				}
 			}
 		}
@@ -101,7 +104,7 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 		
 		// Combat en melee : l'adversaire rend les coups, melee = case collee
 		// Combat a distance : l'adversaire ne rend pas les coups
-		if (this.pos.adjacent(soldat.pos)) {
+		if (this.pos.estVoisine(soldat.pos)) {
 			combat = this.combatMelee(soldat);
 		} else {
 			combat = this.combatDistance(soldat);
@@ -189,7 +192,7 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 	public int getDeplacement() { return this.DEPLACEMENT; }
 	
 	public EnsemblePosition zoneDeplacement() {
-		int nbPosMax = 2*this.DEPLACEMENT*(this.DEPLACEMENT+1);
+		int nbPosMax = (int) Math.pow(6, this.DEPLACEMENT); // TEMPORAIRE FAIRE VRAI CALCUL
 		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
 		
 		this.zoneDeplacementAux(this.pos, this.pos, this.DEPLACEMENT, ePos);
@@ -215,6 +218,7 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 		}
 
 		if (!(ePos.contient(pos)) && this.carte.caseDisponible(pos)) {
+			//System.out.println("X Y : " + pos.getX() + "  " + pos.getY());
 			ePos.ajouterPos(pos);
 		}
 		
@@ -222,13 +226,17 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 		int y = pos.getY();
 		
 		// Droite
-		this.zoneDeplacementAux(posInit, new Position(x+1, y), deplacement-1, ePos);
-		// Bas
-		this.zoneDeplacementAux(posInit, new Position(x, y+1), deplacement-1, ePos);
+		this.zoneDeplacementAux(posInit, new Position(x+2, y), deplacement-1, ePos);
 		// Gauche
-		this.zoneDeplacementAux(posInit, new Position(x-1, y), deplacement-1, ePos);
-		// Haut
-		this.zoneDeplacementAux(posInit, new Position(x, y-1), deplacement-1, ePos);
+		this.zoneDeplacementAux(posInit, new Position(x-2, y), deplacement-1, ePos);
+		// Bas Gauche
+		this.zoneDeplacementAux(posInit, new Position(x-1, y+1), deplacement-1, ePos);
+		// Bas Droite
+		this.zoneDeplacementAux(posInit, new Position(x+1, y+1), deplacement-1, ePos);
+		// Haut Gauche
+		this.zoneDeplacementAux(posInit, new Position(x-1, y-1), deplacement-1, ePos);
+		// Haut Droite
+		this.zoneDeplacementAux(posInit, new Position(x+1, y-1), deplacement-1, ePos);
 	}
 	
 	public void seDeplace(Position newPos) {

@@ -67,8 +67,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				carte.toutDessiner(g, caseSurvolee, caseCliquee);
 				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
-					g.setColor(new Color(100,0,0,40));
-					g.fillRect(dragPersoFin.getX()*NB_PIX_CASE, dragPersoFin.getY()*NB_PIX_CASE, NB_PIX_CASE, NB_PIX_CASE);
+
+					carte.dessineCaseCliquee(g, dragPersoFin);
 				}			
 			}
 		};
@@ -222,9 +222,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 			// Effet au deplacement de la souris
 			public void mouseMoved(MouseEvent e) {
-				int x = e.getX()/NB_PIX_CASE;
-				int y = e.getY()/NB_PIX_CASE;
-				caseSurvolee = new Position(x, y);
+				int x = e.getX();
+				int y = e.getY();
+				caseSurvolee = carte.coorToPos(x, y);
 				
 				// affichage des infos des soldats
 				if (caseSurvolee.estValide()) {
@@ -244,10 +244,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 			// creation de l'evenement du dragg 
 			public void mouseDragged(MouseEvent e) {
 				if(dragPerso) {
-					int x = e.getX()/NB_PIX_CASE;
-			        int y = e.getY()/NB_PIX_CASE;
+					int x = e.getX();
+			        int y = e.getY();
 					
-			        Position essaie = new Position(x, y);
+			        Position essaie = carte.coorToPos(x, y);
 			        
 			        Soldat s =(Soldat)carte.getElement(dragPersoInit);
 			        
@@ -256,9 +256,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 			        	return;
 			        	// gerer exeption
 			        }
-			        // mise a niveau des positions
-					dragPersoFin.setX(x);
-					dragPersoFin.setY(y);
+
+					dragPersoFin.setX(essaie.getX());
+					dragPersoFin.setY(essaie.getY());
 					deplacePerso = false;
 					repaint();
 				}
@@ -268,16 +268,15 @@ public class PanneauJeu extends JPanel implements IConfig {
 		// Ecouteur clic souris
 		panneauCarte.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				int x = e.getX()/NB_PIX_CASE;
-				int y = e.getY()/NB_PIX_CASE;
-				
-				Element elem = carte.getElement(new Position(x,y));
+				int x = e.getX();
+				int y = e.getY();
+				Element elem = carte.getElement(carte.coorToPos(x, y));
 				
 				// si on fait un clique gauche
 				if(SwingUtilities.isLeftMouseButton(e)) {
 					// si on est sur le point de deplacé un Heros
 					if(deplacePerso) {
-						caseAction = new Position(x, y);
+						caseAction = carte.coorToPos(x, y);
 						carte.actionHeros(caseCliquee, caseAction);
 						// si on a lancé un combat
 						if(elem instanceof Monstre) {
@@ -291,7 +290,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 						caseAction = null;
 					// si c'est le premier clique, initialisation deplacement
 					}else {
-						caseCliquee = new Position(x, y);		
+						caseCliquee = carte.coorToPos(x, y);		
 						// on initalise le deplacement
 						if (caseCliquee.estValide() && elem instanceof Soldat && dragPerso == false) {
 							deplacePerso = true;
@@ -319,6 +318,26 @@ public class PanneauJeu extends JPanel implements IConfig {
 					dragPerso = false;
 					dragPersoInit = null;
 					dragPersoFin = null;
+
+				// si c'est le premier clique
+				/*
+				}else {
+					caseCliquee = carte.coorToPos(x, y);		
+					// on initalise le deplacement
+					if (caseCliquee.estValide() && elem instanceof Soldat && dragPerso == false) {
+						deplacePerso = true;
+						infoTexte2 = elem.toString();
+						dragPerso = true;
+						dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
+						dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
+
+					} else {
+						caseCliquee = null;
+						deplacePerso = false;
+						infoTexte2 ="";
+						
+					}
+				*/
 				}
 				
 				panneauInfos.repaint();
