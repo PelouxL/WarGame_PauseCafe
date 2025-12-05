@@ -72,7 +72,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				}			
 			}
 		};
-		
+		panneauCarte.setBackground(Color.BLACK);
 		panneauCarte.setBounds(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
 		layers.add(panneauCarte, Integer.valueOf(JLayeredPane.DEFAULT_LAYER));
 
