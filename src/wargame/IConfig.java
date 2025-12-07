@@ -2,21 +2,21 @@ package wargame;
 import java.awt.Color;
 
 public interface IConfig {
-	int LARGEUR_CARTE = 35; int HAUTEUR_CARTE = 35; // en nombre de cases
-	int NB_PIX_CASE = 20; //taille des cases
+	// CONFIGS JEU
+	int LARGEUR_CARTE = 35; int HAUTEUR_CARTE = 35; // nb de cases
+	int NB_PIX_CASE = 20; // taille des cases
 	int NB_HEROS = 6; int NB_MONSTRES = 15; int NB_OBSTACLES = 20;
 	
-	// OFFSET X POUR AFFICHAGE
+	// OFFSET X POUR AFFICHAGE CARTE
 	int OFFSET_X = NB_PIX_CASE / 2;
 	
-	// definition des dimensions des diverses panneaus
+	// PANNEAUX
+	
+	// Largeurs
 	int LARGEUR_PANNEAU_L = 200;   // panneaux latéraux (gauche & droite)
 	int LARGEUR_PANNEAU_CARTE = LARGEUR_CARTE * NB_PIX_CASE + OFFSET_X;  // 35 * 20 = 700
-
-	// -------- Largeur totale = gauche + carte + droite --------
-	int LARGEUR_FENETRE = LARGEUR_PANNEAU_CARTE + LARGEUR_PANNEAU_L; 
-	// soit 700 + 200 = 900
-
+	int LARGEUR_FENETRE = LARGEUR_PANNEAU_CARTE + LARGEUR_PANNEAU_L; // 700 + 200 = 900
+	
 	// Hauteurs
 	int HAUTEUR_PANNEAU_LOG = 150;
 	int HAUTEUR_PANNEAU_CARTE = HAUTEUR_CARTE * (NB_PIX_CASE - 5) + OFFSET_X; // 25 * 20 = 500
@@ -24,8 +24,6 @@ public interface IConfig {
 	int HAUTEUR_PANNEAU_BAS = 100;
 	int HAUTEUR_PANNEAU_HAUT = 50;
 	int HAUTEUR_JMENU = 30;
-
-	// -------- Hauteur totale --------
 	int HAUTEUR_FENETRE = HAUTEUR_PANNEAU_HAUT + HAUTEUR_PANNEAU_CARTE + HAUTEUR_PANNEAU_BAS;
 
 	int LARGEUR_PANNEAU_LOG = LARGEUR_PANNEAU_CARTE/2;
@@ -36,25 +34,29 @@ public interface IConfig {
 	int POSITION_X = 10; int POSITION_Y = 10; // Position de la fen�tre
 	int POSITION_LOG_X = 0; int POSITION_LOG_Y = HAUTEUR_PANNEAU_CARTE - HAUTEUR_PANNEAU_LOG;
 	
-	// COULEURS
+	// Couleurs
 	Color COULEUR_VIDE = Color.white;
 	Color COULEUR_INCONNU = Color.lightGray;
 	Color COULEUR_TEXTE = Color.black;
 	Color COULEUR_PANNEAU_TRANSPARENT = new Color(150,150,150,230);
 	
-	// Couleur Soldats
+	// SOLDATS
 	Color COULEUR_HEROS = Color.red;
 	Color COULEUR_HEROS_DEJA_JOUE = Color.pink;
 	Color COULEUR_MONSTRES = Color.black;
 	
-	// Couleur Obstacles
+	// TERRAINS
+	Color COULEUR_HERBE = Color.green; // vert clair
 	Color COULEUR_EAU = Color.blue;
 	Color COULEUR_FORET = Color.decode("#0A5C36"); // vert fonce 
 	Color COULEUR_ROCHER = Color.gray;
-	
-	// Couleur Terrains
-	Color COULEUR_PONT = Color.decode("#8B4513"); // marron
-	Color COULEUR_HERBE = Color.green; // vert clair
+	Color COULEUR_PONT  = Color.decode("#8B4513"); // marron
+	/* idees de terrains à ajouter
+	 *  - feu : degats quand fini dessus
+	 *  - acide : empoisone (dot)
+	 *  - eau : l'eau devient un terrain, on pourrait etre emporté par le courant quand on reste dedans? sinon deplacement/2
+	 *  - foret : vision reduite et invisible pour les ennemis
+	 */
 	
 	
 }

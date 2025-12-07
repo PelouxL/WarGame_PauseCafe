@@ -2,7 +2,7 @@ package wargame;
 
 import java.io.Serializable;
 
-public abstract class Soldat extends Element implements ISoldat, Serializable{
+public abstract class Soldat implements ISoldat, Serializable{
 	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3;
 
 	private int pointsDeVie;
@@ -207,18 +207,17 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 			return;
 		}
 		
-		Element e = this.carte.getElement(pos);
+		Soldat soldat = this.carte.getSoldat(pos);
 		
 		if (deplacement <= -1 
-			|| e instanceof Obstacle
-			|| (this instanceof Heros && e instanceof Monstre)
-			|| (this instanceof Monstre && e instanceof Heros)
+			|| this.carte.getCase(pos).getType().getAccessible() == false
+			|| (this instanceof Heros && soldat instanceof Monstre)
+			|| (this instanceof Monstre && soldat instanceof Heros)
 			) {
 			return;
 		}
 
-		if (!(ePos.contient(pos)) && this.carte.caseDisponible(pos)) {
-			//System.out.println("X Y : " + pos.getX() + "  " + pos.getY());
+		if (!(ePos.contient(pos)) && this.carte.getCase(pos).estLibre()) {
 			ePos.ajouterPos(pos);
 		}
 		

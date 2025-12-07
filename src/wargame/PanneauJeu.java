@@ -229,9 +229,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 				
 				// affichage des infos des soldats
 				if (caseSurvolee.estValide()) {
-					Element elem = carte.getElement(caseSurvolee);
-					if(elem instanceof Soldat) {
-						infoTexte = elem.toString();
+					Soldat soldat = carte.getSoldat(caseSurvolee);
+					if(soldat instanceof Soldat) {
+						infoTexte = soldat.toString();
 					}else {
 						infoTexte ="";
 					}
@@ -250,7 +250,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					
 			        Position essaie = carte.coorToPos(x, y);
 			        
-			        Soldat s =(Soldat)carte.getElement(dragPersoInit);
+			        Soldat s = carte.getSoldat(dragPersoInit);
 			        
 			        // permet de ne pas sortir des deplacements
 			        if(!s.zoneDeplacement().contient(essaie) && !(essaie.equals(dragPersoInit))) {
@@ -271,7 +271,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 			public void mousePressed(MouseEvent e) {
 				int x = e.getX();
 				int y = e.getY();
-				Element elem = carte.getElement(carte.coorToPos(x, y));
+				Soldat soldat = carte.getSoldat(carte.coorToPos(x, y));
 				
 				// si on fait un clique gauche
 				if(SwingUtilities.isLeftMouseButton(e)) {
@@ -280,7 +280,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 						caseAction = carte.coorToPos(x, y);
 						carte.actionHeros(caseCliquee, caseAction);
 						// si on a lancé un combat
-						if(elem instanceof Monstre) {
+						if(soldat instanceof Monstre) {
 							updateCombatLog();
 						}
 						
@@ -293,9 +293,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 					}else {
 						caseCliquee = carte.coorToPos(x, y);		
 						// on initalise le deplacement
-						if (caseCliquee.estValide() && elem instanceof Soldat && dragPerso == false) {
+						if (caseCliquee.estValide() && soldat instanceof Soldat && dragPerso == false) {
 							deplacePerso = true;
-							infoTexte2 = elem.toString();
+							infoTexte2 = soldat.toString();
 							
 							// initie le dragg
 							dragPerso = true;
@@ -354,7 +354,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 						// surement gerer l'exeptionnelle 
 					}
 					// on pose
-					carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getElement(dragPersoInit)));	
+					carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getSoldat(dragPersoInit)));	
 					infoTexte2="";
 					infoTexte="";
 				}		

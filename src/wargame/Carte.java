@@ -8,11 +8,11 @@ import java.util.List;
 
 import wargame.ISoldat.TypesH;
 import wargame.ISoldat.TypesM;
+import wargame.Terrain.TypeTerrain;
 
 public class Carte implements IConfig, ICarte, Serializable {
-	private Element[][] carte;
+	private Terrain[][] carte;
 	private int[][] visibilite;
-	// private int[][] terrain;
 	
 	private Heros[] listeHeros;
 	private int nbHeros = 0;
@@ -23,34 +23,30 @@ public class Carte implements IConfig, ICarte, Serializable {
 	private int nbLog = 1;
 
 	public Carte() {
-		carte = new Element[LARGEUR_CARTE*2][HAUTEUR_CARTE];
+		carte = new Terrain[LARGEUR_CARTE*2][HAUTEUR_CARTE];
 		visibilite = new int[LARGEUR_CARTE*2][HAUTEUR_CARTE];
 		
 		listeHeros = new Heros[NB_HEROS];
 		listeMonstres = new Monstre[NB_MONSTRES];
 		
-		// Parcours des matrices
+		// Remplissage de la matrice
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
-				carte[i][j] = null;
+				this.carte[i][j] = new Terrain(Terrain.TypeTerrain.HERBE); // Herbe par defaut
 				visibilite[i][j] = 0;
 			}
 		}
 		
-		Position p;
-		
 		// OBSTACLES
 		// Placement de la riviere
-		p = trouvePositionVide();
-		this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
-		//riviere(p); // Ajouter des ponts
-		System.out.println("x y " + p.getX() + " " + p.getY());
+		Position p = trouvePositionVide();
+		this.carte[p.getX()][p.getY()] =  new Terrain(Terrain.TypeTerrain.EAU);
 		riviere(p);
 		
 		// Placement des autres obstacles
 		for(int i = 0; i < NB_OBSTACLES; i++) {
 			p = trouvePositionVide();
-			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.getObstacleAlea(), p);
+			this.carte[p.getX()][p.getY()] = new Terrain(Terrain.TypeTerrain.getTerrainAlea());
 			
 		}
 		// OBSTACLES
@@ -60,8 +56,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 			p = trouvePositionVide();
 			Heros heros = new Heros(this, TypesH.getTypeHAlea(), "Goat"+i, p);
 			this.listeHeros[nbHeros++] = heros;
-			this.carte[p.getX()][p.getY()] = heros;
-			this.visibilite = ((Soldat) this.carte[p.getX()][p.getY()]).setCasesVisibles(this.visibilite);
+			this.carte[p.getX()][p.getY()].occuper(heros);
+			this.visibilite = heros.setCasesVisibles(this.visibilite);
 		}
 	    // HEROS
 	    
@@ -70,7 +66,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			p = trouvePositionVide();
 			Monstre monstre = new Monstre(this, TypesM.getTypeMAlea(), "Kostine"+i, p);
 			this.listeMonstres[nbMonstre++] = monstre;
-			this.carte[p.getX()][p.getY()] = monstre;
+			this.carte[p.getX()][p.getY()].occuper(monstre);;
 		}
 		// MONSTRES
 				
@@ -103,7 +99,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		while (i < HAUTEUR_CARTE) {
 			Position p = new Position(debut_x + i%2, i);
-			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
+			this.carte[p.getX()][p.getY()] = new Terrain(Terrain.TypeTerrain.EAU);
 			i++;
 		}
 		// Ponts
@@ -129,8 +125,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 		}
 		System.out.println(" pont1 pont2 : " + x_pont1 + "   " + x_pont2);
-		this.carte[x_pont1][y_pont1] = null;
-		this.carte[x_pont2][y_pont2] = null;	
+		this.carte[x_pont1][y_pont1] = new Terrain(TypeTerrain.PONT);
+		this.carte[x_pont2][y_pont2] = new Terrain(TypeTerrain.PONT);	
 	}
 	
 	private void riviereH(Position pos) {
@@ -138,7 +134,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		int j = pos.getY() % 2;
 		while (j < LARGEUR_CARTE*2) {
 			Position p = new Position(j, pos.getY());
-			this.carte[p.getX()][p.getY()] = new Obstacle(Obstacle.TypeObstacle.EAU, p);
+			this.carte[p.getX()][p.getY()] = new Terrain(Terrain.TypeTerrain.EAU);
 			j += 2;
 		}
 		// Ponts
@@ -150,24 +146,15 @@ public class Carte implements IConfig, ICarte, Serializable {
 		x_pont1 += pos.getY() % 2;
 		x_pont2 += pos.getX();
 		System.out.println("pont1 pont2 : " + x_pont1 + "   " + x_pont2);
-		this.carte[x_pont1][pos.getY()] = null;
-		this.carte[x_pont2][pos.getY()] = null;
-		/*
-		pont1 = (int) (Math.random() * pos.getX() + 1);
-		pont2 = (int) (Math.random() * (LARGEUR_CARTE*2-pos.getX()) + pos.getX());
-		System.out.println("pont1 pont2 : " + pos.getX() + "   " + pos.getY());
-		pont1 = pont1 - (pont1+pos.getY()) % 2;
-		pont2 = pont2 - (pont2+pos.getY()) % 2;
-		System.out.println("pont1 pont2 : " + pont1 + "   " + pont2);
-		this.carte[pont1][pos.getY()] = null;
-		this.carte[pont2][pos.getY()] = null;
-		*/
+		this.carte[x_pont1][pos.getY()] = new Terrain(TypeTerrain.PONT);
+		this.carte[x_pont2][pos.getY()] = new Terrain(TypeTerrain.PONT);
 	}
 	// RIVIERE
 	
 	
 	// ELEMENT
-	public Element getElement(Position pos) {	
+	public Terrain getCase(Position pos) {
+		
 		int x = pos.getX();
 		int y = pos.getY();
 		
@@ -175,19 +162,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 			return this.carte[x][y];
 		}
 		
-		System.out.println("Erreur getElement() : x = "+x+", y = "+y);
+		System.out.println("Erreur getCase() : x = "+x+", y = "+y);
 		return null;
 	}
 	
-	public boolean caseDisponible(Position pos) {
-		if (!pos.estValide()
-			|| this.getElement(pos) != null
-			|| this.getElement(pos) instanceof Soldat
-			|| this.getElement(pos) instanceof Obstacle) {
-			return false;
-		}
-		return true;
-	}	
+	public Soldat getSoldat(Position pos) {	
+		return this.getCase(pos).getOccupant();
+	}
 	// ELEMENT
 	
 	
@@ -218,18 +199,18 @@ public class Carte implements IConfig, ICarte, Serializable {
 		do {
 			x = (int) (Math.random()*LARGEUR_CARTE*2);
 			y = (int) (Math.random()*HAUTEUR_CARTE);
-			if (y % 2 == 0) {
-				x -= x % 2;
-			} else {
-				x += (x+1) % 2;
-			}
-			pos = new Position(x, y);			
-		} while (!pos.estValide() || this.getElement(pos) != null);
+			
+			if (y % 2 == 0) x -= x % 2;
+			else x += (x+1) % 2;
+			
+			pos = new Position(x, y);	
+			
+		} while (!pos.estValide() || !this.getCase(pos).estLibre());
 		
 		return pos;
 	}
 
-	public Position trouvePositionVide(Position pos) {
+	public Position trouvePositionVide(Position pos) { // utile?
 		EnsemblePosition listePos = new EnsemblePosition(8);
 		int i;
 		int dx, dy, x, y;
@@ -244,7 +225,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			y = pos.getY() + dy;
 			// On cree une position et on verifie qu'elle correspond : si oui alors inserer dans liste
 			Position newp = new Position(x, y);
-			if (newp.estValide() && getElement(newp) == null) {
+			if (newp.estValide() && !this.carte[x][y].estLibre()) {
 				listePos.ajouterPos(newp);
 			}
 		}
@@ -259,7 +240,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// TOUR DES MONSTRES
 	public Heros trouveHeros() { return this.listeHeros[(int)(Math.random()*nbHeros-1)]; }
 	
-	public Heros trouveHeros(Position pos) {
+	/* public Heros trouveHeros(Position pos) {
 		
 		/* 
 		 * Ameliorations possibles :
@@ -271,7 +252,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		 */
 		
 		// On regarde d'abord s'il y a des heros adjacents
-		Heros heros = this.trouveHerosMelee(pos);
+		// Heros heros = this.trouveHerosMelee(pos);
 		
 		// Si aucun heros n'est trouvé alors on regarde les heros a distance
 		/* if (heros == null) {
@@ -279,14 +260,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 		} */
 		
 		// Si toujours aucun heros n'est trouve alors on cherche un heros sur la carte
-		if (heros == null) {
+		/* if (heros == null) {
 			heros = this.trouveHeros();
 		}
 		
-		return heros;
-	}
+		return heros; */
 	
-	private Heros trouveHerosMelee(Position pos) {
+	/* private Heros trouveHerosMelee(Position pos) {
 		Heros[] HerosMelee = new Heros[6];
 		int nbHerosMelee = 0;
 		int i;
@@ -307,7 +287,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		if (nbHerosMelee == 0) { return null; }
 		
 		return HerosMelee[(int)(Math.random()*nbHerosMelee-1)];
-	}
+	} */
 	
 	/*
 	private Heros trouveHerosDistance(Position pos, Int portee) {
@@ -406,34 +386,47 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// ACTION SOLDAT (actionHeros a revoir surement)
 	public boolean actionHeros(Position pos, Position pos2) {
 		
-		Element e = this.getElement(pos);
+		if (!pos.estValide() || !pos2.estValide()
+			|| getSoldat(pos) == null
+			|| !(getSoldat(pos) instanceof Heros)
+			|| getSoldat(pos).getAction() <= 0) {
+			return false;
+		} 
 		
-		if (!(e instanceof Heros) || ((Heros)e).getAction() <= 0) return false;
-		
-		Heros heros = (Heros)e;
-		Element caseCible = this.getElement(pos2);
+		Heros heros = (Heros) (this.carte[pos.getX()][pos.getY()].getOccupant());
+		Terrain caseCible = this.carte[pos2.getX()][pos2.getY()];
 		
 		// Deplacement si case vide
-		if (caseCible == null) {
+		if (caseCible.estLibre()) {
 			this.deplaceSoldat(pos2, heros);
-		// Combat
-		} else if (caseCible instanceof Monstre && pos.distance(pos2) <= heros.getTir()) { // on regarde que tir
-			Monstre monstre = (Monstre)caseCible;
-			heros.combat(monstre);
+			// heros.ajouterAction(-1);
 		}
 		
-		
+		// Combat
+		else if (caseCible.getOccupant() instanceof Monstre && pos.distance(pos2) <= heros.getTir()) {
+			Monstre monstre = (Monstre) caseCible.getOccupant();
+			heros.combat(monstre);
+		}
+
 		return true;
 	}
 	
+	/* 
+	 * A modifier si on decide de pouvoir deplacer un soldat via autre chose qu'un deplacement (ex : competence)
+	 * Reduction et verif des point d'action a faire en dehors de la fonction si on change
+	 */
 	public boolean deplaceSoldat(Position pos, Soldat soldat) {
+			int x = pos.getX();
+			int y = pos.getY();
 		
-			EnsemblePosition ePos = soldat.zoneDeplacement();
-			
-			if(ePos.contient(pos) && soldat.getAction() > 0) {
-				this.carte[soldat.getPos().getX()][soldat.getPos().getY()] = null;
-				this.carte[pos.getX()][pos.getY()] = soldat;
+			if(carte[x][y].estLibre() && soldat.getAction() > 0) {
+				int xSoldat = soldat.getPos().getX();
+				int ySoldat = soldat.getPos().getY();
+				
+				this.carte[xSoldat][ySoldat].liberer();
+				this.carte[pos.getX()][pos.getY()].occuper(soldat);
 				soldat.seDeplace(pos);
+				
 				soldat.ajouterAction(-1);
 				return true;
 			}
@@ -470,7 +463,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				}
 			}	
 			
-			this.carte[soldat.getPos().getX()][soldat.getPos().getY()] = null;
+			this.carte[soldat.getPos().getX()][soldat.getPos().getY()].liberer();;
 		}
 	}
 	// MORT
@@ -492,6 +485,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee) {
+		
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
 				if ((i+j) % 2 == 1) {
@@ -499,58 +493,43 @@ public class Carte implements IConfig, ICarte, Serializable {
 				}
 				
 				Position pos = new Position(i, j);
-				Element e = getElement(pos);
 				Color couleur = COULEUR_VIDE;
 				
-				if(e instanceof Heros) {
-					couleur = COULEUR_HEROS;
-				}else if(e instanceof Monstre) {
-					couleur = COULEUR_MONSTRES;
-					
-				}else if(e instanceof Obstacle) {
-					switch(((Obstacle)e).getType()) {
-					case ROCHER:
-						couleur = COULEUR_ROCHER;
-						break;
-					case EAU:
-						couleur = COULEUR_EAU;
-						break;
-					case FORET:
-						couleur = COULEUR_FORET;
-						break;
-					}
+				if (getSoldat(pos) == null) {
+					couleur = carte[i][j].getType().getCouleur();
+				} else {
+					Soldat soldat = carte[i][j].getOccupant();
+					if (soldat instanceof Heros) couleur = COULEUR_HEROS;
+					if (soldat instanceof Monstre) couleur = COULEUR_MONSTRES;
 				}
 				
 				// /!\ IMPORTANT POUR LES TESTS /!\
 				// Décommenter le && en-dessous si on veut tester la carte en voyant tout
-				if (getVisibilite(pos) == 0
+				/* if (getVisibilite(pos) == 0
 					&& getVisibilite(pos) == 1
 					) {
 					couleur = COULEUR_INCONNU;
-				}
+				} */
 				
 				dessineCase(g, couleur, pos);
 			}
 			
+			// Zone de deplacement quand case survolee
 			if (caseSurvolee != null 
 				&& caseCliquee == null
 				&& caseSurvolee.estValide() 
-				&& getElement(caseSurvolee) instanceof Soldat) {
+				&& getSoldat(caseSurvolee) != null) {
 					
-				// System.out.println("Coor x : "+x+", y : "+y);
-				Soldat soldat = (Soldat)getElement(caseSurvolee);
-					
-				dessineZoneDeplacement(g, soldat);
+				dessineZoneDeplacement(g, getSoldat(caseSurvolee));
 			}
 				
-			// Ajout de la case cliquée
+			// Zone de deplacement quand case cliquee
 			if (caseCliquee != null
 				&& caseCliquee.estValide()
-				&& getElement(caseCliquee) instanceof Heros) {
+				&& getSoldat(caseCliquee) != null
+				&& getSoldat(caseCliquee) instanceof Heros) {
 					
-				Soldat soldatClic = (Soldat) getElement(caseCliquee);
-					
-				dessineZoneDeplacement(g, soldatClic);
+				dessineZoneDeplacement(g, getSoldat(caseCliquee));
 				dessineCaseCliquee(g, caseCliquee);
 			}
 		}
@@ -591,12 +570,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 		this.dessineContourHexagone(g, x, y);
 		
 		// Ajout des numeros 
-		Element elem = getElement(pos);
+		Soldat soldat = getSoldat(pos);
 		g.setColor(Color.WHITE);
-		if(elem instanceof Monstre) {
-			g.drawString("" + ((Soldat)elem).getNum(), x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
-		}else if(elem instanceof Heros) {
-			char lettre = (char)('A' + ((Soldat)elem).getNum());
+		if(soldat instanceof Monstre) {
+			g.drawString("" + soldat.getNum(), x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
+		}else if(soldat instanceof Heros) {
+			char lettre = (char)('A' + soldat.getNum());
 			g.drawString("" + lettre, x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
 		}
 	}
