@@ -1,6 +1,8 @@
 package wargame;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Soldat extends Element implements ISoldat, Serializable{
 	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3;
@@ -14,6 +16,8 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 	private static int nbHeros = 0;
 	private static int nbMonstre = 0;
 	private final int NUM;
+	
+	private List<Competence> Competences = new ArrayList<>();
 	
 	public Soldat(Carte carte, int pts, int portee, int puiss, int tir, Position pos) {
 		POINT_DE_VIE = pointsDeVie = pts;
@@ -30,6 +34,8 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 		}else {
 			NUM = -1;
 		}
+		
+		initialiserCompetence();
 	}
 	
 	
@@ -96,6 +102,31 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 	}
 	// PORTEE VISUELLE
 	
+	
+	// COMPETENCE
+	public void initialiserCompetence() {
+		if(this instanceof Heros) {
+			ajouterCompetence(new Competence(TypeCompetence.BOULE_DE_FEU));
+			ajouterCompetence(new Competence(TypeCompetence.SOIN));
+		}else if(this instanceof Monstre){
+			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
+		}
+	}
+	
+	public void ajouterCompetence(Competence competence) {
+		this.Competences.add(competence);
+	}
+	
+	
+	public void decrementerTempsRecharge() {
+		for(Competence c : Competences) {
+			c.decrementerTempsRestant();
+		}
+	}
+	
+	public List<Competence> getCompetences() {
+		return Competences;
+	}
 	
 	// COMBAT
 	public boolean combat(Soldat soldat) {

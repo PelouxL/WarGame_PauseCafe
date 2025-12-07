@@ -171,7 +171,21 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 	
 		// --------------------------- Creation du panneau droit -------------------- //		
-		panneauDroit = new JPanel();
+		panneauDroit = new JPanel() {
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+			
+				if(caseCliquee != null) {
+					Element elem = carte.getElement(caseCliquee);
+					if(elem instanceof Heros) {
+						for(Competence c : ((Soldat)elem).getCompetences()) {
+							g.drawString(""+c.getType().getNom(), 100, 50);
+							c.dessinerCompetence(g);
+						}
+					}
+				}
+			}
+		};
 		
 		panneauDroit.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));	
 		panneauDroit.setBackground(Color.decode("#8B4513"));
@@ -261,7 +275,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					dragPersoFin.setX(essaie.getX());
 					dragPersoFin.setY(essaie.getY());
 					deplacePerso = false;
-					repaint();
+					panneauCarte.repaint();
 				}
 			}
 		});
@@ -301,7 +315,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 							dragPerso = true;
 							dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
 							dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
-	
 						} else {
 							// renitialise une fois clique en dehors 
 							caseCliquee = null;
@@ -343,6 +356,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				
 				panneauInfos.repaint();
 				panneauCarte.repaint();
+				panneauDroit.repaint();
 			}
 			
 			public void mouseReleased(MouseEvent e) {
