@@ -193,10 +193,13 @@ public class PanneauJeu extends JPanel implements IConfig {
 		
 		// --------------------------- Creation de panneau haut ---------------------//	
 		JPanel panneauHaut = new JPanel();
+		JTextArea tourActuel = new JTextArea();
 			
         panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
 		panneauHaut.setBackground(Color.decode("#8B4513"));
 		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		panneauHaut.add(tourActuel);
+		tourActuel.setText(Integer.toString(carte.getNbTours()));
 
 		// ---------- Creation des boutons de la carte ---------- //
 		boutonFin = new JButton("Fin de tour");
@@ -207,6 +210,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 		boutonFin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				carte.jouerSoldats();
+				tourActuel.setText(Integer.toString(carte.getNbTours()));
+				tourActuel.repaint();
 				panneauCarte.repaint();
 				System.out.println("Termine-moi !");
 			}
@@ -227,12 +232,12 @@ public class PanneauJeu extends JPanel implements IConfig {
 		add(panneauHaut, BorderLayout.NORTH);
 		add(layers, BorderLayout.CENTER);
 		
-		// ------------------------- Taile du panneau principal ------------------- //		
+		// ------------------------- Taille du panneau principal ------------------- //		
 		setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
         setMinimumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
         setMaximumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
         
-		// ------------------------- Ajout des ecouteur -------------------------- //
+		// ------------------------- Ajout des ecouteurs -------------------------- //
 		panneauCarte.addMouseMotionListener(new MouseMotionAdapter() {
 			
 			// Effet au deplacement de la souris
