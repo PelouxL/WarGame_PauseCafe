@@ -7,6 +7,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 
 import java.awt.Graphics;
 import java.awt.Dimension;
@@ -167,35 +169,21 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    };
 			 
 	    panneauInfos.setPreferredSize(new Dimension(LARGEUR_PANNEAU_BAS, HAUTEUR_PANNEAU_BAS));
-		panneauInfos.setBackground(Color.decode("#8B4513"));
+		panneauInfos.setBackground(COULEUR_PLATEAU);
 		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 	
 		// --------------------------- Creation du panneau droit -------------------- //		
-		panneauDroit = new JPanel() {
-			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
-			
-				if(caseCliquee != null) {
-					Element elem = carte.getElement(caseCliquee);
-					if(elem instanceof Heros) {
-						for(Competence c : ((Soldat)elem).getCompetences()) {
-							g.drawString(""+c.getType().getNom(), 100, 50);
-							c.dessinerCompetence(g);
-						}
-					}
-				}
-			}
-		};
-		
+		panneauDroit = new JPanel();
+		panneauDroit.setLayout(new BoxLayout(panneauDroit, BoxLayout.Y_AXIS));
 		panneauDroit.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));	
-		panneauDroit.setBackground(Color.decode("#8B4513"));
+		panneauDroit.setBackground(COULEUR_PLATEAU);
 		panneauDroit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		
 		// --------------------------- Creation de panneau haut ---------------------//	
 		JPanel panneauHaut = new JPanel();
 			
         panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
-		panneauHaut.setBackground(Color.decode("#8B4513"));
+		panneauHaut.setBackground(COULEUR_PLATEAU);
 		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
 		// ---------- Creation des boutons de la carte ---------- //
@@ -309,6 +297,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 						// on initalise le deplacement
 						if (caseCliquee.estValide() && elem instanceof Soldat && dragPerso == false) {
 							deplacePerso = true;
+							mettreAJourPanneauDroit();
 							infoTexte2 = elem.toString();
 							
 							// initie le dragg
@@ -317,9 +306,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 							dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
 						} else {
 							// renitialise une fois clique en dehors 
+							nettoyerPanneauDroit();
 							caseCliquee = null;
 							deplacePerso = false;
 							infoTexte2 ="";
+							
 							
 						}
 					}
@@ -332,6 +323,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					dragPerso = false;
 					dragPersoInit = null;
 					dragPersoFin = null;
+					nettoyerPanneauDroit();
 
 				// si c'est le premier clique
 				/*
@@ -378,6 +370,46 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 		});
 		
+	}
+
+	
+	// -------------------COMPETENCE------------------
+	private void mettreAJourPanneauDroit() {
+		panneauDroit.removeAll();
+		if(caseCliquee != null) {
+			Element elem = carte.getElement(caseCliquee);
+			if(elem instanceof Heros) {
+				for(Competence c : ((Soldat)elem).getCompetences()) {							
+					JButton boutonCompetence = creeBoutonCompetence(c);
+					//boutonCompetence.setBorderPainted(false);
+					panneauDroit.add(boutonCompetence);
+				}
+			}
+		}
+	
+		panneauDroit.revalidate();
+		panneauDroit.repaint();
+	}
+	
+	private JButton creeBoutonCompetence(Competence competence) {
+		JButton boutonCompetence = new JButton(competence.getType().getNom());
+			
+		ImageIcon icon = new ImageIcon(competence.trouverImg()); 
+	    boutonCompetence.setIcon(icon); 
+	    boutonCompetence.setForeground(Color.white);
+	    boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+	 
+	    boutonCompetence.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+	               // utiliserCompetence(competence); // Appeler la fonction qui utilise la compétence
+	            }
+	    });
+			
+		return boutonCompetence;
+	}
+	
+	private void nettoyerPanneauDroit() {
+		panneauDroit.removeAll();
 	}
 	
 	

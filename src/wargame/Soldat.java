@@ -1,5 +1,6 @@
 package wargame;
 
+import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +109,9 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 		if(this instanceof Heros) {
 			ajouterCompetence(new Competence(TypeCompetence.BOULE_DE_FEU));
 			ajouterCompetence(new Competence(TypeCompetence.SOIN));
+			ajouterCompetence(new Competence(TypeCompetence.SOIN_DE_ZONE));
+			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
+			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
 		}else if(this instanceof Monstre){
 			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
 		}
@@ -127,6 +131,7 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 	public List<Competence> getCompetences() {
 		return Competences;
 	}
+	
 	
 	// COMBAT
 	public boolean combat(Soldat soldat) {

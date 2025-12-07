@@ -41,6 +41,8 @@ public interface IConfig {
 	Color COULEUR_INCONNU = Color.lightGray;
 	Color COULEUR_TEXTE = Color.black;
 	Color COULEUR_PANNEAU_TRANSPARENT = new Color(150,150,150,230);
+	Color COULEUR_PLATEAU = Color.decode("#8B4513");
+	Color COULEUR_BOUTON_COMP = Color.decode("#260923");
 	
 	// Couleur Soldats
 	Color COULEUR_HEROS = Color.red;

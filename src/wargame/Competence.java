@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.io.File;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 public class Competence {
 	private final TypeCompetence type;
@@ -15,7 +16,9 @@ public class Competence {
 	public Competence(TypeCompetence type) {
 		this.type = type;
 		tempsRestantCompetence = 0;
-		this.imageCompetence = new ImageIcon("./images/icon_comp_boule_de_feu.png").getImage();
+		
+
+		this.imageCompetence = new ImageIcon(trouverImg()).getImage();
 	}
 	
 	public TypeCompetence getType() {
@@ -55,19 +58,48 @@ public class Competence {
 		return tempsRestantCompetence; 
 	}
 
-	public void dessinerCompetence(Graphics g) {
-		System.out.println("dqsdqd");
+	public void dessinerCompetence(Graphics g, int x, int y) {
 		g.setColor(Color.black);
-		g.fillRect(8, 8, 55, 55);
+		g.fillRect(x, y, 55, 55);
+		g.drawRect(x, y, 150, 55);
 		if(imageCompetence != null) {
-			g.drawImage(imageCompetence, 10, 10, 50, 50, null);
+			g.drawImage(imageCompetence, x, y, 50, 55, null);
 		}else {
 			System.out.println("l'image ne charge pas !");
-
 		}
+		g.drawString("" + type.getNom(), x+60, y+30);
 	}
 	
 	   public void changerImageCompetence(String cheminImage) {
 	        this.imageCompetence = new ImageIcon(cheminImage).getImage();  // Charge une nouvelle image
 	    }
+	   
+	   
+	   public String trouverImg() {
+		   String path = "./images/comp/icon_comp_";
+		   switch(type.getNom()) {
+		   case "boule de feu":
+			   path +="boule_de_feu";
+			   break;
+		   case "soin":
+			   path += "soin";
+			   break;
+		   case "soin de zone":
+			   path += "soin_de_zone";
+			   break;
+		   case "coup d'épée":
+			   path += "coup_epee";
+			   break;
+		   case "tir a porter":
+			   path += "tir_a_porter";
+			   break;
+		   case "default":
+			   path += "default";
+			   break;
+		   }
+		   
+	   path += ".png";
+	   return path;
+	   }
+	   
 }
