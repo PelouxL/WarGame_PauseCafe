@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Soldat extends Element implements ISoldat, Serializable{
+public abstract class Soldat implements ISoldat, Serializable{
 	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3;
 
 	private int pointsDeVie;
@@ -107,13 +107,13 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 	// COMPETENCE
 	public void initialiserCompetence() {
 		if(this instanceof Heros) {
-			ajouterCompetence(new Competence(TypeCompetence.BOULE_DE_FEU));
-			ajouterCompetence(new Competence(TypeCompetence.SOIN));
-			ajouterCompetence(new Competence(TypeCompetence.SOIN_DE_ZONE));
-			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
-			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
+			ajouterCompetence(new Competence(Competence.TypeCompetence.BOULE_DE_FEU));
+			ajouterCompetence(new Competence(Competence.TypeCompetence.SOIN));
+			ajouterCompetence(new Competence(Competence.TypeCompetence.SOIN_DE_ZONE));
+			ajouterCompetence(new Competence(Competence.TypeCompetence.TIR_A_PORTER));
+			ajouterCompetence(new Competence(Competence.TypeCompetence.COUP_EPEE));
 		}else if(this instanceof Monstre){
-			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
+			ajouterCompetence(new Competence(Competence.TypeCompetence.COUP_EPEE));
 		}
 	}
 	
@@ -232,7 +232,6 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
 		
 		this.zoneDeplacementAux(this.pos, this.pos, this.DEPLACEMENT, ePos);
-		// Penser a retirer la pos initiale de la liste
 		
 		return ePos;
 	}
@@ -243,18 +242,17 @@ public abstract class Soldat extends Element implements ISoldat, Serializable{
 			return;
 		}
 		
-		Element e = this.carte.getElement(pos);
+		Soldat soldat = this.carte.getSoldat(pos);
 		
 		if (deplacement <= -1 
-			|| e instanceof Obstacle
-			|| (this instanceof Heros && e instanceof Monstre)
-			|| (this instanceof Monstre && e instanceof Heros)
+			|| this.carte.getCase(pos).getType().getAccessible() == false
+			|| (this instanceof Heros && soldat instanceof Monstre)
+			|| (this instanceof Monstre && soldat instanceof Heros)
 			) {
 			return;
 		}
 
-		if (!(ePos.contient(pos)) && this.carte.caseDisponible(pos)) {
-			//System.out.println("X Y : " + pos.getX() + "  " + pos.getY());
+		if (!(ePos.contient(pos)) && this.carte.getCase(pos).estLibre()) {
 			ePos.ajouterPos(pos);
 		}
 		
