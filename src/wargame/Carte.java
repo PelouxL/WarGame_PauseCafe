@@ -418,8 +418,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public boolean deplaceSoldat(Position pos, Soldat soldat) {
 			int x = pos.getX();
 			int y = pos.getY();
+			EnsemblePosition ePos = soldat.zoneDeplacement();
 		
-			if(carte[x][y].estLibre() && soldat.getAction() > 0) {
+			if(ePos.contient(pos) && carte[x][y].estLibre() && soldat.getAction() > 0) {
 				int xSoldat = soldat.getPos().getX();
 				int ySoldat = soldat.getPos().getY();
 				
