@@ -11,9 +11,12 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -35,6 +38,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private boolean deplacePerso = false;
 	private boolean dragPerso = false;
 	private boolean afficheLog = false;
+	private boolean choisiComp = false;
 	
 	// information du panneauInfo
 	private String infoTexte ="";
@@ -278,7 +282,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				// si on fait un clique gauche
 				if(SwingUtilities.isLeftMouseButton(e)) {
 					// si on est sur le point de deplacé un Heros
-					if(deplacePerso) {
+					if(deplacePerso && !choisiComp && caseCliquee != null) {
 						caseAction = carte.coorToPos(x, y);
 						carte.actionHeros(caseCliquee, caseAction);
 						// si on a lancé un combat
@@ -291,11 +295,20 @@ public class PanneauJeu extends JPanel implements IConfig {
 						deplacePerso = false;
 						caseCliquee = null;
 						caseAction = null;
+						
+						// le cas où une competence est lancer 
+					}else if(choisiComp) {
+						choisiComp = false;
+						caseCliquee = null;
+						nettoyerPanneauDroit();
+						
+						
 					// si c'est le premier clique, initialisation deplacement
 					}else {
 						caseCliquee = carte.coorToPos(x, y);		
 						// on initalise le deplacement
-						if (caseCliquee.estValide() && soldat instanceof Soldat && dragPerso == false) {
+						if (caseCliquee.estValide() && soldat instanceof Soldat && dragPerso == false && !choisiComp) {
+
 							deplacePerso = true;
 							mettreAJourPanneauDroit();
 							infoTexte2 = soldat.toString();
@@ -306,11 +319,13 @@ public class PanneauJeu extends JPanel implements IConfig {
 							dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
 						} else {
 							// renitialise une fois clique en dehors 
-							nettoyerPanneauDroit();
+							
 							caseCliquee = null;
 							deplacePerso = false;
 							infoTexte2 ="";
 							
+							choisiComp = false;
+							nettoyerPanneauDroit();
 							
 						}
 					}
@@ -323,6 +338,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 					dragPerso = false;
 					dragPersoInit = null;
 					dragPersoFin = null;
+					
+					choisiComp = false;
 					nettoyerPanneauDroit();
 
 				// si c'est le premier clique
@@ -401,8 +418,17 @@ public class PanneauJeu extends JPanel implements IConfig {
 	 
 	    boutonCompetence.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
+	    	changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
+	    			if(!choisiComp) {		
+	    				choisiComp = true;
+	    				
+	    				
+	    			}else {
+	    			choisiComp = false;
 	               // utiliserCompetence(competence); // Appeler la fonction qui utilise la compétence
-	            }
+	    			}
+	    			repaint();
+	    	}
 	    });
 			
 		return boutonCompetence;
@@ -410,8 +436,18 @@ public class PanneauJeu extends JPanel implements IConfig {
 	
 	private void nettoyerPanneauDroit() {
 		panneauDroit.removeAll();
+		setCursor(Cursor.getDefaultCursor());
+		
+		panneauDroit.revalidate();
+		panneauDroit.repaint();
 	}
 	
+	private void changeCurseur(String chemin, int x, int y, String nom) {
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Image image = tk.getImage(chemin);
+		Cursor c = tk.createCustomCursor(image, new java.awt.Point(x,y), nom);
+		setCursor(c);
+	}
 	
 	// Accesseur
 	public Position getCaseSurvolee() {
