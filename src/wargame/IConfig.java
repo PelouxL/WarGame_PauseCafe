@@ -48,11 +48,8 @@ public interface IConfig {
 	Color COULEUR_MONSTRES = Color.black;
 	
 	// TERRAINS
-<<<<<<< HEAD
-	Color COULEUR_HERBE = Color.green; // vert clair
-=======
+
 	Color COULEUR_HERBE = Color.decode("#69C24C"); // vert clair
->>>>>>> Competence
 	Color COULEUR_EAU = Color.blue;
 	Color COULEUR_FORET = Color.decode("#0A5C36"); // vert fonce 
 	Color COULEUR_ROCHER = Color.gray;
