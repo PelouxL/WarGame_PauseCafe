@@ -495,10 +495,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 	
 	public void afficherFinJeu(Graphics g) {
 		int x, y;
-		x = LARGEUR_FENETRE / 2;
-		y = HAUTEUR_FENETRE / 2;
+		x = LARGEUR_PANNEAU_CARTE / 2;
+		y = HAUTEUR_PANNEAU_CARTE / 2;
 		g.setColor(new Color(0, 0, 0, 200));
-		g.fillRect(0, 0, LARGEUR_FENETRE, HAUTEUR_FENETRE);
+		g.fillRect(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
 		
 		g.setColor(Color.WHITE);
 		if (finJeu == 1) {
