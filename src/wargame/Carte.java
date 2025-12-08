@@ -173,6 +173,19 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// ELEMENT
 	
 	
+	// FIN DU JEU
+	public int verifierFinJeu() {
+		if (this.nbHeros == 0) { // IA a gagné
+			return -1;
+		} else {
+			if (this.nbMonstre == 0) { // joueur a gagné
+				return 1;
+			}
+		}
+		return 0; // pas fini
+	}
+	
+	
 	// VISIBILITE
 	public int getVisibilite(Position pos) {
 		if (pos.estValide()) {
@@ -316,7 +329,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 			System.out.println(" -> Debut du tour");
 			
 			// Le monstre cherche le heros le plus proche
-			for (int i=1; i < this.nbHeros; i++) {
+			for (int i=0; i < this.nbHeros; i++) {
+				//System.out.println("NB HEROS -------------------------------------------------------------------------------------------> " + this.nbHeros);
+				//System.out.println("HEROS ==============================================================================================> " + this.listeHeros[0]);
 				Heros test = listeHeros[i];
 				int distanceTest = monstre.getPos().distance(test.getPos());
 				if (distanceTest < distanceHeros) {
@@ -348,13 +363,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 					peutAttaquer = true;
 				}
 				
-				if (peutAttaquer) { // 1er cas : le heros est a portee du monstre
+				if (peutAttaquer && !heros.estMort()) { // 1er cas : le heros est a portee du monstre
 					System.out.println(" - Combat");
 					peutAttaquer = monstre.combat(heros);
 					if (!peutAttaquer) System.out.println(" - n'a aps pu combattre : puis = "+monstre.getPuissance()+", tir = "+monstre.getTir());
 				} 
 				
-				if (!peutAttaquer){ // 2eme cas : le monstre doit se rapprocher de sa cible
+				if (!peutAttaquer || heros.estMort()){ // 2eme cas : le monstre doit se rapprocher de sa cible
 					System.out.println(" - Decide de se rapprocher");
 					
 					// Recuperation la liste des cases accessibles par le monstre
@@ -372,7 +387,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 					
 					if (plusProche.equals(posMonstre)) monstre.setAction(0);
 					else {
-						System.out.println(" - se deplace de "+posMonstre.distance(plusProche)+" cases");
+						//System.out.println(" - se deplace de "+posMonstre.distance(plusProche)+" cases");
 						this.deplaceSoldat(plusProche, monstre);
 						monstre.seDeplace(plusProche);
 					}
@@ -393,6 +408,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		this.tourActuel = TOUR_HEROS;
 		// on remet les actions à tous les héros
 		this.resetActionsHeros();
+		
 	}
 	// TOUR DES MONSTRES
 	
@@ -460,6 +476,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	// MORT
 	public void mort(Soldat soldat) {
+		System.out.println("je suis appelé avec " + soldat.getClass().getSimpleName());
 		if (soldat.getPointsActuels() <= 0) {
 			if (soldat instanceof Heros) {
 				this.nbHeros--;
@@ -485,7 +502,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				}
 			}	
 			
-			this.carte[soldat.getPos().getX()][soldat.getPos().getY()].liberer();;
+			this.carte[soldat.getPos().getX()][soldat.getPos().getY()].liberer();
 		}
 	}
 	// MORT
