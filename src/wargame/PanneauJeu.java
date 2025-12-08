@@ -221,6 +221,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 					//logArea.repaint();
 					panneauCarte.repaint();
 					System.out.println("Termine-moi !");
+				} else {
+					new FenetreMenu();
 				}
 			}
 		});
@@ -499,7 +501,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 		y = HAUTEUR_PANNEAU_CARTE / 2;
 		g.setColor(new Color(0, 0, 0, 200));
 		g.fillRect(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
-		
 		g.setColor(Color.WHITE);
 		if (finJeu == 1) {
 			g.drawString("Vous avez gagné !", x, y);
