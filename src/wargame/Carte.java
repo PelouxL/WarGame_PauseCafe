@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import wargame.ISoldat.TypesH;
 import wargame.ISoldat.TypesM;
 import wargame.Terrain.TypeTerrain;
@@ -18,6 +17,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 	private int nbHeros = 0;
 	private Monstre[] listeMonstres;
 	private int nbMonstre = 0;
+	private int nbTours = 0;
+	private int tourActuel = 0;
 	
 	private List<String> combatLog = new ArrayList<>();
 	private int nbLog = 1;
@@ -300,7 +301,15 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	*/
 	
+	public int getNbTours() {
+		return this.nbTours;
+	}
+	
 	public void jouerSoldats() { // a quoi sert panneau jeu en param?
+		// tour des heros vient de finir
+		this.nbTours++;
+		this.tourActuel = TOUR_MONSTRE;
+		
 		for (Monstre monstre : this.listeMonstres) {
 			Heros heros = listeHeros[0];
 			int distanceHeros = monstre.getPos().distance(heros.getPos());
@@ -379,6 +388,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 			monstre.setAction(2);
 			
 		}
+		// tour des monstres vient de finir
+		this.nbTours++;
+		this.tourActuel = TOUR_HEROS;
+		// on remet les actions à tous les héros
+		this.resetActionsHeros();
 	}
 	// TOUR DES MONSTRES
 	
@@ -433,6 +447,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 			
 		return false;
+	}
+	
+	public void resetActionsHeros() {
+		int i;
+		for (i = 0 ; i < nbHeros ; i++) {
+			listeHeros[i].setAction(2);
+		}
 	}
 	// ACTION SOLDAT
 	

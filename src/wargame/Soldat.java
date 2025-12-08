@@ -1,12 +1,11 @@
 package wargame;
 
-import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Soldat implements ISoldat, Serializable{
-	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3;
+	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3, NB_ACTION_MAX;
 
 	private int pointsDeVie;
 	private Position pos;
@@ -25,6 +24,7 @@ public abstract class Soldat implements ISoldat, Serializable{
 		PORTEE_VISUELLE = portee;
 		PUISSANCE = puiss;
 		TIR = tir;
+		NB_ACTION_MAX = action;
 		this.carte = carte;
 		this.pos = pos;
 		
@@ -72,7 +72,7 @@ public abstract class Soldat implements ISoldat, Serializable{
 	
 	// TOUR/ACTION
 	public int getTour() { return this.tour; }
-	public void setTour() { this.tour = 1; }
+	public void setTour() { this.tour = 0; }
 	public void joueTour(int tour) {} // on sait pas ce que ça fait ???
 	
 	public int getAction() { return this.action; }

@@ -6,6 +6,7 @@ public interface IConfig {
 	int LARGEUR_CARTE = 35; int HAUTEUR_CARTE = 35; // nb de cases
 	int NB_PIX_CASE = 20; // taille des cases
 	int NB_HEROS = 6; int NB_MONSTRES = 15; int NB_OBSTACLES = 20;
+	int TOUR_HEROS = 0; int TOUR_MONSTRE = 1;
 	
 	// OFFSET X POUR AFFICHAGE CARTE
 	int OFFSET_X = NB_PIX_CASE / 2;
