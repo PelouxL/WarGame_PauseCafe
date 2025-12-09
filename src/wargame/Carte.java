@@ -507,6 +507,54 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	// MORT
 	
+	/*
+	public Position coorToPos(int x, int y) {
+		Position p = new Position(x, y);
+		int [] cube = p.cube();
+		int [] coord = p.coord(cube[0], cube[1], cube[2]);
+		Position finale = new Position(coord[0]/NB_PIX_CASE, coord[1]/(NB_PIX_CASE*3/4));
+		if (finale.getY() % 2 == 1) {
+			finale.setX((coord[0]+OFFSET_X)/NB_PIX_CASE);
+		}
+		finale.setX(finale.getX() * 2 - finale.getY() % 2);
+		//finale.setX(finale.getX()/2 + finale.getY()%2);
+		//finale.setY(finale.getY() - finale.getY()%2);
+		System.out.println("HELLO MAAAAAAN " + finale.getX() + "  " + finale.getY());
+		return finale;
+	}
+	*/
+	/*
+	public Position coorToPos(int x, int y) {
+		int offset_x = 0;
+		int [] rectangle_x = {0, NB_PIX_CASE, NB_PIX_CASE, 0};
+		int [] rectangle_y = {NB_PIX_CASE/4, NB_PIX_CASE/4, NB_PIX_CASE*3/4, NB_PIX_CASE*3/4};
+		int [] trangle_haut_x = {0, NB_PIX_CASE/2, NB_PIX_CASE};
+		int [] triangle_haut_y = {NB_PIX_CASE/4, 0, NB_PIX_CASE/4};
+		int [] triangle_bas_x = {0, NB_PIX_CASE/2, NB_PIX_CASE};
+		int [] triangle_bas_y = {NB_PIX_CASE*3/4, NB_PIX_CASE, NB_PIX_CASE*3/4};
+		
+		int px, py;
+		
+		
+		
+		return new Position(px, py);
+	}
+	*/
+	/*
+	public Position coorToPos(int x, int y) {
+		x = x - LARGEUR_CARTE/2;
+		y = y - HAUTEUR_CARTE/2;
+		x = x / NB_PIX_CASE;
+	    y = y / NB_PIX_CASE;
+	    double px = Math.sqrt(3)/2 * x;
+	    double py = 3/2 * y;
+	    x = (int) Math.nextDown(px);
+	    y = (int) Math.nextDown(py);
+	    System.out.println("HELLO MAAAAAAN " + x + "  " + y);
+	    return new Position(x, y);
+	}
+	*/
+	
 	// Primitif mais ok (gère pas la forme des hexagones)
 	public Position coorToPos(int x, int y) {
 		int offset_x = 0;
@@ -521,6 +569,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		px = px * 2 - py % 2;
 		return new Position(px, py);
 	}
+	
 	
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee) {
