@@ -26,14 +26,44 @@ public class Competence {
 		return (tempsRestantCompetence == 0);
 	}
 	
-	public void utiliserCompetence(Soldat lanceur, Soldat receveur) {
+	public void utiliserCompetence(Soldat lanceur, Position receveur, Carte carte) {
 		if(!peutUtiliser()) {
 			System.out.println("La competence" + type.getNom() + " n'est pas encore disponible !");
 		}
 		
-		appliquerCompetence(lanceur, receveur);
-			
+		// oeut-être faire une surchage de la methode pour ne pas viser de hero
+		this.appliquerCompetence(lanceur.getPos(), receveur, carte);
+		lanceur.setAction(lanceur.getAction() - type.getCoutAction());
+		
+		
 		tempsRestantCompetence = type.getTempsRechargement();
+	}
+	
+	public void appliquerCompetence(Position lanceur, Position receveur, Carte carte) {
+		switch(type) {
+		case BOULE_DE_FEU:
+			
+			if(lanceur.distance(receveur) <= type.getDistance()){
+				Soldat soldat = carte.getSoldat(receveur);
+				if(soldat != null) {
+					soldat.retirerPv(type.getDegats());
+					System.out.println("Boule de feu lancer !");
+					// utiliser voisine
+				}
+			}
+			
+			// appliquer du feu sur le terrain
+		case COUP_EPEE:
+			// utiliser voisine
+		case SOIN:
+			//
+		case SOIN_DE_ZONE:
+			//
+		case TIR_A_PORTER:
+			//
+			
+		}
+		
 	}
 	
 	// A CHANGER + TARD
@@ -73,25 +103,7 @@ public class Competence {
 		// Haut Droite
 		this.porteeCompetenceAux(lanceur, new Position(x+1, y-1), portee-1, ePos);
 	}
-	// A CHANGER + TARD
-	
-	public void appliquerCompetence(Soldat lanceur, Soldat receveur) {
-		switch(type) {
-		case BOULE_DE_FEU:
-			//for(int i = 0; i < ) appliquer le sort en zone !!!!! 
-			receveur.retirerPv(type.getDegats());
-			// appliquer du feu sur le terrain
-		case COUP_EPEE:
-			//
-		case SOIN:
-			//
-		case SOIN_DE_ZONE:
-			//
-		case TIR_A_PORTER:
-			//
-			
-		}
-	}
+
 	
 	public void decrementerTempsRestant() {
 		if(!peutUtiliser()) {

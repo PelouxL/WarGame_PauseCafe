@@ -303,12 +303,16 @@ public class PanneauJeu extends JPanel implements IConfig {
 						
 						// le cas où une competence est lancer 
 					}else if(choisiComp != null) {
-						choisiComp = null;
-						caseCliquee = null;
+					
+						caseAction = carte.coorToPos(x, y);
+						choisiComp.utiliserCompetence(carte.getSoldat(caseAction), caseAction, carte);
+						
 						// reccuperer le clic
 						// verifier qu'on clique bien sur une case disponbiel
 						// si le clic est bon que faire ?? forcement sur un Monstre ou sur une case vode ? 
-						
+						caseCliquee = null;
+						caseAction = null;
+						choisiComp = null;
 						nettoyerPanneauDroit();
 						
 						
@@ -351,26 +355,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 					infoTexte2="";
 					choisiComp = null;
 					nettoyerPanneauDroit();
-
-				// si c'est le premier clique
-				/*
-				}else {
-					caseCliquee = carte.coorToPos(x, y);		
-					// on initalise le deplacement
-					if (caseCliquee.estValide() && elem instanceof Soldat && dragPerso == false) {
-						deplacePerso = true;
-						infoTexte2 = elem.toString();
-						dragPerso = true;
-						dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
-						dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
-
-					} else {
-						caseCliquee = null;
-						deplacePerso = false;
-						infoTexte2 ="";
-						
-					}
-				*/
 				}
 				
 				panneauInfos.repaint();

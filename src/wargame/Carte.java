@@ -170,8 +170,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public Soldat getSoldat(Position pos) {	
 		return this.getCase(pos).getOccupant();
 	}
-	// ELEMENT
-	
 	
 	// VISIBILITE
 	public int getVisibilite(Position pos) {
@@ -582,7 +580,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 		EnsemblePosition ePos = competence.porteeCompetence(lanceur);
 				
 		for (int i = 0; i < ePos.getNbPos(); i++) {
-			this.dessineCase(g, Color.BLUE, ePos.getPosition(i));
+			Soldat soldat = (getSoldat(ePos.getPosition(i)));
+			if(soldat != null) {
+				if(soldat instanceof Heros) {
+					this.dessineCase(g, Color.decode("#6B1818"), ePos.getPosition(i));
+				}else {
+					this.dessineCase(g, Color.decode("#403939"), ePos.getPosition(i));
+				}
+			}else {
+				// penser a changer la couleur en fonction d'un spell degat / soin
+				this.dessineCase(g, COULEUR_PORTEE_COMP, ePos.getPosition(i));
+			}
 		}
 	}
 			
