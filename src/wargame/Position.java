@@ -8,68 +8,89 @@ public class Position implements IConfig, Serializable {
 	// Constructeur
 	public Position(int x, int y) { 
 		this.x = x; 
-		this.y = y; 
-	
-	}
-	
-	// Accesseurs/Mutateurs
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	public void setX(int x) {
-		this.x = x;
-	}
-	
-	public void setY(int y) {
 		this.y = y;
 	}
 	
+	// Accesseurs/Mutateurs
+	public int getX() {	return x; }
+	public int getY() { return y; }
+	public void setX(int x) { this.x = x; }
+	public void setY(int y) { this.y = y; }
+	
 	// Methodes
 	public boolean estValide() {
-		if (x < 0 || x >= LARGEUR_CARTE*2 || y < 0 || y >= HAUTEUR_CARTE) {
-			return false; 
-		} else {
-			if ((x % 2 == 1 && y % 2 == 0) || (x % 2 == 0 && y % 2 == 1)) {
-				return false;
-			} else {
-				return true;
-			}
+		if (x < 0 || x >= LARGEUR_CARTE*2 || y < 0 || y >= HAUTEUR_CARTE) return false; 
+		else {
+			if ((x % 2 == 1 && y % 2 == 0) || (x % 2 == 0 && y % 2 == 1)) return false;
+			else return true;
 		}
 	}
 	
-	public String toString() {
-		return "("+x+","+y+")";
+	// POSITIONS VOISINES
+	public EnsemblePosition voisines() {
+		EnsemblePosition voisines = new EnsemblePosition(6);
+		
+		int[] x = {-2, -1, -1, 1, 1, 2};
+		int[] y = {0, 1, -1, 1, -1, 0};
+		
+		for (int i=0; i < x.length; i++) {
+			voisines.ajouterPos(new Position(x[i], y[i]));
+		}
+		
+		return voisines;
 	}
+	
+	public EnsemblePosition voisines(int rayon) {
+		int nbVoisinesMax = 6 * getFactoriel(rayon);
+		EnsemblePosition voisines = new EnsemblePosition(nbVoisinesMax);
+		
+		this.voisinesAux(this, this, rayon, voisines);
+		
+		return voisines;
+	}
+	
+	private void voisinesAux(Position posInit, Position pos, int rayon, EnsemblePosition voisines) {
+		if (rayon <= -1 || !pos.estValide()) return;
+		if (!voisines.contient(pos)) voisines.ajouterPos(pos);
+		
+		EnsemblePosition voisinesPos = pos.voisines();
+		
+		for (int i=0; i <= voisinesPos.getNbPos(); i++) {
+			Position test = voisinesPos.getPosition(i);
+			test.voisinesAux(posInit, test, rayon-1, voisinesPos);
+		}
+	}
+	
+	private int getFactoriel(int val) {
+		int resultat = 1;
+		for (int i=2; i < val; i++) {
+			resultat *= i;
+		}
+		return resultat;
+	}
+	
+	public EnsemblePosition voisinesCroix(int rayon) {
+		EnsemblePosition voisines = new EnsemblePosition(6*rayon);
+		
+		int[] x = {-2, -1, -1, 1, 1, 2};
+		int[] y = {0, 1, -1, 1, -1, 0};
+		
+		for (int i=0; i < rayon; i++) {
+			for (int j=0; j < x.length; j++) {
+				voisines.ajouterPos(new Position(x[i*j], y[i*j]));
+			}
+		}
+		
+		return voisines;
+	}	
 	
 	public boolean estVoisine(Position pos) {
-		int i;
-		int dx, dy, x, y;
-		int [] coordsx = {-2, -1, -1, 1, 1, 2};
-		int [] coordsy = {0, 1, -1, 1, -1, 0};
-		boolean voisine = false;
-		
-		// On regarde les 6 cases autour de pos
-		for (i = 0 ; i < 6 ; i++) {
-			dx = coordsx[i];
-			dy = coordsy[i];
-			x = this.getX() + dx;
-			y = this.getY() + dy;
-			if (this.equals(pos)) {
-				voisine = true;
-			}
-		}
-		return voisine;
+		return this.voisines().contient(pos);
 	}
+	// POSITIONS VOISINES
 	
-	public boolean equals(Position pos) {
-		return (this.x == pos.x && this.y == pos.y);
-	}
 	
+	// DISTANCE
 	public int distance(Position p) {
 		int [] cube1 = this.cube();
 		int [] cube2 = p.cube();
@@ -86,5 +107,14 @@ public class Position implements IConfig, Serializable {
 		y = -x - z;
 		int [] resultat = {x, y, z};
 		return resultat;
+	}
+	// DISTANCE
+	
+	public boolean equals(Position pos) {
+		return (this.x == pos.x && this.y == pos.y);
+	}
+	
+	public String toString() {
+		return "("+x+","+y+")";
 	}
 }
