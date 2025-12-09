@@ -577,8 +577,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	
 	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur) {
-		EnsemblePosition ePos = competence.porteeCompetence(lanceur);
-				
+		EnsemblePosition ePos = lanceur.getPos().voisines(competence.getType().getDistance());
+
 		for (int i = 0; i < ePos.getNbPos(); i++) {
 			Soldat soldat = (getSoldat(ePos.getPosition(i)));
 			if(soldat != null) {
@@ -598,10 +598,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public void dessineCaseCliquee(Graphics g, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
-		//System.out.println("bonjour je passe normalement 1 seule fois, voici mes valeurs : " + x + "   " + y);
 		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
 		g.setColor(couleur);
-		// Obligé de faire un +1 quand opacité pas au max ???
 		this.dessineInterieurHexagone(g, x/2, y);
 	}
 	

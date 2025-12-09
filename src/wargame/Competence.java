@@ -29,38 +29,53 @@ public class Competence {
 	public void utiliserCompetence(Soldat lanceur, Position receveur, Carte carte) {
 		if(!peutUtiliser()) {
 			System.out.println("La competence" + type.getNom() + " n'est pas encore disponible !");
+		}else {
+		
+			// peut-être faire une surchage de la methode pour ne pas viser de hero
+			if(lanceur.getPos().distance(receveur) <= type.getDistance()){
+				this.appliquerCompetence(lanceur.getPos(), receveur, carte);
+				lanceur.setAction(lanceur.getAction() - type.getCoutAction());
+			}
+			tempsRestantCompetence = type.getTempsRechargement();
 		}
-		
-		// oeut-être faire une surchage de la methode pour ne pas viser de hero
-		this.appliquerCompetence(lanceur.getPos(), receveur, carte);
-		lanceur.setAction(lanceur.getAction() - type.getCoutAction());
-		
-		
-		tempsRestantCompetence = type.getTempsRechargement();
 	}
 	
 	public void appliquerCompetence(Position lanceur, Position receveur, Carte carte) {
+		Soldat soldat = carte.getSoldat(receveur);
 		switch(type) {
-		case BOULE_DE_FEU:
+		case BOULE_DE_FEU:	
 			
-			if(lanceur.distance(receveur) <= type.getDistance()){
-				Soldat soldat = carte.getSoldat(receveur);
-				if(soldat != null) {
-					soldat.retirerPv(type.getDegats());
-					System.out.println("Boule de feu lancer !");
-					// utiliser voisine
-				}
+			if(soldat != null) {
+				soldat.retirerPv(type.getDegats());
+				System.out.println("Boule de feu lancer !");
+				// utiliser voisine
 			}
 			
 			// appliquer du feu sur le terrain
 		case COUP_EPEE:
-			// utiliser voisine
+			if(soldat != null) {
+				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
+			}else {
+				System.out.println("Wooaw ! le Vent tremble devant votre puissance !");
+			}		
 		case SOIN:
-			//
+			if(soldat != null) {
+				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
+			}else {
+				System.out.println("Le vent vous remercie pour votre generosité.");
+			}
 		case SOIN_DE_ZONE:
-			//
+			// for(int i = 0; i < ePos.length; i++){
+			//	if(carte.getSoldat(ePos[i]) != null){
+			//		carte.getSoldat(ePos[i]).retirerPv(type.getDegats());
+			//		}
+			//}
 		case TIR_A_PORTER:
-			//
+			if(soldat != null) {
+				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
+		    }else{
+		    	System.out.println("Vous avez réussi a transpercer le sol ! Bravo.");
+		    }
 			
 		}
 		

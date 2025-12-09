@@ -34,14 +34,14 @@ public class Position implements IConfig, Serializable {
 		int[] y = {0, 1, -1, 1, -1, 0};
 		
 		for (int i=0; i < x.length; i++) {
-			voisines.ajouterPos(new Position(x[i], y[i]));
+			voisines.ajouterPos(new Position(x[i] + this.getX(), y[i] + this.getY()));
 		}
 		
 		return voisines;
 	}
 	
 	public EnsemblePosition voisines(int rayon) {
-		int nbVoisinesMax = 6 * getFactoriel(rayon);
+		int nbVoisinesMax = (3 * rayon) * (rayon +1) ;
 		EnsemblePosition voisines = new EnsemblePosition(nbVoisinesMax);
 		
 		this.voisinesAux(this, this, rayon, voisines);
@@ -51,24 +51,29 @@ public class Position implements IConfig, Serializable {
 	
 	private void voisinesAux(Position posInit, Position pos, int rayon, EnsemblePosition voisines) {
 		if (rayon <= -1 || !pos.estValide()) return;
-		if (!voisines.contient(pos)) voisines.ajouterPos(pos);
-		
+		if (!voisines.contient(pos) && !posInit.equals(pos)) {
+			voisines.ajouterPos(pos);
+			
+		}
+
 		EnsemblePosition voisinesPos = pos.voisines();
 		
-		for (int i=0; i <= voisinesPos.getNbPos(); i++) {
+		for (int i=0; i < voisinesPos.getNbPos(); i++) {
 			Position test = voisinesPos.getPosition(i);
-			test.voisinesAux(posInit, test, rayon-1, voisinesPos);
+			test.voisinesAux(posInit, test, rayon-1, voisines);
 		}
+		
 	}
 	
 	private int getFactoriel(int val) {
 		int resultat = 1;
-		for (int i=2; i < val; i++) {
+		for (int i=2; i <= val; i++) {
 			resultat *= i;
 		}
 		return resultat;
 	}
 	
+	// NE FONCTIONNE PAS , OUT OF BOUNDS
 	public EnsemblePosition voisinesCroix(int rayon) {
 		EnsemblePosition voisines = new EnsemblePosition(6*rayon);
 		
@@ -77,7 +82,7 @@ public class Position implements IConfig, Serializable {
 		
 		for (int i=0; i < rayon; i++) {
 			for (int j=0; j < x.length; j++) {
-				voisines.ajouterPos(new Position(x[i*j], y[i*j]));
+				voisines.ajouterPos(new Position(x[i*j] , y[i*j]));
 			}
 		}
 		
@@ -109,10 +114,10 @@ public class Position implements IConfig, Serializable {
 		return resultat;
 	}
 	// DISTANCE
-	
 	public boolean equals(Position pos) {
 		return (this.x == pos.x && this.y == pos.y);
 	}
+	
 	
 	public String toString() {
 		return "("+x+","+y+")";

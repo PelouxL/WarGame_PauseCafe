@@ -305,7 +305,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					}else if(choisiComp != null) {
 					
 						caseAction = carte.coorToPos(x, y);
-						choisiComp.utiliserCompetence(carte.getSoldat(caseAction), caseAction, carte);
+						choisiComp.utiliserCompetence(carte.getSoldat(caseCliquee), caseAction, carte);
 						
 						// reccuperer le clic
 						// verifier qu'on clique bien sur une case disponbiel
@@ -313,6 +313,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 						caseCliquee = null;
 						caseAction = null;
 						choisiComp = null;
+						infoTexte2 ="";
 						nettoyerPanneauDroit();
 						
 						
