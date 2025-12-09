@@ -37,7 +37,7 @@ public class Competence {
 	}
 	
 	
-	public enum TypeCompetence {
+	public enum TypeCompetence{
 		BOULE_DE_FEU("boule de feu", 2, 30, 10, true, 3, 2),
 		SOIN("soin", 1, -15, 4, false, 1, 0),
 		SOIN_DE_ZONE("soin de zone", 2, -20, 6, false, 4, 3),
@@ -72,6 +72,51 @@ public class Competence {
 	    public int getTempsRechargement() { return tempsRechargement; };	
 	}
 	
+	public EnsemblePosition porteeCompetence(Position lanceur) {
+		int nbPosMax = (int) Math.pow(6, type.distance); // TEMPORAIRE FAIRE VRAI CALCUL
+		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
+		
+		zoneDeplacementAux(lanceur, lanceur, type.distance, ePos);
+		
+		return ePos;
+	}
+	
+private void zoneDeplacementAux(Position posInit, Position pos, int deplacement, EnsemblePosition ePos) {
+		
+		if (!(pos.estValide())) {
+			return;
+		}
+		
+		Soldat soldat = this.carte.getSoldat(pos);
+		
+		if (deplacement <= -1 
+			|| this.carte.getCase(pos).getType().getAccessible() == false
+			|| (this instanceof Heros && soldat instanceof Monstre)
+			|| (this instanceof Monstre && soldat instanceof Heros)
+			) {
+			return;
+		}
+
+		if (!(ePos.contient(pos)) && this.carte.getCase(pos).estLibre()) {
+			ePos.ajouterPos(pos);
+		}
+		
+		int x = pos.getX();
+		int y = pos.getY();
+		
+		// Droite
+		this.zoneDeplacementAux(posInit, new Position(x+2, y), deplacement-1, ePos);
+		// Gauche
+		this.zoneDeplacementAux(posInit, new Position(x-2, y), deplacement-1, ePos);
+		// Bas Gauche
+		this.zoneDeplacementAux(posInit, new Position(x-1, y+1), deplacement-1, ePos);
+		// Bas Droite
+		this.zoneDeplacementAux(posInit, new Position(x+1, y+1), deplacement-1, ePos);
+		// Haut Gauche
+		this.zoneDeplacementAux(posInit, new Position(x-1, y-1), deplacement-1, ePos);
+		// Haut Droite
+		this.zoneDeplacementAux(posInit, new Position(x+1, y-1), deplacement-1, ePos);
+	}
 	
 	public void appliquerCompetence(Soldat lanceur, Soldat receveur) {
 		switch(type) {
@@ -79,6 +124,15 @@ public class Competence {
 			//for(int i = 0; i < ) appliquer le sort en zone !!!!! 
 			receveur.retirerPv(type.getDegats());
 			// appliquer du feu sur le terrain
+		case COUP_EPEE:
+			//
+		case SOIN:
+			//
+		case SOIN_DE_ZONE:
+			//
+		case TIR_A_PORTER:
+			//
+			
 		}
 	}
 	

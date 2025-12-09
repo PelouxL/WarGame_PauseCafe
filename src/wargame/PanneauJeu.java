@@ -185,10 +185,13 @@ public class PanneauJeu extends JPanel implements IConfig {
 		
 		// --------------------------- Creation de panneau haut ---------------------//	
 		JPanel panneauHaut = new JPanel();
+		JTextArea tourActuel = new JTextArea();
 			
         panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
 		panneauHaut.setBackground(COULEUR_PLATEAU);
 		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		panneauHaut.add(tourActuel);
+		tourActuel.setText(Integer.toString(carte.getNbTours()));
 
 		// ---------- Creation des boutons de la carte ---------- //
 		boutonFin = new JButton("Fin de tour");
@@ -199,6 +202,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 		boutonFin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				carte.jouerSoldats();
+				tourActuel.setText(Integer.toString(carte.getNbTours()));
+				tourActuel.repaint();
 				panneauCarte.repaint();
 				System.out.println("Termine-moi !");
 			}
@@ -219,12 +224,12 @@ public class PanneauJeu extends JPanel implements IConfig {
 		add(panneauHaut, BorderLayout.NORTH);
 		add(layers, BorderLayout.CENTER);
 		
-		// ------------------------- Taile du panneau principal ------------------- //		
+		// ------------------------- Taille du panneau principal ------------------- //		
 		setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
         setMinimumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
         setMaximumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
         
-		// ------------------------- Ajout des ecouteur -------------------------- //
+		// ------------------------- Ajout des ecouteurs -------------------------- //
 		panneauCarte.addMouseMotionListener(new MouseMotionAdapter() {
 			
 			// Effet au deplacement de la souris
@@ -300,6 +305,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 					}else if(choisiComp) {
 						choisiComp = false;
 						caseCliquee = null;
+						// reccuperer le clic
+						// verifier qu'on clique bien sur une case disponbiel
+						// si le clic est bon que faire ?? forcement sur un Monstre ou sur une case vode ? 
+						
 						nettoyerPanneauDroit();
 						
 						
@@ -308,10 +317,12 @@ public class PanneauJeu extends JPanel implements IConfig {
 						caseCliquee = carte.coorToPos(x, y);		
 						// on initalise le deplacement
 						if (caseCliquee.estValide() && soldat instanceof Soldat && dragPerso == false && !choisiComp) {
+
 							deplacePerso = true;
 							mettreAJourPanneauDroit();
+							System.out.println("bah tu affiche la ? ");
 							infoTexte2 = soldat.toString();
-							
+							System.out.println("bah tu affiche la2 ? ");
 							// initie le dragg
 							dragPerso = true;
 							dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
@@ -337,7 +348,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					dragPerso = false;
 					dragPersoInit = null;
 					dragPersoFin = null;
-					
+					infoTexte2="";
 					choisiComp = false;
 					nettoyerPanneauDroit();
 
@@ -377,7 +388,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					}
 					// on pose
 					carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getSoldat(dragPersoInit)));	
-					infoTexte2="";
+					
 					infoTexte="";
 				}		
 				dragPerso = false;
@@ -420,11 +431,13 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    	changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
 	    			if(!choisiComp) {		
 	    				choisiComp = true;
-	    				
+	    				caseCliquee = null;
+	    				// dessiner les cases atteignable sur la carte avec la competence
 	    				
 	    			}else {
 	    			choisiComp = false;
-	               // utiliserCompetence(competence); // Appeler la fonction qui utilise la compétence
+	    			
+	               // utiliserCompetence(); // Appeler la fonction qui utilise la compétence
 	    			}
 	    			repaint();
 	    	}
