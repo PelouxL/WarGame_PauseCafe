@@ -38,7 +38,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private boolean deplacePerso = false;
 	private boolean dragPerso = false;
 	private boolean afficheLog = false;
-	private boolean choisiComp = false;
+	private Competence choisiComp = null;
 	
 	// information du panneauInfo
 	private String infoTexte ="";
@@ -71,7 +71,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauCarte = new JPanel() {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				carte.toutDessiner(g, caseSurvolee, caseCliquee);
+				carte.toutDessiner(g, caseSurvolee, caseCliquee, choisiComp);
 				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
 
 					carte.dessineCaseCliquee(g, dragPersoFin);
@@ -287,7 +287,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				// si on fait un clique gauche
 				if(SwingUtilities.isLeftMouseButton(e)) {
 					// si on est sur le point de deplacé un Heros
-					if(deplacePerso && !choisiComp && caseCliquee != null) {
+					if(deplacePerso && choisiComp == null && caseCliquee != null) {
 						caseAction = carte.coorToPos(x, y);
 						carte.actionHeros(caseCliquee, caseAction);
 						// si on a lancé un combat
@@ -302,8 +302,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 						caseAction = null;
 						
 						// le cas où une competence est lancer 
-					}else if(choisiComp) {
-						choisiComp = false;
+					}else if(choisiComp != null) {
+						choisiComp = null;
 						caseCliquee = null;
 						// reccuperer le clic
 						// verifier qu'on clique bien sur une case disponbiel
@@ -316,7 +316,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					}else {
 						caseCliquee = carte.coorToPos(x, y);		
 						// on initalise le deplacement
-						if (caseCliquee.estValide() && soldat instanceof Soldat && dragPerso == false && !choisiComp) {
+						if (caseCliquee.estValide() && soldat instanceof Soldat && dragPerso == false && choisiComp == null) {
 
 							deplacePerso = true;
 							mettreAJourPanneauDroit();
@@ -334,7 +334,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 							deplacePerso = false;
 							infoTexte2 ="";
 							
-							choisiComp = false;
+							choisiComp = null;
 							nettoyerPanneauDroit();
 							
 						}
@@ -349,7 +349,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					dragPersoInit = null;
 					dragPersoFin = null;
 					infoTexte2="";
-					choisiComp = false;
+					choisiComp = null;
 					nettoyerPanneauDroit();
 
 				// si c'est le premier clique
@@ -427,19 +427,21 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
 	 
 	    boutonCompetence.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-	    	changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
-	    			if(!choisiComp) {		
-	    				choisiComp = true;
-	    				caseCliquee = null;
-	    				// dessiner les cases atteignable sur la carte avec la competence
+	    	public void actionPerformed(ActionEvent e) {
+	    		changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
+	    		if(choisiComp == null) {		
+	    			choisiComp = competence;
+	    			// carte.dessinePorteeCompetence(getGraphics(), competence, carte.getSoldat(caseCliquee));
 	    				
-	    			}else {
-	    			choisiComp = false;
+	    			// caseCliquee = null;
+	    			// dessiner les cases atteignable sur la carte avec la competence
+	    				
+	    		} else {
+	    			choisiComp = null;
 	    			
-	               // utiliserCompetence(); // Appeler la fonction qui utilise la compétence
-	    			}
-	    			repaint();
+	    			// utiliserCompetence(); // Appeler la fonction qui utilise la compétence
+	    		}
+	    		panneauCarte.repaint();
 	    	}
 	    });
 			

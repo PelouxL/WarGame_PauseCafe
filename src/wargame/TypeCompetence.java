@@ -1,8 +1,8 @@
 package wargame;
 
 public enum TypeCompetence {
-	BOULE_DE_FEU("boule de feu", 2, 30, 10, true, 3, 2),
-	SOIN("soin", 1, -15, 4, false, 1, 0),
+	BOULE_DE_FEU("boule de feu", 2, 30, 5, true, 3, 2),
+	SOIN("soin", 1, -15, 3, false, 1, 0),
 	SOIN_DE_ZONE("soin de zone", 2, -20, 6, false, 4, 3),
 	COUP_EPEE("coup d'épée", 1, 10, 1, false, 1, 0),
 	TIR_A_PORTER("tir a porter", 1, 10, 10, false, 1, 0);

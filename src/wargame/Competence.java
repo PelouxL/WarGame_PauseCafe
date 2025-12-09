@@ -36,87 +36,44 @@ public class Competence {
 		tempsRestantCompetence = type.getTempsRechargement();
 	}
 	
-	
-	public enum TypeCompetence{
-		BOULE_DE_FEU("boule de feu", 2, 30, 10, true, 3, 2),
-		SOIN("soin", 1, -15, 4, false, 1, 0),
-		SOIN_DE_ZONE("soin de zone", 2, -20, 6, false, 4, 3),
-		COUP_EPEE("coup d'épée", 1, 10, 1, false, 1, 0),
-		TIR_A_PORTER("tir a porter", 1, 10, 10, false, 1, 0);
-		
-		private final String nom;
-		private final int coutAction;
-		private int degats;
-		private final int distance;
-		private final boolean donneVisu;
-		private final int degatsZone;
-		private final int tempsRechargement; 
-		
-		TypeCompetence(String nom, int coutAction, int degats, int distance, boolean donneVisu, int degatZone, int tempsRechargement) {
-			this.nom = nom;
-			this.coutAction = coutAction;
-			this.degats = degats;
-			this.distance = distance;
-			this.donneVisu = donneVisu;
-			this.degatsZone = degatZone;
-			this.tempsRechargement = tempsRechargement;
-		}
-		
-	    public String getNom() { return nom; }
-	    public int getCoutAction() { return coutAction; }
-	    public int getDegats() { return degats; }
-	    public void setDegats(int degats) { this.degats = degats; }
-	    public int getDistance() { return distance; }
-	    public boolean isDonneVisu() { return donneVisu; }
-	    public int getDegatsZone() { return degatsZone; }
-	    public int getTempsRechargement() { return tempsRechargement; };	
-	}
-	
-	public EnsemblePosition porteeCompetence(Position lanceur) {
-		int nbPosMax = (int) Math.pow(6, type.distance); // TEMPORAIRE FAIRE VRAI CALCUL
+	// A CHANGER + TARD
+	public EnsemblePosition porteeCompetence(Soldat lanceur) {
+		int nbPosMax = (int) Math.pow(6, type.getDistance()+1); // TEMPORAIRE FAIRE VRAI CALCUL
 		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
 		
-		zoneDeplacementAux(lanceur, lanceur, type.distance, ePos);
+		porteeCompetenceAux(lanceur, lanceur.getPos(), type.getDistance(), ePos);
 		
 		return ePos;
 	}
 	
-private void zoneDeplacementAux(Position posInit, Position pos, int deplacement, EnsemblePosition ePos) {
+	private void porteeCompetenceAux(Soldat lanceur, Position pos, int portee, EnsemblePosition ePos) {
 		
-		if (!(pos.estValide())) {
-			return;
-		}
-		
-		Soldat soldat = this.carte.getSoldat(pos);
-		
-		if (deplacement <= -1 
-			|| this.carte.getCase(pos).getType().getAccessible() == false
-			|| (this instanceof Heros && soldat instanceof Monstre)
-			|| (this instanceof Monstre && soldat instanceof Heros)
+		if (!(pos.estValide())
+			|| portee <= -1 
+			|| lanceur.getCarte().getCase(pos).getType().getAccessible() == false
 			) {
 			return;
 		}
 
-		if (!(ePos.contient(pos)) && this.carte.getCase(pos).estLibre()) {
-			ePos.ajouterPos(pos);
-		}
+		if (!(ePos.contient(pos))) { ePos.ajouterPos(pos); }
 		
 		int x = pos.getX();
 		int y = pos.getY();
 		
 		// Droite
-		this.zoneDeplacementAux(posInit, new Position(x+2, y), deplacement-1, ePos);
+		this.porteeCompetenceAux(lanceur, new Position(x+2, y), portee-1, ePos);
 		// Gauche
-		this.zoneDeplacementAux(posInit, new Position(x-2, y), deplacement-1, ePos);
+		this.porteeCompetenceAux(lanceur, new Position(x-2, y), portee-1, ePos);
 		// Bas Gauche
-		this.zoneDeplacementAux(posInit, new Position(x-1, y+1), deplacement-1, ePos);
+		this.porteeCompetenceAux(lanceur, new Position(x-1, y+1), portee-1, ePos);
 		// Bas Droite
-		this.zoneDeplacementAux(posInit, new Position(x+1, y+1), deplacement-1, ePos);
+		this.porteeCompetenceAux(lanceur, new Position(x+1, y+1), portee-1, ePos);
 		// Haut Gauche
-		this.zoneDeplacementAux(posInit, new Position(x-1, y-1), deplacement-1, ePos);
+		this.porteeCompetenceAux(lanceur, new Position(x-1, y-1), portee-1, ePos);
 		// Haut Droite
-		this.zoneDeplacementAux(posInit, new Position(x+1, y-1), deplacement-1, ePos);
+		this.porteeCompetenceAux(lanceur, new Position(x+1, y-1), portee-1, ePos);
 	}
+	// A CHANGER + TARD
 	
 	public void appliquerCompetence(Soldat lanceur, Soldat receveur) {
 		switch(type) {

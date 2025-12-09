@@ -506,7 +506,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	
 	// DESSIN
-	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee) {
+	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee, Competence choisiComp) {
 		
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
@@ -549,11 +549,23 @@ public class Carte implements IConfig, ICarte, Serializable {
 			if (caseCliquee != null
 				&& caseCliquee.estValide()
 				&& getSoldat(caseCliquee) != null
-				&& getSoldat(caseCliquee) instanceof Heros) {
+				&& getSoldat(caseCliquee) instanceof Heros
+				&& choisiComp == null) {
 					
 				dessineZoneDeplacement(g, getSoldat(caseCliquee));
 				dessineCaseCliquee(g, caseCliquee);
 			}
+			
+			// Zone des competence
+			if (caseCliquee != null
+					&& caseCliquee.estValide()
+					&& getSoldat(caseCliquee) != null
+					&& getSoldat(caseCliquee) instanceof Heros
+					&& choisiComp != null) {
+					
+					dessinePorteeCompetence(g, choisiComp ,getSoldat(caseCliquee));
+					dessineCaseCliquee(g, caseCliquee);
+				}
 		}
 		
 	}
@@ -563,6 +575,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 		for (int i = 0; i < ePos.getNbPos(); i++) {
 			this.dessineCase(g, Color.PINK, ePos.getPosition(i));
+		}
+	}
+	
+	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur) {
+		EnsemblePosition ePos = competence.porteeCompetence(lanceur);
+				
+		for (int i = 0; i < ePos.getNbPos(); i++) {
+			this.dessineCase(g, Color.BLUE, ePos.getPosition(i));
 		}
 	}
 			
