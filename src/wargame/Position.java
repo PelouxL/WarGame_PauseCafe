@@ -80,9 +80,10 @@ public class Position implements IConfig, Serializable {
 		int[] x = {-2, -1, -1, 1, 1, 2};
 		int[] y = {0, 1, -1, 1, -1, 0};
 		
-		for (int i=0; i < rayon; i++) {
+		for (int i=1; i <= rayon; i++) {
 			for (int j=0; j < x.length; j++) {
-				voisines.ajouterPos(new Position(x[i*j] , y[i*j]));
+				Position pos = new Position(x[j]*i + this.getX(), y[j]*i + this.getY());
+				if (pos.estValide()) { voisines.ajouterPos(pos); }
 			}
 		}
 		

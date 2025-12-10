@@ -249,6 +249,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				}else {
 					infoTexte ="";
 				}
+					
 				panneauInfos.repaint();
 				panneauCarte.repaint();
 			}
@@ -414,14 +415,13 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    boutonCompetence.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
-	    		if(choisiComp == null) {		
-	    			choisiComp = competence;
-	    			// carte.dessinePorteeCompetence(getGraphics(), competence, carte.getSoldat(caseCliquee));
-	    				
-	    			// caseCliquee = null;
-	    			// dessiner les cases atteignable sur la carte avec la competence
-	    				
-	    		} else {
+	    		if(choisiComp == null) {	
+	    			if(choisiComp.peutUtiliser()) {
+	    				choisiComp = competence;
+	    			}else if(carte.getSoldat(caseCliquee).getAction() < choisiComp.getType().getCoutAction()){
+	    				System.out.println("Vous n'aveez pas les point d'action necessaire ! ");
+	    			}
+	    		}else {
 	    			choisiComp = null;
 	    			
 	    			// utiliserCompetence(); // Appeler la fonction qui utilise la compétence

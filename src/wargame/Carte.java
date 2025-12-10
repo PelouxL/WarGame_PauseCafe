@@ -561,12 +561,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 					&& getSoldat(caseCliquee) instanceof Heros
 					&& choisiComp != null) {
 					
-					dessinePorteeCompetence(g, choisiComp ,getSoldat(caseCliquee));
+					dessinePorteeCompetence(g, choisiComp ,getSoldat(caseCliquee), caseSurvolee, caseCliquee);					
 					dessineCaseCliquee(g, caseCliquee);
-				}
+			}
+				
 		}
 		
 	}
+	
 			
 	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
 		EnsemblePosition ePos = soldat.zoneDeplacement();
@@ -576,9 +578,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 	}
 	
-	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur) {
-		EnsemblePosition ePos = lanceur.getPos().voisines(competence.getType().getDistance());
-
+	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur, Position caseSurvolee, Position caseCliquee) {
+		EnsemblePosition ePos = lanceur.getPos().voisinesCroix(competence.getType().getDistance());
+		EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone());
+		
 		for (int i = 0; i < ePos.getNbPos(); i++) {
 			Soldat soldat = (getSoldat(ePos.getPosition(i)));
 			if(soldat != null) {
@@ -592,6 +595,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 				this.dessineCase(g, COULEUR_PORTEE_COMP, ePos.getPosition(i));
 			}
 		}
+		
+		if(caseSurvolee.estValide() && ePos.contient(caseSurvolee)){
+			for(int j = 0; j < zoneAtt.getNbPos(); j++) {
+				this.dessineCase(g, competence.typeCouleurAttaque(caseSurvolee) , zoneAtt.getPosition(j));
+				
+			}
+		}
+		
 	}
 			
 			

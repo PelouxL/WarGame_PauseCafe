@@ -3,9 +3,11 @@ package wargame;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.io.Serializable;
+
 import javax.swing.ImageIcon;
 
-public class Competence {
+public class Competence implements ICompetence, Serializable{
 	private final TypeCompetence type;
 	private int tempsRestantCompetence;
 	private Image imageCompetence;
@@ -44,39 +46,50 @@ public class Competence {
 		Soldat soldat = carte.getSoldat(receveur);
 		switch(type) {
 		case BOULE_DE_FEU:	
-			
-			if(soldat != null) {
-				soldat.retirerPv(type.getDegats());
+				EnsemblePosition zoneAttaque = receveur.voisines(type.getDegatsZone());
+				for(int i = 0; i < zoneAttaque.getNbPos(); i++) {
+					Soldat soldats = carte.getSoldat(zoneAttaque.getPosition(i));
+					if(soldats != null) {
+						System.out.println("Bam on la toucher ! "+ soldats);
+						soldats.retirerPv(type.getDegats());
+						// faire bruler le sol 
+					}
+				}
 				System.out.println("Boule de feu lancer !");
-				// utiliser voisine
-			}
-			
+			break;
 			// appliquer du feu sur le terrain
 		case COUP_EPEE:
 			if(soldat != null) {
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
 			}else {
 				System.out.println("Wooaw ! le Vent tremble devant votre puissance !");
-			}		
+			}	
+			break;
 		case SOIN:
 			if(soldat != null) {
-				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
+				soldat.ajouterPv(type.getDegats() + soldat.getPuissance());
 			}else {
 				System.out.println("Le vent vous remercie pour votre generosité.");
 			}
+			break;
 		case SOIN_DE_ZONE:
-			// for(int i = 0; i < ePos.length; i++){
-			//	if(carte.getSoldat(ePos[i]) != null){
-			//		carte.getSoldat(ePos[i]).retirerPv(type.getDegats());
-			//		}
-			//}
+			EnsemblePosition zoneSoin = receveur.voisines(type.getDegatsZone());
+			for(int i = 0; i < zoneSoin.getNbPos(); i++) {
+				Soldat soldats = carte.getSoldat(zoneSoin.getPosition(i));
+				if(soldats != null) {
+					soldats.ajouterPv(type.getDegats());
+					// faire bruler le sol 
+				}
+			System.out.println("Boule de feu lancer !");
+			}
+			break;
 		case TIR_A_PORTER:
 			if(soldat != null) {
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
 		    }else{
 		    	System.out.println("Vous avez réussi a transpercer le sol ! Bravo.");
 		    }
-			
+			break;
 		}
 		
 	}
@@ -146,6 +159,39 @@ public class Competence {
        this.imageCompetence = new ImageIcon(cheminImage).getImage();  // Charge une nouvelle image
 	}
 	   
+	public EnsemblePosition zoneAttaque(Position pos) {
+		EnsemblePosition ePos;
+		switch(type.getZoneLancer()) {
+		case "ligne":
+			ePos = pos.voisinesCroix(type.getDistance());
+			break;
+		case "libre":
+			ePos = pos.voisines(type.getDistance());
+			break;
+		default:
+			ePos = null;
+			break;
+		}
+		
+		return ePos;
+	}
+	
+	public Color typeCouleurAttaque(Position pos){
+		EnsemblePosition ePos;
+		ePos = pos.voisines(type.getDegatsZone());
+		switch(type.getClasseCompetence()) {
+		case ATTAQUE:
+			return Color.RED;
+		case SOINS:
+			return Color.GREEN;
+		case DEBUFF:
+			return Color.magenta;
+		case BUFF:
+			return Color.YELLOW;
+		default:
+			return Color.PINK;
+		}		
+	}
 	   
 	   public String trouverImg() {
 		   String path = "./images/comp/icon_comp_";

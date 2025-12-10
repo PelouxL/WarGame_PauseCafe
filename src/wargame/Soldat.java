@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Soldat implements ISoldat, Serializable{
+public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3, NB_ACTION_MAX;
 
 	private int pointsDeVie;
