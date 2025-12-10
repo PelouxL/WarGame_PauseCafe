@@ -515,54 +515,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	// MORT
 	
-	/*
-	public Position coorToPos(int x, int y) {
-		Position p = new Position(x, y);
-		int [] cube = p.cube();
-		int [] coord = p.coord(cube[0], cube[1], cube[2]);
-		Position finale = new Position(coord[0]/NB_PIX_CASE, coord[1]/(NB_PIX_CASE*3/4));
-		if (finale.getY() % 2 == 1) {
-			finale.setX((coord[0]+OFFSET_X)/NB_PIX_CASE);
-		}
-		finale.setX(finale.getX() * 2 - finale.getY() % 2);
-		//finale.setX(finale.getX()/2 + finale.getY()%2);
-		//finale.setY(finale.getY() - finale.getY()%2);
-		System.out.println("HELLO MAAAAAAN " + finale.getX() + "  " + finale.getY());
-		return finale;
-	}
-	*/
-	/*
-	public Position coorToPos(int x, int y) {
-		int offset_x = 0;
-		int [] rectangle_x = {0, NB_PIX_CASE, NB_PIX_CASE, 0};
-		int [] rectangle_y = {NB_PIX_CASE/4, NB_PIX_CASE/4, NB_PIX_CASE*3/4, NB_PIX_CASE*3/4};
-		int [] trangle_haut_x = {0, NB_PIX_CASE/2, NB_PIX_CASE};
-		int [] triangle_haut_y = {NB_PIX_CASE/4, 0, NB_PIX_CASE/4};
-		int [] triangle_bas_x = {0, NB_PIX_CASE/2, NB_PIX_CASE};
-		int [] triangle_bas_y = {NB_PIX_CASE*3/4, NB_PIX_CASE, NB_PIX_CASE*3/4};
-		
-		int px, py;
-		
-		
-		
-		return new Position(px, py);
-	}
-	*/
-	/*
-	public Position coorToPos(int x, int y) {
-		x = x - LARGEUR_CARTE/2;
-		y = y - HAUTEUR_CARTE/2;
-		x = x / NB_PIX_CASE;
-	    y = y / NB_PIX_CASE;
-	    double px = Math.sqrt(3)/2 * x;
-	    double py = 3/2 * y;
-	    x = (int) Math.nextDown(px);
-	    y = (int) Math.nextDown(py);
-	    System.out.println("HELLO MAAAAAAN " + x + "  " + y);
-	    return new Position(x, y);
-	}
-	*/
 	
+	// COORTOPOS
 	public Position coorToPos(int cx, int cy) {
 		Position test = coorToPosRect(cx, cy);
 		// on teste si en décalant vers le haut d'1/4 d'hexa ça reste à la même pos
@@ -573,42 +527,26 @@ public class Carte implements IConfig, ICarte, Serializable {
 			int i;
 			int x = test.getX(),
 				y = test.getY();
-			System.out.println("HELLO X AND Y : " + x + " / " + y);
 			// pour les coords des triangles je pars des côtés, puis centre, puis bas
-			// IDEE FIX PB : ENLEVER LES *3/4
 			int [] t1_x = {x*NB_PIX_CASE/2, x*NB_PIX_CASE/2+NB_PIX_CASE/2, x*NB_PIX_CASE/2};
 			int [] t1_y = {y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4+NB_PIX_CASE/4};
 			int [] t2_x = {x*NB_PIX_CASE/2+NB_PIX_CASE, x*NB_PIX_CASE/2+NB_PIX_CASE/2, x*NB_PIX_CASE/2+NB_PIX_CASE};
 			int [] t2_y = {y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4+NB_PIX_CASE/4};
-			/*
-			int [] t1_x = {x*NB_PIX_CASE, x*NB_PIX_CASE+NB_PIX_CASE/2, x*NB_PIX_CASE};
-			int [] t1_y = {y*NB_PIX_CASE, y*NB_PIX_CASE, y*NB_PIX_CASE+NB_PIX_CASE/4};
-			int [] t2_x = {x*NB_PIX_CASE/2+NB_PIX_CASE, x*NB_PIX_CASE, x*NB_PIX_CASE+NB_PIX_CASE};
-			int [] t2_y = {y*NB_PIX_CASE, y*NB_PIX_CASE, y*NB_PIX_CASE+NB_PIX_CASE/4};
-			*/
-			// on décale x comme dans coorToPosRect quand on est sur une ligne impaire
-			// euuuuh pas besoin au final jsp pk mais ça marche
-			/*
-			if (test.getY() % 2 == 1) {
-				for (i = 0 ; i < 3 ; i++) {
-					t1_x[i] += OFFSET_X;
-					t2_x[i] += OFFSET_X;
-				}
+			// petit décalage vers le haut, ça correspond mieux à là où on clique
+			for (i = 0 ; i < 3 ; i++) {
+				t1_y[i]--;
+				t2_y[i]--;
 			}
-			*/
 			// verif dans triangle 1, puis si dedans alors x-=1 et y-=1
 			if (estDansTriangle(t1_x, t1_y, cx, cy)) {
-				System.out.println("JE SUIS DANS 1");
 				test.setX(test.getX() - 1);
 				test.setY(test.getY() - 1);
 			}
 			// verif dans triangle 2, puis si dedans alors x+=1 et y-=1
 			if (estDansTriangle(t2_x, t2_y, cx, cy)) {
-				System.out.println("JE SUIS DANS 2");
 				test.setX(test.getX() + 1);
 				test.setY(test.getY() - 1);
 			}
-			System.out.println("HAHAHAHHAHAHAHAHAHHAHAHAHHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBB ");
 			// si dans aucun alors on change pas
 			return test;
 		}
@@ -632,10 +570,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 		double A1 = aire(x, y, tx[1], ty[1], tx[2], ty[2]);
 		double A2 = aire(tx[0], ty[0], x, y, tx[2], ty[2]);
 		double A3 = aire(tx[0], ty[0], tx[1], ty[1], x, y);
-		System.out.println("(" + tx[0] + "," + ty[0] + ") " + "(" + tx[1] + "," + ty[1] + ") " + "(" + tx[2] + "," + ty[2] + ") ");
-		// (30,15) (40,15) (30,20) au lieu de (10, 15) (20, 15) (10, 20)
-		// (40,15) (30,15) (50,20) au lieu de (30, 15) (20, 15) (30, 20)
-		System.out.println("---------------------------> " + A + "  " + A1 + "  " + A2 + "  " + A3);
 		return (A == A1+A2+A3);
 	}
 	
@@ -644,23 +578,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				 		 + x2 * (y3-y1)
 				 		 + x3 * (y1-y2)) / 2.0 );
 	}
-	
-	// Primitif mais ok (gère pas la forme des hexagones)
-	/*
-	public Position coorToPos(int x, int y) {
-		int offset_x = 0;
-		int px = x/NB_PIX_CASE,
-			py = y/(NB_PIX_CASE*3/4);
-		if (py % 2 == 1) {
-			offset_x = OFFSET_X;
-			x += offset_x;
-		}
-		
-		px = x/NB_PIX_CASE;
-		px = px * 2 - py % 2;
-		return new Position(px, py);
-	}
-	*/
+	// COORTOPOS
 	
 	
 	// DESSIN
