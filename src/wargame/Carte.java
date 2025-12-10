@@ -573,27 +573,37 @@ public class Carte implements IConfig, ICarte, Serializable {
 			int i;
 			int x = test.getX(),
 				y = test.getY();
+			System.out.println("HELLO X AND Y : " + x + " / " + y);
 			// pour les coords des triangles je pars des côtés, puis centre, puis bas
 			// IDEE FIX PB : ENLEVER LES *3/4
-			int [] t1_x = {x*NB_PIX_CASE, x*NB_PIX_CASE+NB_PIX_CASE/2, x*NB_PIX_CASE};
+			int [] t1_x = {x*NB_PIX_CASE/2, x*NB_PIX_CASE/2+NB_PIX_CASE/2, x*NB_PIX_CASE/2};
 			int [] t1_y = {y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4+NB_PIX_CASE/4};
-			int [] t2_x = {x*NB_PIX_CASE/2+NB_PIX_CASE, x*NB_PIX_CASE, x*NB_PIX_CASE+NB_PIX_CASE};
+			int [] t2_x = {x*NB_PIX_CASE/2+NB_PIX_CASE, x*NB_PIX_CASE/2+NB_PIX_CASE/2, x*NB_PIX_CASE/2+NB_PIX_CASE};
 			int [] t2_y = {y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4+NB_PIX_CASE/4};
+			/*
+			int [] t1_x = {x*NB_PIX_CASE, x*NB_PIX_CASE+NB_PIX_CASE/2, x*NB_PIX_CASE};
+			int [] t1_y = {y*NB_PIX_CASE, y*NB_PIX_CASE, y*NB_PIX_CASE+NB_PIX_CASE/4};
+			int [] t2_x = {x*NB_PIX_CASE/2+NB_PIX_CASE, x*NB_PIX_CASE, x*NB_PIX_CASE+NB_PIX_CASE};
+			int [] t2_y = {y*NB_PIX_CASE, y*NB_PIX_CASE, y*NB_PIX_CASE+NB_PIX_CASE/4};
+			*/
 			// on décale x comme dans coorToPosRect quand on est sur une ligne impaire
+			// euuuuh pas besoin au final jsp pk mais ça marche
+			/*
 			if (test.getY() % 2 == 1) {
 				for (i = 0 ; i < 3 ; i++) {
 					t1_x[i] += OFFSET_X;
 					t2_x[i] += OFFSET_X;
 				}
 			}
+			*/
 			// verif dans triangle 1, puis si dedans alors x-=1 et y-=1
-			if (estDansTriangle(t1_x, t1_y, x, y)) {
+			if (estDansTriangle(t1_x, t1_y, cx, cy)) {
 				System.out.println("JE SUIS DANS 1");
 				test.setX(test.getX() - 1);
 				test.setY(test.getY() - 1);
 			}
 			// verif dans triangle 2, puis si dedans alors x+=1 et y-=1
-			if (estDansTriangle(t2_x, t2_y, x, y)) {
+			if (estDansTriangle(t2_x, t2_y, cx, cy)) {
 				System.out.println("JE SUIS DANS 2");
 				test.setX(test.getX() + 1);
 				test.setY(test.getY() - 1);
@@ -622,10 +632,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 		double A1 = aire(x, y, tx[1], ty[1], tx[2], ty[2]);
 		double A2 = aire(tx[0], ty[0], x, y, tx[2], ty[2]);
 		double A3 = aire(tx[0], ty[0], tx[1], ty[1], x, y);
-		boolean dedans;
-		double somme = A1+A2+A3;
-		dedans = (A == A1+A2+A3);
-		System.out.println("---------------------------> " + A + "  " + somme);
+		System.out.println("(" + tx[0] + "," + ty[0] + ") " + "(" + tx[1] + "," + ty[1] + ") " + "(" + tx[2] + "," + ty[2] + ") ");
+		// (30,15) (40,15) (30,20) au lieu de (10, 15) (20, 15) (10, 20)
+		// (40,15) (30,15) (50,20) au lieu de (30, 15) (20, 15) (30, 20)
+		System.out.println("---------------------------> " + A + "  " + A1 + "  " + A2 + "  " + A3);
 		return (A == A1+A2+A3);
 	}
 	
