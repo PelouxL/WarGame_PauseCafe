@@ -1,6 +1,7 @@
 package wargame;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -57,6 +58,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private JButton boutonFin;
 	private JButton boutonRetour;
 	private JButton boutonAffiche;
+	private JButton boutonRevenirMenu;
 	
 	// fin du jeu
 	private int finJeu = 0;
@@ -77,7 +79,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				carte.toutDessiner(g, caseSurvolee, caseCliquee);
 				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
-
 					carte.dessineCaseCliquee(g, dragPersoFin);
 				}
 				verifFinJeu();
@@ -194,35 +195,42 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauDroit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		
 		// --------------------------- Creation de panneau haut ---------------------//	
-		JPanel panneauHaut = new JPanel();
-		JTextArea tourActuel = new JTextArea();
+		JPanel panneauHaut = new JPanel() {
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.setColor(Color.WHITE);
+				g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2);
+				verifFinJeu();
+				if (finJeu != 0) {
+					System.out.println("enorme cacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+					boutonFin.setVisible(false);
+					boutonRetour.setVisible(false);
+					boutonRevenirMenu.setVisible(true);
+				}
+			}
+		};
 			
         panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
 		panneauHaut.setBackground(COULEUR_PLATEAU);
 		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-		panneauHaut.add(tourActuel);
-		tourActuel.setText(Integer.toString(carte.getNbTours()));
-		tourActuel.setEditable(false);
-		tourActuel.setBackground(COULEUR_PLATEAU);
 
 		// ---------- Creation des boutons de la carte ---------- //
 		boutonFin = new JButton("Fin de tour");
 		boutonRetour = new JButton("Retour arrière");
+		boutonRevenirMenu = new JButton("Revenir au menu");
 		panneauHaut.add(boutonRetour);
 		panneauHaut.add(boutonFin);
+		panneauHaut.add(boutonRevenirMenu);
 		
 		boutonFin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (finJeu == 0) {
 					carte.jouerSoldats();
-					tourActuel.setText(Integer.toString(carte.getNbTours()));
-					tourActuel.repaint();
 					//verifFinJeu();
 					//logArea.repaint();
 					panneauCarte.repaint();
+					panneauHaut.repaint();
 					System.out.println("Termine-moi !");
-				} else {
-					new FenetreMenu();
 				}
 			}
 		});
@@ -235,6 +243,18 @@ public class PanneauJeu extends JPanel implements IConfig {
 				}
 			}
 		});
+		
+		boutonRevenirMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFrame fenetre = (JFrame) SwingUtilities.getWindowAncestor(panneauHaut);
+				fenetre.dispose();
+				new FenetreMenu();
+			}
+		});
+		
+		boutonFin.setVisible(true);
+		boutonRetour.setVisible(true);
+		boutonRevenirMenu.setVisible(false);
 		
 		
 		// ------------------------ Mises en place des layout ----------------------//

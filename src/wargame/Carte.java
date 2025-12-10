@@ -407,6 +407,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		this.nbTours++;
 		this.tourActuel = TOUR_HEROS;
 		// on remet les actions à tous les héros
+		this.soignerHeros();
 		this.resetActionsHeros();
 		
 	}
@@ -468,7 +469,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public void resetActionsHeros() {
 		int i;
 		for (i = 0 ; i < nbHeros ; i++) {
-			listeHeros[i].setAction(2);
+			listeHeros[i].setAction(2); // Remplacer par NB_ACTION_MAX
+		}
+	}
+	
+	public void soignerHeros() {
+		int i;
+		for (i = 0 ; i < nbHeros ; i++) {
+			listeHeros[i].ajouterPv(5*listeHeros[i].getAction());
 		}
 	}
 	// ACTION SOLDAT
@@ -555,7 +563,80 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	*/
 	
+	public Position coorToPos(int cx, int cy) {
+		Position test = coorToPosRect(cx, cy);
+		// on teste si en décalant vers le haut d'1/4 d'hexa ça reste à la même pos
+		Position test2 = coorToPosRect(cx, cy-NB_PIX_CASE/4);
+		if (test.equals(test2)) {
+			return test;
+		} else {
+			int i;
+			int x = test.getX(),
+				y = test.getY();
+			// pour les coords des triangles je pars des côtés, puis centre, puis bas
+			// IDEE FIX PB : ENLEVER LES *3/4
+			int [] t1_x = {x*NB_PIX_CASE, x*NB_PIX_CASE+NB_PIX_CASE/2, x*NB_PIX_CASE};
+			int [] t1_y = {y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4+NB_PIX_CASE/4};
+			int [] t2_x = {x*NB_PIX_CASE/2+NB_PIX_CASE, x*NB_PIX_CASE, x*NB_PIX_CASE+NB_PIX_CASE};
+			int [] t2_y = {y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4+NB_PIX_CASE/4};
+			// on décale x comme dans coorToPosRect quand on est sur une ligne impaire
+			if (test.getY() % 2 == 1) {
+				for (i = 0 ; i < 3 ; i++) {
+					t1_x[i] += OFFSET_X;
+					t2_x[i] += OFFSET_X;
+				}
+			}
+			// verif dans triangle 1, puis si dedans alors x-=1 et y-=1
+			if (estDansTriangle(t1_x, t1_y, x, y)) {
+				System.out.println("JE SUIS DANS 1");
+				test.setX(test.getX() - 1);
+				test.setY(test.getY() - 1);
+			}
+			// verif dans triangle 2, puis si dedans alors x+=1 et y-=1
+			if (estDansTriangle(t2_x, t2_y, x, y)) {
+				System.out.println("JE SUIS DANS 2");
+				test.setX(test.getX() + 1);
+				test.setY(test.getY() - 1);
+			}
+			System.out.println("HAHAHAHHAHAHAHAHAHHAHAHAHHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBB ");
+			// si dans aucun alors on change pas
+			return test;
+		}
+	}
+	
+	private Position coorToPosRect(int x, int y) {
+		int offset_x = 0;
+		int px = x/NB_PIX_CASE,
+			py = y/(NB_PIX_CASE*3/4);
+		if (py % 2 == 1) {
+			offset_x = OFFSET_X;
+			x += offset_x;
+		}
+		px = x/NB_PIX_CASE;
+		px = px * 2 - py % 2;
+		return new Position(px, py);
+	}
+	
+	private boolean estDansTriangle(int [] tx, int [] ty, int x, int y) {
+		double A = aire(tx[0], ty[0], tx[1], ty[1], tx[2], ty[2]);
+		double A1 = aire(x, y, tx[1], ty[1], tx[2], ty[2]);
+		double A2 = aire(tx[0], ty[0], x, y, tx[2], ty[2]);
+		double A3 = aire(tx[0], ty[0], tx[1], ty[1], x, y);
+		boolean dedans;
+		double somme = A1+A2+A3;
+		dedans = (A == A1+A2+A3);
+		System.out.println("---------------------------> " + A + "  " + somme);
+		return (A == A1+A2+A3);
+	}
+	
+	private double aire (int x1, int y1, int x2, int y2, int x3, int y3) {
+		return Math.abs( ( x1 * (y2-y3)
+				 		 + x2 * (y3-y1)
+				 		 + x3 * (y1-y2)) / 2.0 );
+	}
+	
 	// Primitif mais ok (gère pas la forme des hexagones)
+	/*
 	public Position coorToPos(int x, int y) {
 		int offset_x = 0;
 		int px = x/NB_PIX_CASE,
@@ -569,6 +650,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		px = px * 2 - py % 2;
 		return new Position(px, py);
 	}
+	*/
 	
 	
 	// DESSIN
