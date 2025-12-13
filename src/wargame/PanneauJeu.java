@@ -315,7 +315,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 						choisiComp = null;
 						infoTexte2 ="";
 						nettoyerPanneauDroit();
-						
+						panneauCarte.repaint();
 						
 					// si c'est le premier clique, initialisation deplacement
 					}else {

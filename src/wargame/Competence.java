@@ -70,6 +70,7 @@ public class Competence implements ICompetence, Serializable{
 					receveurs +=  " a reçu " + this.type.getDegats() + " points de dégâts !"; 
 					soldats.retirerPv(type.getDegats());
 					if(soldats.estMort()) {
+						carte.mort(soldats);
 						receveurs += "Il a succombé !";
 					}
 					receveurs += "\n";
@@ -86,6 +87,7 @@ public class Competence implements ICompetence, Serializable{
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
 				
 				if(soldat.estMort()) {
+					carte.mort(soldat);
 					receveurs += "Il a succombé !";
 				}
 				
@@ -126,6 +128,11 @@ public class Competence implements ICompetence, Serializable{
 				receveurs += soldat.recupIdentite();
 				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégats !";
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
+				
+				if(soldat.estMort()) {
+					carte.mort(soldat);
+					receveurs += "Il a succombé !";
+				}
 		    }else{
 		    	receveurs += "Vous avez réussi a transpercer le sol ! Bravo.";
 		    }
