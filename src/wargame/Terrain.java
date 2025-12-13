@@ -5,21 +5,23 @@ import java.io.Serializable;
 public class Terrain implements IConfig, Serializable {
 	
 	public enum TypeTerrain {
-		HERBE (COULEUR_HERBE, true),
-		ROCHER (COULEUR_ROCHER, false),
-		FORET (COULEUR_FORET, false), 
-		EAU (COULEUR_EAU, false),
-		PONT (COULEUR_PONT, true);
+		HERBE (COULEUR_HERBE, true, 1),
+		ROCHER (COULEUR_ROCHER, false, 99999),
+		FORET (COULEUR_FORET, false, 3), 
+		EAU (COULEUR_EAU, false, 99999),
+		PONT (COULEUR_PONT, true, 1);
 		// FEU (COULEUR_FEU, true),
 		// ACIDE (COULEUR_ACIDE, true),
 		// VILLAGE (COULEUR_VILLAGE, true);
 
 		private final Color COULEUR;
 		private final boolean ACCESSIBLE; // Changer pour gerer des unité volante par ex?
+		private final int COUT;
 
-		TypeTerrain(Color couleur, boolean accessible) { 
+		TypeTerrain(Color couleur, boolean accessible, int cout) { 
 			this.COULEUR = couleur;
 			this.ACCESSIBLE = accessible;
+			this.COUT = cout;
 		}
 		
 		public Color getCouleur() {
@@ -28,6 +30,10 @@ public class Terrain implements IConfig, Serializable {
 		
 		public boolean getAccessible() {
 			return this.ACCESSIBLE;
+		}
+		
+		public int getCout() {
+			return this.COUT;
 		}
 		
 		public static TypeTerrain getTerrainAlea() {
