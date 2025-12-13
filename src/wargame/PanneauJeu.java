@@ -202,7 +202,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 				g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2);
 				verifFinJeu();
 				if (finJeu != 0) {
-					System.out.println("enorme cacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 					boutonFin.setVisible(false);
 					boutonRetour.setVisible(false);
 					boutonRevenirMenu.setVisible(true);
