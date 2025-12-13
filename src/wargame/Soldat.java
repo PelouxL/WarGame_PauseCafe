@@ -311,6 +311,19 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 		return s;
 	}
 	
+	public String recupIdentite() {
+		 String id = "";
+		 
+		if (this instanceof Monstre) {
+			id += ((Monstre)this).getNom();
+			id += this.getNum()+1;
+		} else {
+			id += ((Heros)this).getNom();
+			id += (char)('A'+this.getNum());
+		}
+		return id;
+	}
+	
 	// TMP
 	public Carte getCarte() {
 		return this.carte;

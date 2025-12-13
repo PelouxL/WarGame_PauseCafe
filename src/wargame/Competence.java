@@ -44,57 +44,99 @@ public class Competence implements ICompetence, Serializable{
 	
 	public void appliquerCompetence(Position lanceur, Position receveur, Carte carte) {
 		Soldat soldat = carte.getSoldat(receveur);
+		
+		// LOG 
+		String log = "";
+		String atq = "";
+		String receveurs = "";
+		
+		Soldat caster = carte.getSoldat(lanceur);
+		
 		switch(type) {
 		case BOULE_DE_FEU:	
-				EnsemblePosition zoneAttaque = receveur.voisines(type.getDegatsZone());
-				for(int i = 0; i < zoneAttaque.getNbPos(); i++) {
-					Soldat soldats = carte.getSoldat(zoneAttaque.getPosition(i));
-					if(soldats != null) {
-						System.out.println("Bam on la toucher ! "+ soldats);
-						soldats.retirerPv(type.getDegats());
-						// faire bruler le sol 
+			atq += caster.recupIdentite() + " lance une boule de feu en zone !\n";
+			// 	definition de la zonne d'attaque
+			EnsemblePosition zoneAttaque = receveur.voisines(type.getDegatsZone());
+			zoneAttaque.ajouterPos(receveur);
+			for(int i = 0; i < zoneAttaque.getNbPos(); i++) {
+				Soldat soldats = carte.getSoldat(zoneAttaque.getPosition(i));
+				if(soldats != null) {
+						
+					// LOG pour reccuperer le nom 
+					receveurs += "---- ";
+					receveurs += soldats.recupIdentite();
+					
+					receveurs +=  " a reçu " + this.type.getDegats() + " points de dégâts !"; 
+					soldats.retirerPv(type.getDegats());
+					if(soldats.estMort()) {
+						receveurs += "Il a succombé !";
 					}
+					receveurs += "\n";
+						// faire bruler le sol 
 				}
-				System.out.println("Boule de feu lancer !");
-			break;
-			// appliquer du feu sur le terrain
+			}
+			System.out.println("Boule de feu lancer !");
+		break;
 		case COUP_EPEE:
+			atq += caster.recupIdentite() + " Donne un coup d'épée !\n";
 			if(soldat != null) {
+				receveurs += soldat.recupIdentite();
+				receveurs += " a reçu " + type.getDegats() + soldat.getPuissance() + " points de dégats !";
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
+				
+				if(soldat.estMort()) {
+					receveurs += "Il a succombé !";
+				}
+				
 			}else {
-				System.out.println("Wooaw ! le Vent tremble devant votre puissance !");
+				receveurs += "Wooaw ! le Vent tremble devant votre puissance !";
 			}	
 			break;
 		case SOIN:
+			atq += caster.recupIdentite() + " Lance un sort de soin !\n";
 			if(soldat != null) {
+				receveurs += soldat.recupIdentite();
+				receveurs += " a reçu " + type.getDegats() + soldat.getPuissance() + " points de vie !";
 				soldat.ajouterPv(type.getDegats() + soldat.getPuissance());
 			}else {
-				System.out.println("Le vent vous remercie pour votre generosité.");
+				receveurs += "Le vent vous remercie pour votre generosité.";
 			}
 			break;
 		case SOIN_DE_ZONE:
+			atq += caster.recupIdentite() + " Lance un sort de soin de zone !\n";
 			EnsemblePosition zoneSoin = receveur.voisines(type.getDegatsZone());
-			for(int i = 0; i < zoneSoin.getNbPos(); i++) {
+			for(int i = 0; i < zoneSoin.getNbPos(); i++) {				
 				Soldat soldats = carte.getSoldat(zoneSoin.getPosition(i));
 				if(soldats != null) {
+					
+					// LOG pour reccuperer le nom 
+					receveurs += "---- ";
+					receveurs += soldats.recupIdentite();
+					receveurs +=  " a reçu " + this.type.getDegats() + " points de vie !"; 
 					soldats.ajouterPv(type.getDegats());
 					// faire bruler le sol 
 				}
-			System.out.println("Boule de feu lancer !");
 			}
 			break;
 		case TIR_A_PORTER:
-			if(soldat != null) {
+			atq += caster.recupIdentite() + " Décoche une flèche ! !\n";
+			if(soldat != null) {	
+				receveurs += "---- ";
+				receveurs += soldat.recupIdentite();
+				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégats !";
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
 		    }else{
-		    	System.out.println("Vous avez réussi a transpercer le sol ! Bravo.");
+		    	receveurs += "Vous avez réussi a transpercer le sol ! Bravo.";
 		    }
 			break;
 		}
 		
+		log += atq + receveurs;
+		carte.addCombatMessage(log);
 	}
 	
-	// A CHANGER + TARD
+	
+	
 	public EnsemblePosition porteeCompetence(Soldat lanceur) {
 		int nbPosMax = (int) Math.pow(6, type.getDistance()+1); // TEMPORAIRE FAIRE VRAI CALCUL
 		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
@@ -177,8 +219,6 @@ public class Competence implements ICompetence, Serializable{
 	}
 	
 	public Color typeCouleurAttaque(Position pos){
-		EnsemblePosition ePos;
-		ePos = pos.voisines(type.getDegatsZone());
 		switch(type.getClasseCompetence()) {
 		case ATTAQUE:
 			return Color.RED;

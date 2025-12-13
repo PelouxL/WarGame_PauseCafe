@@ -42,6 +42,7 @@ public interface IConfig {
 	Color COULEUR_PANNEAU_TRANSPARENT = new Color(150,150,150,230);
 	Color COULEUR_PLATEAU = Color.decode("#8B4513");
 	Color COULEUR_BOUTON_COMP = Color.decode("#260923");
+	Color COULEUR_BOUTON_COMP_INDISPONIBLE = Color.decode("#DDCEDE");
 	Color COULEUR_PORTEE_COMP = Color.decode("#C1D11B");
 	
 	// SOLDATS

@@ -301,6 +301,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 						deplacePerso = false;
 						caseCliquee = null;
 						caseAction = null;
+						nettoyerPanneauDroit();
+						
 						
 						// le cas où une competence est lancer 
 					}else if(choisiComp != null) {
@@ -308,9 +310,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 						caseAction = carte.coorToPos(x, y);
 						choisiComp.utiliserCompetence(carte.getSoldat(caseCliquee), caseAction, carte);
 						
-						// reccuperer le clic
-						// verifier qu'on clique bien sur une case disponbiel
-						// si le clic est bon que faire ?? forcement sur un Monstre ou sur une case vode ? 
 						caseCliquee = null;
 						caseAction = null;
 						choisiComp = null;
@@ -326,9 +325,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 
 							deplacePerso = true;
 							mettreAJourPanneauDroit();
-							System.out.println("bah tu affiche la ? ");
 							infoTexte2 = soldat.toString();
-							System.out.println("bah tu affiche la2 ? ");
 							// initie le dragg
 							dragPerso = true;
 							dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
@@ -410,16 +407,25 @@ public class PanneauJeu extends JPanel implements IConfig {
 		ImageIcon icon = new ImageIcon(competence.trouverImg()); 
 	    boutonCompetence.setIcon(icon); 
 	    boutonCompetence.setForeground(Color.white);
-	    boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+	    if(!competence.peutUtiliser()){
+	    	 boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
+	    }else {
+	    	 boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+	    }
+	   
 	 
 	    boutonCompetence.addActionListener(new ActionListener() {
-	    	public void actionPerformed(ActionEvent e) {
-	    		changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
+	    	public void actionPerformed(ActionEvent e) {	
 	    		if(choisiComp == null) {	
+	    			choisiComp = competence;
 	    			if(choisiComp.peutUtiliser()) {
-	    				choisiComp = competence;
+	    				changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
+	    				
 	    			}else if(carte.getSoldat(caseCliquee).getAction() < choisiComp.getType().getCoutAction()){
 	    				System.out.println("Vous n'aveez pas les point d'action necessaire ! ");
+	    			}else {
+	    				System.out.println("La competence n'est pas encore disponible !!! ");
+	    				choisiComp = null;
 	    			}
 	    		}else {
 	    			choisiComp = null;

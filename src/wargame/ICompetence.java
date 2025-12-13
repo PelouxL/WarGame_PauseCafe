@@ -9,10 +9,10 @@ public interface ICompetence{
 	
 	public enum TypeCompetence {
 		BOULE_DE_FEU("boule de feu", ATTAQUE, 2, 30, "ligne", 5 ,true, 3, 2),
-		SOIN("soin", SOINS, 1, 15, "ligne", 3, false, 4, 0),
-		SOIN_DE_ZONE("soin de zone", SOINS,  2, 20, "libre", 4, false, 2, 3),
-		COUP_EPEE("coup d'épée", ATTAQUE, 1, 10, "libre", 1, false, 0, 0),
-		TIR_A_PORTER("tir a porter", ATTAQUE, 1, 10, "ligne", 19, false, 0, 0);
+		SOIN("soin", SOINS, 1, 15, "libre", 3, false, 0, 1),
+		SOIN_DE_ZONE("soin de zone", SOINS,  2, 20, "ligne", 4, false, 2, 3),
+		COUP_EPEE("coup d'épée", ATTAQUE, 1, 10, "libre", 1, false, 0, 1),
+		TIR_A_PORTER("tir a porter", ATTAQUE, 1, 10, "ligne", 19, false, 0, 1);
 		
 		private final String nom;
 		private final int classeCompetence;
