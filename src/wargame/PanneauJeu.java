@@ -39,7 +39,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private boolean deplacePerso = false;
 	private boolean dragPerso = false;
 	private boolean afficheLog = false;
-	private boolean choisiComp = false;
+	private Competence choisiComp = null;
 	
 	// information du panneauInfo
 	private String infoTexte ="";
@@ -77,7 +77,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauCarte = new JPanel() {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				carte.toutDessiner(g, caseSurvolee, caseCliquee);
+				carte.toutDessiner(g, caseSurvolee, caseCliquee, choisiComp);
 				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
 					carte.dessineCaseCliquee(g, dragPersoFin);
 				}
@@ -293,6 +293,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 					panneauInfos.repaint();
 					panneauCarte.repaint();
 				}
+					
+				panneauInfos.repaint();
+				panneauCarte.repaint();
 			}
 			
 			// creation de l'evenement du dragg 
@@ -324,78 +327,83 @@ public class PanneauJeu extends JPanel implements IConfig {
 		// Ecouteur clic souris
 		panneauCarte.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				if (finJeu == 0) {
-					int x = e.getX();
-					int y = e.getY();
-					Soldat soldat = carte.getSoldat(carte.coorToPos(x, y));
+				int x = e.getX();
+				int y = e.getY();
+				Soldat soldat = carte.getSoldat(carte.coorToPos(x, y));
+				
+				// si on fait un clique gauche
+				if(SwingUtilities.isLeftMouseButton(e)) {
+					// si on est sur le point de deplacé un Heros
+					if(deplacePerso && choisiComp == null && caseCliquee != null) {
+						caseAction = carte.coorToPos(x, y);
+						carte.actionHeros(caseCliquee, caseAction);
+						// si on a lancé un combat
+						if(soldat instanceof Monstre) {
+							updateCombatLog();
+						}
+						
+						// on réenitialise après deplacement
+						infoTexte2 ="";
+						deplacePerso = false;
+						caseCliquee = null;
+						caseAction = null;
+						nettoyerPanneauDroit();
+						
+						
+						// le cas où une competence est lancer 
+					}else if(choisiComp != null) {
 					
-					// si on fait un clique gauche
-					if(SwingUtilities.isLeftMouseButton(e)) {
-						// si on est sur le point de deplacé un Heros
-						if(deplacePerso && !choisiComp && caseCliquee != null) {
-							caseAction = carte.coorToPos(x, y);
-							carte.actionHeros(caseCliquee, caseAction);
-							// si on a lancé un combat
-							if(soldat instanceof Monstre) {
-								updateCombatLog();
-							}
+						caseAction = carte.coorToPos(x, y);
+						choisiComp.utiliserCompetence(carte.getSoldat(caseCliquee), caseAction, carte);
+						
+						caseCliquee = null;
+						caseAction = null;
+						choisiComp = null;
+						infoTexte2 ="";
+						nettoyerPanneauDroit();
+						
+						
+					// si c'est le premier clique, initialisation deplacement
+					}else {
+						caseCliquee = carte.coorToPos(x, y);		
+						// on initalise le deplacement
+
+						if (caseCliquee.estValide() && soldat instanceof Soldat && dragPerso == false && choisiComp == null) {
+
+							deplacePerso = true;
+							mettreAJourPanneauDroit();
+							infoTexte2 = soldat.toString();
+							// initie le dragg
+							dragPerso = true;
+							dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
+							dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
+						} else {
+							// renitialise une fois clique en dehors 
 							
-							// on réenitialise après deplacement
+							caseCliquee = null;
+							deplacePerso = false;
 							infoTexte2 ="";
 							deplacePerso = false;
 							caseCliquee = null;
 							caseAction = null;
 							
-							// le cas où une competence est lancer 
-						}else if(choisiComp) {
-							choisiComp = false;
-							caseCliquee = null;
+							choisiComp = null;
 							nettoyerPanneauDroit();
 							
-							
-						// si c'est le premier clique, initialisation deplacement
-						}else {
-							caseCliquee = carte.coorToPos(x, y);		
-							// on initalise le deplacement
-							if (caseCliquee.estValide() && soldat instanceof Soldat && dragPerso == false && !choisiComp) {
-	
-								deplacePerso = true;
-								mettreAJourPanneauDroit();
-								infoTexte2 = soldat.toString();
-								
-								// initie le dragg
-								dragPerso = true;
-								dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
-								dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
-							} else {
-								// renitialise une fois clique en dehors 
-								
-								caseCliquee = null;
-								deplacePerso = false;
-								infoTexte2 ="";
-								
-								choisiComp = false;
-								nettoyerPanneauDroit();
-								
-							}
 						}
-					}else {
-						// annulement deplacement
-						caseCliquee = null;
-						caseAction = null;
-						deplacePerso = false;
-						// annulement drag
-						dragPerso = false;
-						dragPersoInit = null;
-						dragPersoFin = null;
-						
-						choisiComp = false;
-						nettoyerPanneauDroit();
 					}
-					
-					panneauInfos.repaint();
-					panneauCarte.repaint();
-					panneauDroit.repaint();
+				}else {
+					// annulement deplacement
+					caseCliquee = null;
+					caseAction = null;
+					deplacePerso = false;
+					// annulement drag
+					dragPerso = false;
+					dragPersoInit = null;
+					dragPersoFin = null;
+					infoTexte2="";
+					choisiComp = null;
+					nettoyerPanneauDroit();
 				}
 			}
 			
@@ -447,20 +455,32 @@ public class PanneauJeu extends JPanel implements IConfig {
 		ImageIcon icon = new ImageIcon(competence.trouverImg()); 
 	    boutonCompetence.setIcon(icon); 
 	    boutonCompetence.setForeground(Color.white);
-	    boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+	    if(!competence.peutUtiliser()){
+	    	 boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
+	    }else {
+	    	 boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+	    }
+	   
 	 
 	    boutonCompetence.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-	    	changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
-	    			if(!choisiComp) {		
-	    				choisiComp = true;
+	    	public void actionPerformed(ActionEvent e) {	
+	    		if(choisiComp == null) {	
+	    			choisiComp = competence;
+	    			if(choisiComp.peutUtiliser()) {
+	    				changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
 	    				
-	    				
+	    			}else if(carte.getSoldat(caseCliquee).getAction() < choisiComp.getType().getCoutAction()){
+	    				System.out.println("Vous n'aveez pas les point d'action necessaire ! ");
 	    			}else {
-	    			choisiComp = false;
-	               // utiliserCompetence(competence); // Appeler la fonction qui utilise la compétence
+	    				System.out.println("La competence n'est pas encore disponible !!! ");
+	    				choisiComp = null;
 	    			}
-	    			repaint();
+	    		}else {
+	    			choisiComp = null;
+	    			
+	    			// utiliserCompetence(); // Appeler la fonction qui utilise la compétence
+	    		}
+	    		panneauCarte.repaint();
 	    	}
 	    });
 			

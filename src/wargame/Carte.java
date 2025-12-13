@@ -170,8 +170,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public Soldat getSoldat(Position pos) {	
 		return this.getCase(pos).getOccupant();
 	}
-	// ELEMENT
-	
 	
 	// FIN DU JEU
 	public int verifierFinJeu() {
@@ -582,7 +580,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	
 	// DESSIN
-	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee) {
+	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee, Competence choisiComp) {
 		
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
@@ -625,14 +623,28 @@ public class Carte implements IConfig, ICarte, Serializable {
 			if (caseCliquee != null
 				&& caseCliquee.estValide()
 				&& getSoldat(caseCliquee) != null
-				&& getSoldat(caseCliquee) instanceof Heros) {
+				&& getSoldat(caseCliquee) instanceof Heros
+				&& choisiComp == null) {
 					
 				dessineZoneDeplacement(g, getSoldat(caseCliquee));
 				dessineCaseCliquee(g, caseCliquee);
 			}
+			
+			// Zone des competence
+			if (caseCliquee != null
+					&& caseCliquee.estValide()
+					&& getSoldat(caseCliquee) != null
+					&& getSoldat(caseCliquee) instanceof Heros
+					&& choisiComp != null) {
+					
+					dessinePorteeCompetence(g, choisiComp ,getSoldat(caseCliquee), caseSurvolee, caseCliquee);					
+					dessineCaseCliquee(g, caseCliquee);
+			}
+				
 		}
 		
 	}
+	
 			
 	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
 		EnsemblePosition ePos = soldat.zoneDeplacement();
@@ -641,15 +653,40 @@ public class Carte implements IConfig, ICarte, Serializable {
 			this.dessineCase(g, Color.PINK, ePos.getPosition(i));
 		}
 	}
+	
+	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur, Position caseSurvolee, Position caseCliquee) {
+		EnsemblePosition ePos = lanceur.getPos().voisinesCroix(competence.getType().getDistance());
+		EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone());
+		
+		for (int i = 0; i < ePos.getNbPos(); i++) {
+			Soldat soldat = (getSoldat(ePos.getPosition(i)));
+			if(soldat != null) {
+				if(soldat instanceof Heros) {
+					this.dessineCase(g, Color.decode("#6B1818"), ePos.getPosition(i));
+				}else {
+					this.dessineCase(g, Color.decode("#403939"), ePos.getPosition(i));
+				}
+			}else {
+				// penser a changer la couleur en fonction d'un spell degat / soin
+				this.dessineCase(g, COULEUR_PORTEE_COMP, ePos.getPosition(i));
+			}
+		}
+		
+		if(caseSurvolee.estValide() && ePos.contient(caseSurvolee)){
+			for(int j = 0; j < zoneAtt.getNbPos(); j++) {
+				this.dessineCase(g, competence.typeCouleurAttaque(caseSurvolee) , zoneAtt.getPosition(j));
+				
+			}
+		}
+		
+	}
 			
 			
 	public void dessineCaseCliquee(Graphics g, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
-		//System.out.println("bonjour je passe normalement 1 seule fois, voici mes valeurs : " + x + "   " + y);
 		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
 		g.setColor(couleur);
-		// Obligé de faire un +1 quand opacité pas au max ???
 		this.dessineInterieurHexagone(g, x/2, y);
 	}
 	

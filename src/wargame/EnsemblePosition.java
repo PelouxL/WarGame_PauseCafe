@@ -29,12 +29,14 @@ public class EnsemblePosition {
 		this.ePos[nbPos++] = pos;
 	}
 	
+	
 	public boolean contient(Position pos) {
-		int i = 0;
-		while(i < this.nbPos && this.ePos[i].equals(pos) == false) {
-			i++;
-		}
-		return (i < this.nbPos);
+	    for (int i = 0; i < nbPos; i++) {
+	        if (ePos[i].equals(pos)) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 	
 	public Position getPosition(int i) {
