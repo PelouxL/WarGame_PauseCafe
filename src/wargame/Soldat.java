@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Soldat implements ISoldat, Serializable{
+
+public abstract class Soldat implements ISoldat, ICompetence, Serializable{
+
 	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3, NB_ACTION_MAX;
 
 	private int pointsDeVie;
@@ -39,6 +41,7 @@ public abstract class Soldat implements ISoldat, Serializable{
 		initialiserCompetence();
 	}
 	
+	// 
 	
 	// POINTS DE VIE
 	public int getPoints() { return this.POINT_DE_VIE; }
@@ -107,13 +110,13 @@ public abstract class Soldat implements ISoldat, Serializable{
 	// COMPETENCE
 	public void initialiserCompetence() {
 		if(this instanceof Heros) {
-			ajouterCompetence(new Competence(Competence.TypeCompetence.BOULE_DE_FEU));
-			ajouterCompetence(new Competence(Competence.TypeCompetence.SOIN));
-			ajouterCompetence(new Competence(Competence.TypeCompetence.SOIN_DE_ZONE));
-			ajouterCompetence(new Competence(Competence.TypeCompetence.TIR_A_PORTER));
-			ajouterCompetence(new Competence(Competence.TypeCompetence.COUP_EPEE));
+			ajouterCompetence(new Competence(TypeCompetence.BOULE_DE_FEU));
+			ajouterCompetence(new Competence(TypeCompetence.SOIN));
+			ajouterCompetence(new Competence(TypeCompetence.SOIN_DE_ZONE));
+			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
+			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
 		}else if(this instanceof Monstre){
-			ajouterCompetence(new Competence(Competence.TypeCompetence.COUP_EPEE));
+			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
 		}
 	}
 	
@@ -308,5 +311,23 @@ public abstract class Soldat implements ISoldat, Serializable{
 		s += " - Action(s) restante : "+this.action;
 			
 		return s;
+	}
+	
+	public String recupIdentite() {
+		 String id = "";
+		 
+		if (this instanceof Monstre) {
+			id += ((Monstre)this).getNom();
+			id += this.getNum()+1;
+		} else {
+			id += ((Heros)this).getNom();
+			id += (char)('A'+this.getNum());
+		}
+		return id;
+	}
+	
+	// TMP
+	public Carte getCarte() {
+		return this.carte;
 	}
 }
