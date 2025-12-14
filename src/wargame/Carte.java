@@ -577,14 +577,24 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 		}
 		
+		for(int i = 0; i < listeHeros.length; i++) {
+			listeHeros[i].dessinSoldat(g, this);
+		}
+		
+		for(int i = 0; i < listeMonstres.length; i++) {
+			listeMonstres[i].dessinSoldat(g, this);
+		}
 	}
+	
 	
 			
 	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
 		EnsemblePosition ePos = soldat.zoneDeplacement();
 				
 		for (int i = 0; i < ePos.getNbPos(); i++) {
-			this.dessineCase(g, Color.PINK, ePos.getPosition(i));
+			g.drawImage(imgTerrainDeplacement, ePos.getPosition(i).getX()*NB_PIX_CASE , ePos.getPosition(i).getY()*NB_PIX_CASE*3/4, 20, 20, null);
+
+			//this.dessineCase(g, Color.PINK, ePos.getPosition(i));
 		}
 	}
 	
@@ -619,6 +629,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public void dessineCaseCliquee(Graphics g, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
+		int offset_x = 0;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
+		
 		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
 		g.setColor(couleur);
 		this.dessineInterieurHexagone(g, x/2, y);
@@ -650,7 +665,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			char lettre = (char)('A' + soldat.getNum());
 			
 			g.drawString("" + lettre, x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
-			g.drawImage(imgSpritePersoMage, x*NB_PIX_CASE + offset_x , y*NB_PIX_CASE*3/4 , 32, 32, null);	
+		
 
 		}
 	}
@@ -694,18 +709,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
 		if(carte[x][y].getType() == TypeTerrain.HERBE) {
-			g.drawImage(imgTerrainHerbe, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4, 20, 20, null);
+			g.drawImage(imgTerrainHerbe, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4, 20, 20, null);
 		}else if(carte[x][y].getType() == TypeTerrain.EAU) {
-			g.drawImage(imgTerrainEau, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4, 20, 20, null);	
+			g.drawImage(imgTerrainEau, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4 , 20, 20, null);	
 		}else if(carte[x][y].getType() == TypeTerrain.FORET) {
-			g.drawImage(imgTerrainForet, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4, 20, 20, null);	
+			g.drawImage(imgTerrainForet, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4 , 20, 20, null);	
+		}else if(carte[x][y].getType() == TypeTerrain.ROCHER) {
+			g.drawImage(imgTerrainRocher, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4 , 20, 20, null);	
 		}else {
-		g.fillPolygon(liste_x, liste_y, 6);
+			g.fillPolygon(liste_x, liste_y, 6);
 		}
-		Soldat sold = getSoldat(new Position(x, y));
-		if(sold != null && sold instanceof Heros) {
-			
-		}
+
 	}
 	
 	// DESSIN

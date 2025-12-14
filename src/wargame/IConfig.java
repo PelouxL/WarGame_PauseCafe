@@ -73,9 +73,12 @@ public interface IConfig {
 	Image imgTerrainEau = new ImageIcon("./images/terrain/img_terrain_eau.png").getImage();
 	Image imgTerrainHerbe = new ImageIcon("./images/terrain/img_terrain_herbe.png").getImage();
 	Image imgTerrainForet = new ImageIcon("./images/terrain/img_terrain_foret.png").getImage();
-	
+	Image imgTerrainRocher = new ImageIcon("./images/terrain/img_terrain_rocher.png").getImage();
+	Image imgTerrainDeplacement = new ImageIcon("./images/terrain/img_terrain_deplacement.png").getImage();
+
 	// image personnage
 	Image imgSpritePersoMage = new ImageIcon("./images/sprite_perso/img_sprite_perso_mage.png").getImage();
+	Image imgSpritePersoMonstre = new ImageIcon("./images/sprite_perso/img_sprite_perso_monstre.png").getImage();
 
 	
 	

@@ -289,8 +289,15 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	
 	
 	public void dessinSoldat(Graphics g, Carte c) {
-		Position pos1 = carte.coorToPos(this.getPos().getX(), this.getPos().getX());
-		g.drawImage(imgSpritePersoMage, pos1.getX(), pos1.getY(), 20, 20, null);
+		int x = pos.getX();
+		int y = pos.getY();
+		int offset_x = 0;
+		x = x/2;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
+		
+		g.drawImage(imgSpritePersoMage, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4 - NB_PIX_CASE*1/4, 20, 20, null);
 	}
 	
 	public String toString() {

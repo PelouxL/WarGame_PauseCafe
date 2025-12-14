@@ -1,5 +1,6 @@
 package wargame;
 
+import java.awt.Graphics;
 
 public class Monstre extends Soldat {
 	private final TypesM TYPE;
@@ -10,6 +11,19 @@ public class Monstre extends Soldat {
 		NOM = nom;
 		TYPE = type;
 	}
+	
+	public void dessinSoldat(Graphics g, Carte c) {
+		int x = super.getPos().getX();
+		int y = super.getPos().getY();
+		int offset_x = 0;
+		x = x/2;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
+		
+		g.drawImage(imgSpritePersoMonstre, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4 - NB_PIX_CASE*1/4, 20, 20, null);
+	}
+	
 	
 	public TypesM getType() {
 		return this.TYPE;
