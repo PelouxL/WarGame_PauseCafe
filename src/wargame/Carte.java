@@ -30,7 +30,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		listeHeros = new Heros[NB_HEROS];
 		listeMonstres = new Monstre[NB_MONSTRES];
 		
-		// Remplissage de la matrice
+		// Remplissage de la matrice par de l'herbe
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
 				this.carte[i][j] = new Terrain(Terrain.TypeTerrain.HERBE); // Herbe par defaut
@@ -39,14 +39,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 		// OBSTACLES
-		// Placement de la riviere
-		Position p = trouvePositionVide();
-		this.carte[p.getX()][p.getY()] =  new Terrain(Terrain.TypeTerrain.EAU);
-		riviere(p);
+		foret(NB_FORET);
+		riviere(NB_RIVIERE);
 		
 		// Placement des autres obstacles
 		for(int i = 0; i < NB_OBSTACLES; i++) {
-			p = trouvePositionVide();
+			Position p = trouvePositionVide();
 			this.carte[p.getX()][p.getY()] = new Terrain(Terrain.TypeTerrain.getTerrainAlea());
 			
 		}
@@ -54,7 +52,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		
 		// HEROS
 	    for(int i = 0; i < NB_HEROS; i++) {
-			p = trouvePositionVide();
+			Position p = trouvePositionVide();
 			Heros heros = new Heros(this, TypesH.getTypeHAlea(), "Goat"+i, p);
 			this.listeHeros[nbHeros++] = heros;
 			this.carte[p.getX()][p.getY()].occuper(heros);
@@ -64,7 +62,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	    
 	    // MONSTRES
 		for(int i = 0; i < NB_MONSTRES; i++) {
-			p = trouvePositionVide();
+			Position p = trouvePositionVide();
 			Monstre monstre = new Monstre(this, TypesM.getTypeMAlea(), "Kostine"+i, p);
 			this.listeMonstres[nbMonstre++] = monstre;
 			this.carte[p.getX()][p.getY()].occuper(monstre);;
@@ -81,13 +79,16 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// LOG DES COMBATS
 	 
 	
+	// OBSTACLES
 	// RIVIERE
-	private void riviere(Position pos) {
-		int r = (int) (Math.random() * 3);
-		switch(r) {
-			case 0: riviereV(pos); break;
-			case 1: riviereH(pos); break;
-			case 2: riviereV(pos); riviereH(pos); break;
+	private void riviere(int nb_riviere) {
+		for (int i=0; i < nb_riviere; i++) {
+			Position pos = trouvePositionVide();
+			int r = (int) (Math.random() * 2);
+			switch(r) {
+				case 0: riviereV(pos); break;
+				case 1: riviereH(pos); break;
+			}
 		}
 	}
 	
@@ -151,6 +152,20 @@ public class Carte implements IConfig, ICarte, Serializable {
 		this.carte[x_pont2][pos.getY()] = new Terrain(TypeTerrain.PONT);
 	}
 	// RIVIERE
+	
+	// FORET
+	private void foret(int nb_foret) {
+		for (int i=0; i < nb_foret; i++) {
+			Position pos = trouvePositionVide();
+			EnsemblePosition foret = pos.voisines((int) (Math.random() * 3), true);
+			for (int j=0; j < foret.getNbPos(); j++) {
+				Position posArbre = foret.getPosition(j);
+				this.carte[posArbre.getX()][posArbre.getY()] = new Terrain(Terrain.TypeTerrain.FORET);
+			}
+		}
+	}
+	// FORET
+	// OBSTACLES
 	
 	
 	// ELEMENT
@@ -656,7 +671,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur, Position caseSurvolee, Position caseCliquee) {
 		EnsemblePosition ePos = lanceur.getPos().voisinesCroix(competence.getType().getDistance());
-		EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone());
+		EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone(), false);
 		
 		for (int i = 0; i < ePos.getNbPos(); i++) {
 			Soldat soldat = (getSoldat(ePos.getPosition(i)));

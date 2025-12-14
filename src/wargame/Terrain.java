@@ -5,14 +5,14 @@ import java.io.Serializable;
 public class Terrain implements IConfig, Serializable {
 	
 	public enum TypeTerrain {
-		HERBE (COULEUR_HERBE, true),
-		ROCHER (COULEUR_ROCHER, false),
-		FORET (COULEUR_FORET, false), 
-		EAU (COULEUR_EAU, false),
-		PONT (COULEUR_PONT, true);
-		// FEU (COULEUR_FEU, true),
-		// ACIDE (COULEUR_ACIDE, true),
-		// VILLAGE (COULEUR_VILLAGE, true);
+		HERBE (COULEUR_HERBE, true), // aucun effet (peut prendre feu?)
+		ROCHER (COULEUR_ROCHER, false), // inaccessible sauf si vol
+		FORET (COULEUR_FORET, true), // invisible pour les ennemis + portee reduite
+		EAU (COULEUR_EAU, false), // inaccessible mais peut etre pousse dedans (mort?)
+		PONT (COULEUR_PONT, true), // aucun effet
+		FEU (COULEUR_FEU, true), // degats en fin de tour
+		// ACIDE (COULEUR_ACIDE, true), // dot sur x tour si termine dessus
+		VILLAGE (COULEUR_VILLAGE, true); // soin si passe son tour dessus
 
 		private final Color COULEUR;
 		private final boolean ACCESSIBLE; // Changer pour gerer des unité volante par ex?
@@ -22,13 +22,8 @@ public class Terrain implements IConfig, Serializable {
 			this.ACCESSIBLE = accessible;
 		}
 		
-		public Color getCouleur() {
-			return this.COULEUR;
-		}
-		
-		public boolean getAccessible() {
-			return this.ACCESSIBLE;
-		}
+		public Color getCouleur() { return this.COULEUR; }
+		public boolean getAccessible() { return this.ACCESSIBLE; }
 		
 		public static TypeTerrain getTerrainAlea() {
 			TypeTerrain type;
@@ -49,25 +44,15 @@ public class Terrain implements IConfig, Serializable {
 	}
 	
 	// Methodes
-	public TypeTerrain getType() {
-		return this.TYPE;
-	}
+	public TypeTerrain getType() { return this.TYPE; }
+	public Soldat getOccupant() { return this.occupant; }
+	public boolean estLibre() { return (occupant == null) && (this.TYPE.ACCESSIBLE); }
+	public void occuper(Soldat soldat) { this.occupant = soldat; }
+	public void liberer() { this.occupant = null; }
 	
-	public Soldat getOccupant() {
-		return this.occupant;
+	public void effet() {
+		// ??????????????
 	}
-	
-	public boolean estLibre() {
-		return (occupant == null) && (this.TYPE.ACCESSIBLE);
-	}
-	
-	public void occuper(Soldat soldat) {
-		this.occupant = soldat;
-	}
-	
-	public void liberer() {
-		this.occupant = null;
-	}		
 	
 	// Affichage
 	public String toString() { 
