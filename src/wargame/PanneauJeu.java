@@ -1,7 +1,6 @@
 package wargame;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -58,11 +57,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private JButton boutonFin;
 	private JButton boutonRetour;
 	private JButton boutonAffiche;
-	private JButton boutonRevenirMenu;
-	
-	// fin du jeu
-	private int finJeu = 0;
-	private String messageFinJeu = "";
 	
 	public PanneauJeu(Carte c) {
 		this.carte = c;
@@ -79,18 +73,15 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				carte.toutDessiner(g, caseSurvolee, caseCliquee, choisiComp);
 				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
+
 					carte.dessineCaseCliquee(g, dragPersoFin);
-				}
-				verifFinJeu();
-				if (finJeu != 0) {
-					afficherFinJeu(g);
-				}
+				}			
 			}
 		};
 		panneauCarte.setBackground(Color.BLACK);
 		panneauCarte.setBounds(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
 		layers.add(panneauCarte, Integer.valueOf(JLayeredPane.DEFAULT_LAYER));
-		
+
 		// -------------------- Creation du Panneau log --------------------------------------- //
 		// ----- creation du textArea ------- //
 		logArea = new JTextArea();
@@ -136,28 +127,26 @@ public class PanneauJeu extends JPanel implements IConfig {
 		// ----- action d'affichage/désaffichage ---- //
 		boutonAfficheLog.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				if (finJeu == 0) {
-					afficheLog = !afficheLog;
+				afficheLog = !afficheLog;
+				
+				if(afficheLog) {
+					panneauTrans.setVisible(true);
+					panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
 					
-					if(afficheLog) {
-						panneauTrans.setVisible(true);
-						panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
-						
-						panneauTrans.revalidate();
-						updateCombatLog();
-						panneauTrans.repaint();
-					}else {
-						// on cache et supprime les panneaux
-						panneauTrans.setVisible(false);
-						panneauBouton.remove(boutonAfficheLog);
-						
-						// on ajout notre bouton au dessus de nos layer et definit où il se place
-						layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));				
-						boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
-					}
-					// on repaint uniquement notre layer
-					layers.repaint();
+					panneauTrans.revalidate();
+					updateCombatLog();
+					panneauTrans.repaint();
+				}else {
+					// on cache et supprime les panneaux
+					panneauTrans.setVisible(false);
+					panneauBouton.remove(boutonAfficheLog);
+					
+					// on ajout notre bouton au dessus de nos layer et definit où il se place
+					layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));				
+					boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
 				}
+				// on repaint uniquement notre layer
+				layers.repaint();
 			}
 		});
 		
@@ -195,66 +184,37 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauDroit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		
 		// --------------------------- Creation de panneau haut ---------------------//	
-		JPanel panneauHaut = new JPanel() {
-			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
-				g.setColor(Color.WHITE);
-				g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2);
-				verifFinJeu();
-				if (finJeu != 0) {
-					System.out.println("enorme cacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-					boutonFin.setVisible(false);
-					boutonRetour.setVisible(false);
-					boutonRevenirMenu.setVisible(true);
-				}
-			}
-		};
+		JPanel panneauHaut = new JPanel();
+		JTextArea tourActuel = new JTextArea();
 			
         panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
 		panneauHaut.setBackground(COULEUR_PLATEAU);
 		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		panneauHaut.add(tourActuel);
+		tourActuel.setText(Integer.toString(carte.getNbTours()));
 
 		// ---------- Creation des boutons de la carte ---------- //
 		boutonFin = new JButton("Fin de tour");
 		boutonRetour = new JButton("Retour arrière");
-		boutonRevenirMenu = new JButton("Revenir au menu");
 		panneauHaut.add(boutonRetour);
 		panneauHaut.add(boutonFin);
-		panneauHaut.add(boutonRevenirMenu);
 		
 		boutonFin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (finJeu == 0) {
-					carte.jouerSoldats();
-					//verifFinJeu();
-					//logArea.repaint();
-					panneauCarte.repaint();
-					panneauHaut.repaint();
-					System.out.println("Termine-moi !");
-				}
+				carte.jouerSoldats();
+				tourActuel.setText(Integer.toString(carte.getNbTours()));
+				tourActuel.repaint();
+				panneauCarte.repaint();
+				System.out.println("Termine-moi !");
 			}
 		});
 		
 		boutonRetour.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (finJeu == 0) {
-					// Ajouter des vrai méthodes 
-					System.out.println("Retourne moi !");
-				}
+				// Ajouter des vrai méthodes 
+				System.out.println("Retourne moi !");
 			}
 		});
-		
-		boutonRevenirMenu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFrame fenetre = (JFrame) SwingUtilities.getWindowAncestor(panneauHaut);
-				fenetre.dispose();
-				new FenetreMenu();
-			}
-		});
-		
-		boutonFin.setVisible(true);
-		boutonRetour.setVisible(true);
-		boutonRevenirMenu.setVisible(false);
 		
 		
 		// ------------------------ Mises en place des layout ----------------------//
@@ -274,24 +234,20 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 			// Effet au deplacement de la souris
 			public void mouseMoved(MouseEvent e) {
-				if (finJeu == 0) {
-					int x = e.getX();
-					int y = e.getY();
-					caseSurvolee = carte.coorToPos(x, y);
-					
-					// affichage des infos des soldats
-					if (caseSurvolee.estValide()) {
-						Soldat soldat = carte.getSoldat(caseSurvolee);
-						if(soldat instanceof Soldat) {
-							infoTexte = soldat.toString();
-						}else {
-							infoTexte ="";
-						}
+				int x = e.getX();
+				int y = e.getY();
+				caseSurvolee = carte.coorToPos(x, y);
+				
+				// affichage des infos des soldats
+				if (caseSurvolee.estValide()) {
+					Soldat soldat = carte.getSoldat(caseSurvolee);
+					if(soldat instanceof Soldat) {
+						infoTexte = soldat.toString();
 					}else {
 						infoTexte ="";
 					}
-					panneauInfos.repaint();
-					panneauCarte.repaint();
+				}else {
+					infoTexte ="";
 				}
 					
 				panneauInfos.repaint();
@@ -300,26 +256,24 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 			// creation de l'evenement du dragg 
 			public void mouseDragged(MouseEvent e) {
-				if (finJeu == 0) {
-					if(dragPerso) {
-						int x = e.getX();
-				        int y = e.getY();
-						
-				        Position essaie = carte.coorToPos(x, y);
-				        
-				        Soldat s = carte.getSoldat(dragPersoInit);
-				        
-				        // permet de ne pas sortir des deplacements
-				        if(!s.zoneDeplacement().contient(essaie) && !(essaie.equals(dragPersoInit))) {
-				        	return;
-				        	// gerer exeption
-				        }
-	
-						dragPersoFin.setX(essaie.getX());
-						dragPersoFin.setY(essaie.getY());
-						deplacePerso = false;
-						panneauCarte.repaint();
-					}
+				if(dragPerso) {
+					int x = e.getX();
+			        int y = e.getY();
+					
+			        Position essaie = carte.coorToPos(x, y);
+			        
+			        Soldat s = carte.getSoldat(dragPersoInit);
+			        
+			        // permet de ne pas sortir des deplacements
+			        if(!s.zoneDeplacement().contient(essaie) && !(essaie.equals(dragPersoInit))) {
+			        	return;
+			        	// gerer exeption
+			        }
+
+					dragPersoFin.setX(essaie.getX());
+					dragPersoFin.setY(essaie.getY());
+					deplacePerso = false;
+					panneauCarte.repaint();
 				}
 			}
 		});
@@ -383,9 +337,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 							caseCliquee = null;
 							deplacePerso = false;
 							infoTexte2 ="";
-							deplacePerso = false;
-							caseCliquee = null;
-							caseAction = null;
 							
 							choisiComp = null;
 							nettoyerPanneauDroit();
@@ -405,25 +356,27 @@ public class PanneauJeu extends JPanel implements IConfig {
 					choisiComp = null;
 					nettoyerPanneauDroit();
 				}
+				
+				panneauInfos.repaint();
+				panneauCarte.repaint();
+				panneauDroit.repaint();
 			}
 			
 			public void mouseReleased(MouseEvent e) {
-				if (finJeu == 0) {
-					// si on est entrain de dragg une unité
-					if(dragPerso && dragPersoFin != null) {
-						if(!(dragPersoFin.estValide())){
-							dragPerso = false;
-							return;
-							// surement gerer l'exeptionnelle 
-						}
-						// on pose
-						carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getSoldat(dragPersoInit)));	
-						infoTexte2="";
-						infoTexte="";
-					}		
-					dragPerso = false;
-					repaint();
-				}
+				// si on est entrain de dragg une unité
+				if(dragPerso && dragPersoFin != null) {
+					if(!(dragPersoFin.estValide())){
+						dragPerso = false;
+						return;
+						// surement gerer l'exeptionnelle 
+					}
+					// on pose
+					carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getSoldat(dragPersoInit)));	
+					
+					infoTexte="";
+				}		
+				dragPerso = false;
+				repaint();
 			}
 			
 		});
@@ -520,36 +473,5 @@ public class PanneauJeu extends JPanel implements IConfig {
 		}
 	}
 	
-	// FIN DU JEU
-	public void verifFinJeu() {
-		int fin = carte.verifierFinJeu();
-		if (fin != 0) {
-			if (fin == -1) {
-				logArea.setText("L'IA a gagné... Fin du jeu");
-			} else {
-				if (fin == 1) {
-					logArea.setText("Vous avez gagné ! Fin du jeu");
-				}
-			}
-		}
-		finJeu = fin;
-	}
-	
-	public void afficherFinJeu(Graphics g) {
-		int x, y;
-		x = LARGEUR_PANNEAU_CARTE / 2;
-		y = HAUTEUR_PANNEAU_CARTE / 2;
-		g.setColor(new Color(0, 0, 0, 200));
-		g.fillRect(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
-		g.setColor(Color.WHITE);
-		if (finJeu == 1) {
-			g.drawString("Vous avez gagné !", x, y);
-		}
-		if (finJeu == -1) {
-			g.drawString("Vous avez perdu...", x, y);
-		}
-	}
-	
-	// FIN DU JEU
 	
 }    

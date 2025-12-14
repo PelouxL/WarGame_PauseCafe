@@ -2,9 +2,13 @@ package wargame;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.ImageIcon;
+
 import wargame.ISoldat.TypesH;
 import wargame.ISoldat.TypesM;
 import wargame.Terrain.TypeTerrain;
@@ -30,7 +34,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		listeHeros = new Heros[NB_HEROS];
 		listeMonstres = new Monstre[NB_MONSTRES];
 		
-		// Remplissage de la matrice par de l'herbe
+		// Remplissage de la matrice
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
 				this.carte[i][j] = new Terrain(Terrain.TypeTerrain.HERBE); // Herbe par defaut
@@ -39,12 +43,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 		// OBSTACLES
-		foret(NB_FORET);
-		riviere(NB_RIVIERE);
+		// Placement de la riviere
+		Position p = trouvePositionVide();
+		this.carte[p.getX()][p.getY()] =  new Terrain(Terrain.TypeTerrain.EAU);
+		riviere(p);
 		
 		// Placement des autres obstacles
 		for(int i = 0; i < NB_OBSTACLES; i++) {
-			Position p = trouvePositionVide();
+			p = trouvePositionVide();
 			this.carte[p.getX()][p.getY()] = new Terrain(Terrain.TypeTerrain.getTerrainAlea());
 			
 		}
@@ -52,7 +58,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		
 		// HEROS
 	    for(int i = 0; i < NB_HEROS; i++) {
-			Position p = trouvePositionVide();
+			p = trouvePositionVide();
 			Heros heros = new Heros(this, TypesH.getTypeHAlea(), "Goat"+i, p);
 			this.listeHeros[nbHeros++] = heros;
 			this.carte[p.getX()][p.getY()].occuper(heros);
@@ -62,7 +68,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	    
 	    // MONSTRES
 		for(int i = 0; i < NB_MONSTRES; i++) {
-			Position p = trouvePositionVide();
+			p = trouvePositionVide();
 			Monstre monstre = new Monstre(this, TypesM.getTypeMAlea(), "Kostine"+i, p);
 			this.listeMonstres[nbMonstre++] = monstre;
 			this.carte[p.getX()][p.getY()].occuper(monstre);;
@@ -79,16 +85,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// LOG DES COMBATS
 	 
 	
-	// OBSTACLES
 	// RIVIERE
-	private void riviere(int nb_riviere) {
-		for (int i=0; i < nb_riviere; i++) {
-			Position pos = trouvePositionVide();
-			int r = (int) (Math.random() * 2);
-			switch(r) {
-				case 0: riviereV(pos); break;
-				case 1: riviereH(pos); break;
-			}
+	private void riviere(Position pos) {
+		int r = (int) (Math.random() * 3);
+		switch(r) {
+			case 0: riviereV(pos); break;
+			case 1: riviereH(pos); break;
+			case 2: riviereV(pos); riviereH(pos); break;
 		}
 	}
 	
@@ -153,20 +156,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	// RIVIERE
 	
-	// FORET
-	private void foret(int nb_foret) {
-		for (int i=0; i < nb_foret; i++) {
-			Position pos = trouvePositionVide();
-			EnsemblePosition foret = pos.voisines((int) (Math.random() * 3), true);
-			for (int j=0; j < foret.getNbPos(); j++) {
-				Position posArbre = foret.getPosition(j);
-				this.carte[posArbre.getX()][posArbre.getY()] = new Terrain(Terrain.TypeTerrain.FORET);
-			}
-		}
-	}
-	// FORET
-	// OBSTACLES
-	
 	
 	// ELEMENT
 	public Terrain getCase(Position pos) {
@@ -174,30 +163,22 @@ public class Carte implements IConfig, ICarte, Serializable {
 		int x = pos.getX();
 		int y = pos.getY();
 		
-		if (pos.estValide()) {
-			return this.carte[x][y];
-		}
+		  if (x >= 0 && x < carte.length &&
+			        y >= 0 && y < carte[0].length) {
+			        return carte[x][y];
+			    }
 		
 		System.out.println("Erreur getCase() : x = "+x+", y = "+y);
 		return null;
 	}
 	
 	public Soldat getSoldat(Position pos) {	
-		return this.getCase(pos).getOccupant();
+		Terrain t = this.getCase(pos);
+	    if (t == null) {
+	        return null;
+	    }
+	    return t.getOccupant();
 	}
-	
-	// FIN DU JEU
-	public int verifierFinJeu() {
-		if (this.nbHeros == 0) { // IA a gagné
-			return -1;
-		} else {
-			if (this.nbMonstre == 0) { // joueur a gagné
-				return 1;
-			}
-		}
-		return 0; // pas fini
-	}
-	
 	
 	// VISIBILITE
 	public int getVisibilite(Position pos) {
@@ -342,9 +323,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			System.out.println(" -> Debut du tour");
 			
 			// Le monstre cherche le heros le plus proche
-			for (int i=0; i < this.nbHeros; i++) {
-				//System.out.println("NB HEROS -------------------------------------------------------------------------------------------> " + this.nbHeros);
-				//System.out.println("HEROS ==============================================================================================> " + this.listeHeros[0]);
+			for (int i=1; i < this.nbHeros; i++) {
 				Heros test = listeHeros[i];
 				int distanceTest = monstre.getPos().distance(test.getPos());
 				if (distanceTest < distanceHeros) {
@@ -376,13 +355,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 					peutAttaquer = true;
 				}
 				
-				if (peutAttaquer && !heros.estMort()) { // 1er cas : le heros est a portee du monstre
+				if (peutAttaquer) { // 1er cas : le heros est a portee du monstre
 					System.out.println(" - Combat");
 					peutAttaquer = monstre.combat(heros);
 					if (!peutAttaquer) System.out.println(" - n'a aps pu combattre : puis = "+monstre.getPuissance()+", tir = "+monstre.getTir());
 				} 
 				
-				if (!peutAttaquer || heros.estMort()){ // 2eme cas : le monstre doit se rapprocher de sa cible
+				if (!peutAttaquer){ // 2eme cas : le monstre doit se rapprocher de sa cible
 					System.out.println(" - Decide de se rapprocher");
 					
 					// Recuperation la liste des cases accessibles par le monstre
@@ -400,7 +379,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 					
 					if (plusProche.equals(posMonstre)) monstre.setAction(0);
 					else {
-						//System.out.println(" - se deplace de "+posMonstre.distance(plusProche)+" cases");
+						System.out.println(" - se deplace de "+posMonstre.distance(plusProche)+" cases");
 						this.deplaceSoldat(plusProche, monstre);
 						monstre.seDeplace(plusProche);
 					}
@@ -420,9 +399,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		this.nbTours++;
 		this.tourActuel = TOUR_HEROS;
 		// on remet les actions à tous les héros
-		this.soignerHeros();
 		this.resetActionsHeros();
-		
 	}
 	// TOUR DES MONSTRES
 	
@@ -482,14 +459,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public void resetActionsHeros() {
 		int i;
 		for (i = 0 ; i < nbHeros ; i++) {
-			listeHeros[i].setAction(2); // Remplacer par NB_ACTION_MAX
-		}
-	}
-	
-	public void soignerHeros() {
-		int i;
-		for (i = 0 ; i < nbHeros ; i++) {
-			listeHeros[i].ajouterPv(5*listeHeros[i].getAction());
+			listeHeros[i].setAction(2);
 		}
 	}
 	// ACTION SOLDAT
@@ -497,7 +467,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	// MORT
 	public void mort(Soldat soldat) {
-		System.out.println("je suis appelé avec " + soldat.getClass().getSimpleName());
 		if (soldat.getPointsActuels() <= 0) {
 			if (soldat instanceof Heros) {
 				this.nbHeros--;
@@ -523,49 +492,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 				}
 			}	
 			
-			this.carte[soldat.getPos().getX()][soldat.getPos().getY()].liberer();
+			this.carte[soldat.getPos().getX()][soldat.getPos().getY()].liberer();;
 		}
 	}
 	// MORT
 	
-	
-	// COORTOPOS
-	public Position coorToPos(int cx, int cy) {
-		Position test = coorToPosRect(cx, cy);
-		// on teste si en décalant vers le haut d'1/4 d'hexa ça reste à la même pos
-		Position test2 = coorToPosRect(cx, cy-NB_PIX_CASE/4);
-		if (test.equals(test2)) {
-			return test;
-		} else {
-			int i;
-			int x = test.getX(),
-				y = test.getY();
-			// pour les coords des triangles je pars des côtés, puis centre, puis bas
-			int [] t1_x = {x*NB_PIX_CASE/2, x*NB_PIX_CASE/2+NB_PIX_CASE/2, x*NB_PIX_CASE/2};
-			int [] t1_y = {y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4+NB_PIX_CASE/4};
-			int [] t2_x = {x*NB_PIX_CASE/2+NB_PIX_CASE, x*NB_PIX_CASE/2+NB_PIX_CASE/2, x*NB_PIX_CASE/2+NB_PIX_CASE};
-			int [] t2_y = {y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4, y*NB_PIX_CASE*3/4+NB_PIX_CASE/4};
-			// petit décalage vers le haut, ça correspond mieux à là où on clique
-			for (i = 0 ; i < 3 ; i++) {
-				t1_y[i]--;
-				t2_y[i]--;
-			}
-			// verif dans triangle 1, puis si dedans alors x-=1 et y-=1
-			if (estDansTriangle(t1_x, t1_y, cx, cy)) {
-				test.setX(test.getX() - 1);
-				test.setY(test.getY() - 1);
-			}
-			// verif dans triangle 2, puis si dedans alors x+=1 et y-=1
-			if (estDansTriangle(t2_x, t2_y, cx, cy)) {
-				test.setX(test.getX() + 1);
-				test.setY(test.getY() - 1);
-			}
-			// si dans aucun alors on change pas
-			return test;
-		}
-	}
-	
-	private Position coorToPosRect(int x, int y) {
+	// Primitif mais ok (gère pas la forme des hexagones)
+	public Position coorToPos(int x, int y) {
 		int offset_x = 0;
 		int px = x/NB_PIX_CASE,
 			py = y/(NB_PIX_CASE*3/4);
@@ -573,26 +506,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 			offset_x = OFFSET_X;
 			x += offset_x;
 		}
+		
 		px = x/NB_PIX_CASE;
 		px = px * 2 - py % 2;
 		return new Position(px, py);
 	}
-	
-	private boolean estDansTriangle(int [] tx, int [] ty, int x, int y) {
-		double A = aire(tx[0], ty[0], tx[1], ty[1], tx[2], ty[2]);
-		double A1 = aire(x, y, tx[1], ty[1], tx[2], ty[2]);
-		double A2 = aire(tx[0], ty[0], x, y, tx[2], ty[2]);
-		double A3 = aire(tx[0], ty[0], tx[1], ty[1], x, y);
-		return (A == A1+A2+A3);
-	}
-	
-	private double aire (int x1, int y1, int x2, int y2, int x3, int y3) {
-		return Math.abs( ( x1 * (y2-y3)
-				 		 + x2 * (y3-y1)
-				 		 + x3 * (y1-y2)) / 2.0 );
-	}
-	// COORTOPOS
-	
 	
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee, Competence choisiComp) {
@@ -621,6 +539,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 					) {
 					couleur = COULEUR_INCONNU;
 				} */
+				
 				
 				dessineCase(g, couleur, pos);
 			}
@@ -671,7 +590,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur, Position caseSurvolee, Position caseCliquee) {
 		EnsemblePosition ePos = lanceur.getPos().voisinesCroix(competence.getType().getDistance());
-		EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone(), false);
+		EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone());
 		
 		for (int i = 0; i < ePos.getNbPos(); i++) {
 			Soldat soldat = (getSoldat(ePos.getPosition(i)));
@@ -714,6 +633,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 			offset_x = OFFSET_X;
 		}
 		
+	
+		
 		g.setColor(couleur);
 		this.dessineInterieurHexagone(g, x, y);
 		g.setColor(Color.BLACK);
@@ -723,10 +644,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 		Soldat soldat = getSoldat(pos);
 		g.setColor(Color.WHITE);
 		if(soldat instanceof Monstre) {
+			
 			g.drawString("" + soldat.getNum(), x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
 		}else if(soldat instanceof Heros) {
 			char lettre = (char)('A' + soldat.getNum());
+			
 			g.drawString("" + lettre, x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
+			g.drawImage(imgSpritePersoMage, x*NB_PIX_CASE + offset_x , y*NB_PIX_CASE*3/4 , 32, 32, null);	
+
 		}
 	}
 	
@@ -747,7 +672,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
-		g.drawPolygon(liste_x, liste_y, 6);
+		
+		//g.drawPolygon(liste_x, liste_y, 6);
 	}
 	
 	private void dessineInterieurHexagone(Graphics g, int x, int y) {
@@ -767,7 +693,19 @@ public class Carte implements IConfig, ICarte, Serializable {
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
+		if(carte[x][y].getType() == TypeTerrain.HERBE) {
+			g.drawImage(imgTerrainHerbe, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4, 20, 20, null);
+		}else if(carte[x][y].getType() == TypeTerrain.EAU) {
+			g.drawImage(imgTerrainEau, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4, 20, 20, null);	
+		}else if(carte[x][y].getType() == TypeTerrain.FORET) {
+			g.drawImage(imgTerrainForet, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4, 20, 20, null);	
+		}else {
 		g.fillPolygon(liste_x, liste_y, 6);
+		}
+		Soldat sold = getSoldat(new Position(x, y));
+		if(sold != null && sold instanceof Heros) {
+			
+		}
 	}
 	
 	// DESSIN

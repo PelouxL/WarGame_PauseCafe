@@ -48,7 +48,7 @@ public class FenetreCarte extends JFrame {
 		menuFichier.add(menuImporter);
 		menuFichier.add(menuQuitter);
 		
-		// ------------- Creation PanneauJeu ----------- //
+		// ------------- Creaion PanneauJeu ----------- //
 		PanneauJeu panneauCarte = new PanneauJeu(carteActive[0]);
 		panneauCarte.setPreferredSize(new Dimension(IConfig.LARGEUR_FENETRE, IConfig.HAUTEUR_FENETRE));
 		

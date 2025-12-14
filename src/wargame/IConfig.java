@@ -1,5 +1,8 @@
 package wargame;
 import java.awt.Color;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
 
 public interface IConfig {
 	// CONFIGS JEU
@@ -11,7 +14,8 @@ public interface IConfig {
 	// OFFSET X POUR AFFICHAGE CARTE
 	int OFFSET_X = NB_PIX_CASE / 2;
 	
-	// PANNEAUX	
+	// PANNEAUX
+	
 	// Largeurs
 	int LARGEUR_PANNEAU_L = 200;   // panneaux latéraux (gauche & droite)
 	int LARGEUR_PANNEAU_CARTE = LARGEUR_CARTE * NB_PIX_CASE + OFFSET_X;  // 35 * 20 = 700
@@ -50,20 +54,40 @@ public interface IConfig {
 	Color COULEUR_MONSTRES = Color.black;
 	
 	// TERRAINS
-	int NB_RIVIERE = (int) (Math.random()*2 + 1);
-	int NB_FORET = 3;
-	
+
 	Color COULEUR_HERBE = Color.decode("#69C24C"); // vert clair
-	Color COULEUR_EAU = Color.BLUE;
+	Color COULEUR_EAU = Color.blue;
 	Color COULEUR_FORET = Color.decode("#0A5C36"); // vert fonce 
-	Color COULEUR_ROCHER = Color.GRAY;
+	Color COULEUR_ROCHER = Color.gray;
 	Color COULEUR_PONT  = Color.decode("#8B4513"); // marron
-	Color COULEUR_FEU = Color.ORANGE;
-	// Color COULEUR_ACIDE = Color.decode("#7400D5");
-	Color COULEUR_VILLAGE = Color.YELLOW;
 	/* idees de terrains à ajouter
+	 *  - feu : degats quand fini dessus
+	 *  - acide : empoisone (dot)
 	 *  - eau : l'eau devient un terrain, on pourrait etre emporté par le courant quand on reste dedans? sinon deplacement/2
+	 *  - foret : vision reduite et invisible pour les ennemis
 	 */
+	
+	// IMAGES
+	
+	// image terrain
+	Image imgTerrainEau = new ImageIcon("./images/terrain/img_terrain_eau.png").getImage();
+	Image imgTerrainHerbe = new ImageIcon("./images/terrain/img_terrain_herbe.png").getImage();
+	Image imgTerrainForet = new ImageIcon("./images/terrain/img_terrain_foret.png").getImage();
+	
+	// image personnage
+	Image imgSpritePersoMage = new ImageIcon("./images/sprite_perso/img_sprite_perso_mage.png").getImage();
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }
