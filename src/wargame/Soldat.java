@@ -28,6 +28,7 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 		PUISSANCE = puiss;
 		TIR = tir;
 		NB_ACTION_MAX = action;
+		listeEffets = new ListeEffets();
 		this.carte = carte;
 		this.pos = pos;
 		
@@ -84,9 +85,16 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	public void ajouterAction(int nbAction) { this.action += nbAction; }
 	// TOUR/ACTION
 	
+	// EFFETS
+	public ListeEffets getListeEffets() { return this.listeEffets; }
+	// EFFETS
 	
 	// PORTEE VISUELLE
-	public int getPortee() { return this.PORTEE_VISUELLE; }
+	public int getPortee() { // NETTOYER
+		int portee = this.PORTEE_VISUELLE + listeEffets.sommeEffets(IConfig.PORTEE);
+		System.out.println("portee ="+PORTEE_VISUELLE);
+		System.out.println("portee relle ="+portee);
+		return this.PORTEE_VISUELLE + listeEffets.sommeEffets(IConfig.PORTEE); } // portee
 	
 	public int[][] setCasesVisibles(int[][] visibilite) { // Penser a gerer les lignes de vue
 		int i, j;
@@ -124,7 +132,6 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	public void ajouterCompetence(Competence competence) {
 		this.Competences.add(competence);
 	}
-	
 	
 	public void decrementerTempsRecharge() {
 		for(Competence c : Competences) {
@@ -308,8 +315,11 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 		s += " - PV : "+this.getPointsActuels()+"/"+this.getPoints()+"\n";
 		s += " - Puissance : "+getPuissance();
 		s += " - Tir : "+getTir();
+		// s += " - Portee : "+getPortee();
+		// s += " - PorteeReelle"+this.PORTEE_VISUELLE;
 		s += " - Deplacement : "+this.DEPLACEMENT+"\n";
 		s += " - Action(s) restante : "+this.action;
+		// s += listeEffets.toString();
 			
 		return s;
 	}

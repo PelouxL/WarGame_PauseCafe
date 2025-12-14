@@ -67,8 +67,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			this.listeMonstres[nbMonstre++] = monstre;
 			this.carte[p.getX()][p.getY()].occuper(monstre);;
 		}
-		// MONSTRES
-				
+		// MONSTRES			
 	}
 
 	
@@ -88,9 +87,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			switch(r) {
 				case 0: riviereV(pos); break;
 				case 1: riviereH(pos); break;
-			}
-		}
-	}
+	}}}
 	
 	private void riviereV(Position pos) {
 		int x_pont1, x_pont2, y_pont1, y_pont2;
@@ -107,26 +104,18 @@ public class Carte implements IConfig, ICarte, Serializable {
 		// Ponts
 		y_pont1 = (int) (Math.random() * pos.getY());
 		y_pont2 = (int) (Math.random() * (HAUTEUR_CARTE-pos.getY()) + pos.getY());
-		System.out.println(" pont1 pont2 : " + y_pont1 + "   " + y_pont2);
 		if (y_pont1 % 2 == pos.getY() % 2) {
 			x_pont1 = pos.getX();
 		} else {
-			if (pos.getX() % 2 == 0) {
-				x_pont1 = pos.getX() + 1;
-			} else {
-				x_pont1 = pos.getX() - 1;
-			}
+			if (pos.getX() % 2 == 0) x_pont1 = pos.getX() + 1;
+			else x_pont1 = pos.getX() - 1;
 		}
 		if (y_pont2 % 2 == pos.getY() % 2) {
 			x_pont2 = pos.getX();
 		} else {
-			if (pos.getX() % 2 == 0) {
-				x_pont2 = pos.getX() + 1;
-			} else {
-				x_pont2 = pos.getX() - 1;
-			}
+			if (pos.getX() % 2 == 0) x_pont2 = pos.getX() + 1;
+			else x_pont2 = pos.getX() - 1;
 		}
-		System.out.println(" pont1 pont2 : " + x_pont1 + "   " + x_pont2);
 		this.carte[x_pont1][y_pont1] = new Terrain(TypeTerrain.PONT);
 		this.carte[x_pont2][y_pont2] = new Terrain(TypeTerrain.PONT);	
 	}
@@ -472,6 +461,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 				this.carte[pos.getX()][pos.getY()].occuper(soldat);
 				soldat.seDeplace(pos);
 				
+				this.carte[pos.getX()][pos.getX()].appliquerEffetTerrain();
+				
 				soldat.ajouterAction(-1);
 				return true;
 			}
@@ -769,7 +760,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
 		g.fillPolygon(liste_x, liste_y, 6);
 	}
-	
 	// DESSIN
 	
 	

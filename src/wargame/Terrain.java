@@ -11,8 +11,9 @@ public class Terrain implements IConfig, Serializable {
 		EAU (COULEUR_EAU, false), // inaccessible mais peut etre pousse dedans (mort?)
 		PONT (COULEUR_PONT, true), // aucun effet
 		FEU (COULEUR_FEU, true), // degats en fin de tour
-		// ACIDE (COULEUR_ACIDE, true), // dot sur x tour si termine dessus
-		VILLAGE (COULEUR_VILLAGE, true); // soin si passe son tour dessus
+		ACIDE (COULEUR_ACIDE, true), // dot sur x tour si termine dessus
+		VILLAGE (COULEUR_VILLAGE, true), // soin si passe son tour dessus
+		SABLE (COULEUR_SABLE, true); // reduit la portee de deplacement
 
 		private final Color COULEUR;
 		private final boolean ACCESSIBLE; // Changer pour gerer des unité volante par ex?
@@ -50,8 +51,18 @@ public class Terrain implements IConfig, Serializable {
 	public void occuper(Soldat soldat) { this.occupant = soldat; }
 	public void liberer() { this.occupant = null; }
 	
-	public void effet() {
-		// ??????????????
+	public void appliquerEffetTerrain() {
+		if (this.occupant != null) {
+			ListeEffets listeEffetsOccupant = this.occupant.getListeEffets();
+			switch(this.TYPE) {
+			case FORET : listeEffetsOccupant.setEffetTerrain(new Effet(Effet.TypeEffet.FORET_DENSE)); break;
+			case ACIDE : break;
+			case SABLE : listeEffetsOccupant.setEffetTerrain(new Effet(Effet.TypeEffet.SABLES_MOUVANTS)); break;
+			default: 
+				System.out.println("Aucun effet appliqué");
+				listeEffetsOccupant.setEffetTerrain(null); 
+			}
+		}
 	}
 	
 	// Affichage
