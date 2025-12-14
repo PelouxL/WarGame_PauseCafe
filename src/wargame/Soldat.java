@@ -14,6 +14,7 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	private Carte carte;
 	private int action = 2; // nb d'action possible pour un soldat par tour
 	private int tour; // On enleve?
+	private ListeEffets listeEffets;
 	
 	private static int nbHeros = 0;
 	private static int nbMonstre = 0;

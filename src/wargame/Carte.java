@@ -42,7 +42,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		foret(NB_FORET);
 		riviere(NB_RIVIERE);
 		
-		// Placement des autres obstacles
+		// Placement des terrains aléatoires
 		for(int i = 0; i < NB_OBSTACLES; i++) {
 			Position p = trouvePositionVide();
 			this.carte[p.getX()][p.getY()] = new Terrain(Terrain.TypeTerrain.getTerrainAlea());
