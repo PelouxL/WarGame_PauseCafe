@@ -34,7 +34,10 @@ public class Position implements IConfig, Serializable {
 		int[] y = {0, 1, -1, 1, -1, 0};
 		
 		for (int i=0; i < x.length; i++) {
-			voisines.ajouterPos(new Position(x[i] + this.getX(), y[i] + this.getY()));
+			Position v = new Position(x[i] + this.getX(), y[i] + this.getY());
+			if (v.estValide()) {
+				voisines.ajouterPos(v);
+			}
 		}
 		
 		return voisines;
