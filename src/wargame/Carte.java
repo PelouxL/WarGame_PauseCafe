@@ -323,7 +323,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		
 		for (Monstre monstre : this.listeMonstres) {
 			Heros heros = listeHeros[0];
-			EnsemblePosition chemin = this.reconstruireChemin(monstre.getPos(), heros.getPos());
+			EnsemblePosition chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
 			int distanceHeros = chemin.getNbPos();
 			System.out.println(" -> Debut du tour");
 			
@@ -332,7 +332,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				//System.out.println("NB HEROS -------------------------------------------------------------------------------------------> " + this.nbHeros);
 				//System.out.println("HEROS ==============================================================================================> " + this.listeHeros[0]);
 				Heros test = listeHeros[i];
-				chemin = this.reconstruireChemin(monstre.getPos(), heros.getPos());
+				chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
 				int distanceTest = chemin.getNbPos();
 				if (distanceTest < distanceHeros) {
 					heros = test;
@@ -358,7 +358,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				Position posMonstre = monstre.getPos();
 				boolean peutAttaquer = false;
 				
-				EnsemblePosition newChemin = this.reconstruireChemin(monstre.getPos(), heros.getPos());
+				EnsemblePosition newChemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
 				distanceHeros = newChemin.getNbPos();
 				
 				// Verifie la distance d'attaque
@@ -503,10 +503,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return this.getCase(p).getType().getAccessible();
 	}
 	
-	public EnsemblePosition reconstruireChemin(Position debut, Position fin) {
+	// algo qui reconstruit le chemin dans le bon sens (peut-être inutile ? Mais plus propre)
+	public EnsemblePosition plusCourtChemin(Position debut, Position fin) {
 		Position current = fin;
 		Position [] path = new Position[500];
-		Position [][] cameFrom = plusCourtChemin(debut, fin);
+		Position [][] cameFrom = plusCourtCheminAux(debut, fin);
 		int i = 0;
 		if (cameFrom[fin.getY()][fin.getX()] == null) {
 	        return new EnsemblePosition(0);
@@ -524,7 +525,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return chemin;
 	}
 	
-	private Position [][] plusCourtChemin(Position debut, Position fin) {
+	// algo qui trouve le chemin le plus court entre 2 soldats,
+	// prend en compte les obstacles, mais pas les couts des terrains
+	private Position [][] plusCourtCheminAux(Position debut, Position fin) {
 		EnsemblePosition frontier = new EnsemblePosition(500);
 		frontier.ajouterPos(debut);
 		Position [][] cameFrom = new Position[HAUTEUR_CARTE][LARGEUR_CARTE*2];
