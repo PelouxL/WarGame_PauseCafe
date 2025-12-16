@@ -17,6 +17,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	private int nbHeros = 0;
 	private Monstre[] listeMonstres;
 	private int nbMonstre = 0;
+	
 	private int nbTours = 0;
 	private int tourActuel = 0;
 	

@@ -1,23 +1,28 @@
 package wargame;
 
 public class Effet {
+	
+	public enum TCarAff{ // Types de caracteritique pouvant etre affectee
+		PORTEE, DEPLACEMENT, VIE, PUISSANCE_ATQ, PUISSANCE_SOIN;
+	}
 		
 	public enum TypeEffet {
-		FORET_DENSE (IConfig.PORTEE, -5, 3),
-		SABLES_MOUVANTS (IConfig.DEPLACEMENT, -1, 3),
-		POISON (IConfig.VIE, -5, 3);
+		FORET_DENSE (TCarAff.PORTEE, -5, -1),
+		SABLES_MOUVANTS (TCarAff.DEPLACEMENT, -1, -1),
+		POISON (TCarAff.VIE, -5, 3),
+		SOUTIEN_POPULAIRE (TCarAff.PUISSANCE_ATQ, 10, 1);
 		
-		private int caracAffect; // caracteristique affectee par l'effet
-		private int valeur;      // valeur du malus/bonus
-		private int duree;       // duree de l'effet
+		private TCarAff carAff; // caracteristique affectee par l'effet
+		private int valeur;     // valeur du malus/bonus
+		private int duree;      // duree de l'effet, si -1 : duree infinie
 		
-		TypeEffet(int caracAffect, int valeur, int duree){
-			this.caracAffect = caracAffect;
+		TypeEffet(TCarAff carAff, int valeur, int duree){
+			this.carAff = carAff;
 			this.valeur = valeur;
 			this.duree = duree;
 		}
 		
-		public int getCaracAffect() { return caracAffect; }
+		public TCarAff getCarAff() { return carAff; }
 		public int getValeur() { return valeur; }
 		public int getDuree() { return duree; }
 	}
@@ -35,6 +40,6 @@ public class Effet {
 	public void setDureeRestante(int dureeRestante) { this.dureeRestante = dureeRestante; }
 	
 	public String toString() {
-		return this.TYPE.getValeur()+" "+this.TYPE.getCaracAffect()+" pour "+this.getDureeRestante()+" tours\n";
+		return this.TYPE.getValeur()+" "+this.TYPE.getCarAff()+" pour "+this.getDureeRestante()+" tours\n";
 	}
 }
