@@ -22,7 +22,7 @@ public class Effet {
 		public int getDuree() { return duree; }
 	}
 	
-	private TypeEffet TYPE;
+	private final TypeEffet TYPE;
 	private int dureeRestante;
 	
 	public Effet(TypeEffet type) {
@@ -35,6 +35,6 @@ public class Effet {
 	public void setDureeRestante(int dureeRestante) { this.dureeRestante = dureeRestante; }
 	
 	public String toString() {
-		return this.TYPE.getValeur()+" "+this.TYPE.caracAffect+" pour "+this.getDureeRestante()+" tours\n";
+		return this.TYPE.getValeur()+" "+this.TYPE.getCaracAffect()+" pour "+this.getDureeRestante()+" tours\n";
 	}
 }

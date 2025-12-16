@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 public class Terrain implements IConfig, Serializable {
 	
+	public enum Moment {
+		FIN_TOUR,
+		TANT_QUE_DESSUS;
+	}
+	
 	public enum TypeTerrain {
 		HERBE (COULEUR_HERBE, true), // aucun effet (peut prendre feu?)
 		ROCHER (COULEUR_ROCHER, false), // inaccessible sauf si vol
@@ -17,10 +22,14 @@ public class Terrain implements IConfig, Serializable {
 
 		private final Color COULEUR;
 		private final boolean ACCESSIBLE; // Changer pour gerer des unité volante par ex?
+		// private final Effet effet; // Effet appliqué par la case
+		// private final Moment moment; // Moment d'application de l'effet
 
 		TypeTerrain(Color couleur, boolean accessible) { 
 			this.COULEUR = couleur;
 			this.ACCESSIBLE = accessible;
+			// this.effet = effet;
+			// this.moment = moment;
 		}
 		
 		public Color getCouleur() { return this.COULEUR; }
@@ -56,7 +65,7 @@ public class Terrain implements IConfig, Serializable {
 			ListeEffets listeEffetsOccupant = this.occupant.getListeEffets();
 			switch(this.TYPE) {
 			case FORET : listeEffetsOccupant.setEffetTerrain(new Effet(Effet.TypeEffet.FORET_DENSE)); break;
-			case ACIDE : break;
+			case ACIDE : listeEffetsOccupant.ajouterEffet(new Effet(Effet.TypeEffet.POISON)); break;
 			case SABLE : listeEffetsOccupant.setEffetTerrain(new Effet(Effet.TypeEffet.SABLES_MOUVANTS)); break;
 			default: 
 				System.out.println("Aucun effet appliqué");
