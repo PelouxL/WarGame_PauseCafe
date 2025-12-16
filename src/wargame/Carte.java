@@ -324,7 +324,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		for (Monstre monstre : this.listeMonstres) {
 			Heros heros = listeHeros[0];
 			EnsemblePosition chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
-			int distanceHeros = chemin.getNbPos();
+			int distanceHeros = chemin.getNbPos() - 1;
 			System.out.println(" -> Debut du tour");
 			
 			// Le monstre cherche le heros le plus proche
@@ -332,8 +332,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 				//System.out.println("NB HEROS -------------------------------------------------------------------------------------------> " + this.nbHeros);
 				//System.out.println("HEROS ==============================================================================================> " + this.listeHeros[0]);
 				Heros test = listeHeros[i];
-				chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
-				int distanceTest = chemin.getNbPos();
+				chemin = this.plusCourtChemin(monstre.getPos(), test.getPos());
+				int distanceTest = chemin.getNbPos() - 1;
 				if (distanceTest < distanceHeros) {
 					heros = test;
 					distanceHeros = distanceTest;
@@ -343,7 +343,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
 			
 			// Tant qu'il reste des actions au monstre il regarde s'il peut attaquer, sinon il avance
-			int i = 1;
 			while(monstre.getAction() > 0) {
 				System.out.println(" -> PA = "+monstre.getAction()+"actions");
 				
@@ -358,8 +357,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 				Position posMonstre = monstre.getPos();
 				boolean peutAttaquer = false;
 				
-				EnsemblePosition newChemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
-				distanceHeros = newChemin.getNbPos();
+				EnsemblePosition newChemin = this.plusCourtChemin(posMonstre, posHeros);
+				distanceHeros = newChemin.getNbPos() - 1;
 				
 				// Verifie la distance d'attaque
 				if (distanceHeros <= monstre.getPortee()) {
@@ -400,19 +399,23 @@ public class Carte implements IConfig, ICarte, Serializable {
 					System.out.println(" -> reste PA = "+monstre.getAction());
 					*/
 					//if (monstre.getDeplacement()*i < newChemin.getNbPos()) {
+					// si on ne vient pas de tuer le heros courant, et si on a bien trouvé un heros (si non alors distanceHeros = -1)
+					if (!heros.estMort() && distanceHeros > 0) {
 						System.out.println("SALUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUT");
 						Position newPos;
 						if (distanceHeros > monstre.getDeplacement()) {
-							System.out.println("IFFFFFFFFF " + newChemin.getNbPos());
-							newPos = newChemin.getPosition(monstre.getDeplacement());
+							System.out.println("IFFFFFFFFF " + distanceHeros);
+							newPos = newChemin.getPosition(monstre.getDeplacement() - 1);
 						} else {
-							System.out.println("ELSEEEEEEE " + newChemin.getNbPos());
+							System.out.println("ELSEEEEEEE " + distanceHeros);
 							newPos = newChemin.getPosition(newChemin.getNbPos() - 2);
 						}
 						this.deplaceSoldat(newPos, monstre);
 						monstre.seDeplace(newPos);
+					} else { // si le monstre vient de tuer, il a fini son tour, peut-être temporaire mais idée quand même
+						monstre.setAction(0);
+					}
 					//}
-					i++;
 				}
 			}
 			
@@ -422,6 +425,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			monstre.setAction(2);
 			
 		}
+		
 		// tour des monstres vient de finir
 		this.nbTours++;
 		this.tourActuel = TOUR_HEROS;
@@ -500,7 +504,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}	
 	
 	private boolean estFranchissable(Position p) {
-		return this.getCase(p).getType().getAccessible();
+		return this.getCase(p).getType().getAccessible()/* && !(this.getCase(p).getOccupant() instanceof Monstre)*/;
 	}
 	
 	// algo qui reconstruit le chemin dans le bon sens (peut-être inutile ? Mais plus propre)
@@ -537,7 +541,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		while (!frontier.estVide() && continuer) {
 			Position current = frontier.getPosition(0);
 			frontier.retirerPremierePos();
-			System.out.println("CURRENT : " + current.getX() + " " + current.getY());
+			//System.out.println("CURRENT : " + current.getX() + " " + current.getY());
 			
 			if (current.equals(fin)) {
 				continuer = false;
@@ -545,7 +549,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 				EnsemblePosition voisins = current.voisines();
 				for (int i = 0 ; i < voisins.getNbPos() ; i++) {
 					Position next = voisins.getPosition(i);
-					if (estFranchissable(next) && cameFrom[next.getY()][next.getX()] == null) {
+					if (estFranchissable(next)
+						&& !(this.getSoldat(next) instanceof Monstre)
+						&& (!(this.getSoldat(next) instanceof Heros) || next.equals(fin))
+						&& cameFrom[next.getY()][next.getX()] == null) {
 						frontier.ajouterPos(next);
 						cameFrom[next.getY()][next.getX()] = current;
 					}
