@@ -338,7 +338,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 		
 		for (Monstre monstre : this.listeMonstres) {
 			Heros heros = listeHeros[0];
-			int distanceHeros = monstre.getPos().distance(heros.getPos());
+			EnsemblePosition chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
+			int distanceHeros = chemin.getNbPos() - 1;
 			System.out.println(" -> Debut du tour");
 			
 			// Le monstre cherche le heros le plus proche
@@ -346,7 +347,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 				//System.out.println("NB HEROS -------------------------------------------------------------------------------------------> " + this.nbHeros);
 				//System.out.println("HEROS ==============================================================================================> " + this.listeHeros[0]);
 				Heros test = listeHeros[i];
-				int distanceTest = monstre.getPos().distance(test.getPos());
+				chemin = this.plusCourtChemin(monstre.getPos(), test.getPos());
+				int distanceTest = chemin.getNbPos() - 1;
 				if (distanceTest < distanceHeros) {
 					heros = test;
 					distanceHeros = distanceTest;
@@ -370,9 +372,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 				Position posMonstre = monstre.getPos();
 				boolean peutAttaquer = false;
 				
+				EnsemblePosition newChemin = this.plusCourtChemin(posMonstre, posHeros);
+				distanceHeros = newChemin.getNbPos() - 1;
+				
 				// Verifie la distance d'attaque
-				if (posMonstre.distance(posHeros) <= monstre.getPortee()) {
-					System.out.println(" - il peut attaquer, distance = "+posMonstre.distance(posHeros)+", portee = "+monstre.getPortee());
+				if (distanceHeros <= monstre.getPortee()) {
+					System.out.println(" - il peut attaquer, distance = "+distanceHeros+", portee = "+monstre.getPortee());
 					peutAttaquer = true;
 				}
 				
@@ -383,6 +388,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				} 
 				
 				if (!peutAttaquer || heros.estMort()){ // 2eme cas : le monstre doit se rapprocher de sa cible
+					/*
 					System.out.println(" - Decide de se rapprocher");
 					
 					// Recuperation la liste des cases accessibles par le monstre
@@ -406,7 +412,25 @@ public class Carte implements IConfig, ICarte, Serializable {
 					}
 					
 					System.out.println(" -> reste PA = "+monstre.getAction());
-					
+					*/
+					//if (monstre.getDeplacement()*i < newChemin.getNbPos()) {
+					// si on ne vient pas de tuer le heros courant, et si on a bien trouvé un heros (si non alors distanceHeros = -1)
+					if (!heros.estMort() && distanceHeros > 0) {
+						System.out.println("SALUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUT");
+						Position newPos;
+						if (distanceHeros > monstre.getDeplacement()) {
+							System.out.println("IFFFFFFFFF " + distanceHeros);
+							newPos = newChemin.getPosition(monstre.getDeplacement() - 1);
+						} else {
+							System.out.println("ELSEEEEEEE " + distanceHeros);
+							newPos = newChemin.getPosition(newChemin.getNbPos() - 2);
+						}
+						this.deplaceSoldat(newPos, monstre);
+						monstre.seDeplace(newPos);
+					} else { // si le monstre vient de tuer, il a fini son tour, peut-être temporaire mais idée quand même
+						monstre.setAction(0);
+					}
+					//}
 				}
 			}
 			
@@ -416,6 +440,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			monstre.setAction(2);
 			
 		}
+		
 		// tour des monstres vient de finir
 		this.nbTours++;
 		this.tourActuel = TOUR_HEROS;
@@ -491,7 +516,88 @@ public class Carte implements IConfig, ICarte, Serializable {
 		for (i = 0 ; i < nbHeros ; i++) {
 			listeHeros[i].ajouterPv(5*listeHeros[i].getAction());
 		}
+	}	
+	
+	private boolean estFranchissable(Position p) {
+		return this.getCase(p).getType().getAccessible()/* && !(this.getCase(p).getOccupant() instanceof Monstre)*/;
 	}
+	
+	// algo qui reconstruit le chemin dans le bon sens (peut-être inutile ? Mais plus propre)
+	public EnsemblePosition plusCourtChemin(Position debut, Position fin) {
+		Position current = fin;
+		Position [] path = new Position[500];
+		Position [][] cameFrom = plusCourtCheminAux(debut, fin);
+		int i = 0;
+		if (cameFrom[fin.getY()][fin.getX()] == null) {
+	        return new EnsemblePosition(0);
+	    }
+		while(!current.equals(debut)) {
+			path[i++] = current;
+			current = cameFrom[current.getY()][current.getX()];
+		}
+		path[i++] = debut;
+		// on y met dans un EnsemblePosition dans le bon sens
+		EnsemblePosition chemin = new EnsemblePosition(i);
+		for (int j = i-1 ; j >= 0 ; j--) {
+			chemin.ajouterPos(path[j]);
+		}
+		return chemin;
+	}
+	
+	// algo qui trouve le chemin le plus court entre 2 soldats,
+	// prend en compte les obstacles, mais pas les couts des terrains
+	private Position [][] plusCourtCheminAux(Position debut, Position fin) {
+		EnsemblePosition frontier = new EnsemblePosition(500);
+		frontier.ajouterPos(debut);
+		Position [][] cameFrom = new Position[HAUTEUR_CARTE][LARGEUR_CARTE*2];
+		cameFrom[debut.getY()][debut.getX()] = debut;
+		boolean continuer = true;
+		
+		while (!frontier.estVide() && continuer) {
+			Position current = frontier.getPosition(0);
+			frontier.retirerPremierePos();
+			//System.out.println("CURRENT : " + current.getX() + " " + current.getY());
+			
+			if (current.equals(fin)) {
+				continuer = false;
+			} else {
+				EnsemblePosition voisins = current.voisines();
+				for (int i = 0 ; i < voisins.getNbPos() ; i++) {
+					Position next = voisins.getPosition(i);
+					if (estFranchissable(next)
+						&& !(this.getSoldat(next) instanceof Monstre)
+						&& (!(this.getSoldat(next) instanceof Heros) || next.equals(fin))
+						&& cameFrom[next.getY()][next.getX()] == null) {
+						frontier.ajouterPos(next);
+						cameFrom[next.getY()][next.getX()] = current;
+					}
+				}
+			}
+		}
+		return cameFrom;
+	}
+	
+	/*
+	private String afficherTesMorts(Position [][] cameFrom) {
+		String s = "";
+		for (int i = 0 ; i < LARGEUR_CARTE*2 ; i++) {
+			for (int j = 0 ; j < HAUTEUR_CARTE ; j++) {
+				if ((i+j) % 2 == 1 || cameFrom[i][j] == null) {
+					s += "[(  ,  )]";
+				} else {
+					s += "[(";
+					s += cameFrom[i][j].getX();
+					s += ",";
+					s += cameFrom[i][j].getY();
+					s += ")]";
+				}
+			}
+			s += "\n";
+		}
+		return s;
+	}
+	*/
+	
 	// ACTION SOLDAT
 	
 	
