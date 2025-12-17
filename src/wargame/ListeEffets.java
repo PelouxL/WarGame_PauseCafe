@@ -48,16 +48,12 @@ public class ListeEffets {
 	
 	public int sommeEffets(Effet.TCarAff carAff) {
 		int somme = 0;
-		String s = "sommeEffets :"; // DEBUG
 		
 		for (Effet e : liste) {
 			if (e.getType().getCarAff() == carAff) {
 				somme += e.getType().getValeur();
-				s += e.getType().getValeur()+" + "; // DEBUG
 			}
 		}
-		
-		System.out.println(s+" = "+somme);
 		
 		return somme;
 	}

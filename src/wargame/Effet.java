@@ -3,7 +3,7 @@ package wargame;
 public class Effet {
 	
 	public enum TCarAff{ // Types de caracteritique pouvant etre affectee
-		PORTEE, DEPLACEMENT, VIE, PUISSANCE_ATQ, PUISSANCE_SOIN;
+		PORTEE, DEPLACEMENT, VIE, PUISSANCE_ATQ, PUISSANCE_SOIN, ACTION;
 	}
 		
 	public enum TypeEffet {

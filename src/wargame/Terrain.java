@@ -75,7 +75,13 @@ public class Terrain implements IConfig, Serializable {
 	public boolean estLibre() { return (occupant == null) && (this.TYPE.ACCESSIBLE); }
 	
 	// GESTION OCCUPANT
-	public void occuper(Soldat soldat) { this.occupant = soldat; }
+	public void occuper(Soldat soldat) { 
+		this.occupant = soldat;
+		
+		if (this.TYPE.getMoment() == TypeMoment.TANT_QUE_DESSUS) {
+			this.appliquerEffetTerrain();
+		}
+	}
 	
 	public void liberer() {
 		
@@ -94,7 +100,7 @@ public class Terrain implements IConfig, Serializable {
 	public Effet effetTerrain() { return new Effet (this.TYPE.getEffet()); }
 	
 	public void appliquerEffetTerrain() {
-		if (this.occupant != null) {
+		if (this.occupant != null && this.TYPE.getEffet() != null) {
 			ListeEffets listeEffetsOccupant = this.occupant.getListeEffets();
 			
 			// Verification si l'effet a deja ete applique

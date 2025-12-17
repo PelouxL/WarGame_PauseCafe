@@ -59,7 +59,7 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	
 	
 	// DEGATS
-	public int getPuissance() { return this.PUISSANCE; }
+	public int getPuissance() { return this.PUISSANCE + listeEffets.sommeEffets(Effet.TCarAff.PUISSANCE_ATQ); }
 	public int getTir() { return this.TIR; }
 	// DEGATS
 	
@@ -80,7 +80,7 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	public void setTour() { this.tour = 0; }
 	public void joueTour(int tour) {} // on sait pas ce que ça fait ???
 	
-	public int getAction() { return this.action; }
+	public int getAction() { return this.action + listeEffets.sommeEffets(Effet.TCarAff.ACTION); }
 	public void setAction(int action) { this.action = action; }
 	public void ajouterAction(int nbAction) { this.action += nbAction; }
 	// TOUR/ACTION
@@ -90,11 +90,7 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	// EFFETS
 	
 	// PORTEE VISUELLE
-	public int getPortee() { // NETTOYER
-		int portee = this.PORTEE_VISUELLE + listeEffets.sommeEffets(IConfig.PORTEE);
-		System.out.println("portee ="+PORTEE_VISUELLE);
-		System.out.println("portee relle ="+portee);
-		return this.PORTEE_VISUELLE + listeEffets.sommeEffets(IConfig.PORTEE); } // portee
+	public int getPortee() { return this.PORTEE_VISUELLE + listeEffets.sommeEffets(Effet.TCarAff.PORTEE); }
 	
 	public int[][] setCasesVisibles(int[][] visibilite) { // Penser a gerer les lignes de vue
 		int i, j;
@@ -236,7 +232,7 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	
 	
 	// DEPLACEMENT
-	public int getDeplacement() { return this.DEPLACEMENT; }
+	public int getDeplacement() { return this.DEPLACEMENT + listeEffets.sommeEffets(Effet.TCarAff.DEPLACEMENT); }
 	
 	public EnsemblePosition zoneDeplacement() {
 		int nbPosMax = (int) Math.pow(6, this.DEPLACEMENT); // TEMPORAIRE FAIRE VRAI CALCUL
@@ -315,9 +311,9 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 		s += " - PV : "+this.getPointsActuels()+"/"+this.getPoints()+"\n";
 		s += " - Puissance : "+getPuissance();
 		s += " - Tir : "+getTir();
-		// s += " - Portee : "+getPortee();
-		// s += " - PorteeReelle"+this.PORTEE_VISUELLE;
-		s += " - Deplacement : "+this.DEPLACEMENT+"\n";
+		s += " - Portee : "+getPortee();
+		s += " - PorteeReelle"+this.PORTEE_VISUELLE;
+		s += " - Deplacement : "+this.getDeplacement()+"\n";
 		s += " - Action(s) restante : "+this.action;
 		// s += listeEffets.toString();
 			

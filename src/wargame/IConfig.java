@@ -51,21 +51,16 @@ public interface IConfig {
 	
 	// TERRAINS
 	int NB_RIVIERE = (int) (Math.random()*2 + 1); // 2 riviere max
-	int NB_FORET = 4;
+	int NB_FORET = 10;
+	int NB_SABLE = 5;
 	
 	Color COULEUR_HERBE = Color.decode("#69C24C"); // vert clair
-	Color COULEUR_EAU = Color.BLUE;
+	Color COULEUR_EAU = Color.BLUE;                // bleu
 	Color COULEUR_FORET = Color.decode("#0A5C36"); // vert fonce 
-	Color COULEUR_ROCHER = Color.GRAY;
+	Color COULEUR_ROCHER = Color.GRAY;             // gris
 	Color COULEUR_PONT  = Color.decode("#8B4513"); // marron
-	Color COULEUR_FEU = Color.ORANGE;
+	Color COULEUR_FEU = Color.ORANGE;              // orange
 	Color COULEUR_ACIDE = Color.decode("#7400D5"); // violet
-	Color COULEUR_VILLAGE = Color.YELLOW;
-	Color COULEUR_SABLE = Color.decode("#E0CDA9");
-	
-	// EFFETS
-	int PORTEE = 0;
-	int DEGATS = 1;
-	int DEPLACEMENT = 2;
-	int VIE = 3;
+	Color COULEUR_VILLAGE = Color.YELLOW;          // jaune
+	Color COULEUR_SABLE = Color.decode("#E0CDA9"); // beige
 }
