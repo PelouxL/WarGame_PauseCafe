@@ -90,7 +90,13 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	// EFFETS
 	
 	// PORTEE VISUELLE
-	public int getPortee() { return this.PORTEE_VISUELLE + listeEffets.sommeEffets(Effet.TCarAff.PORTEE); }
+	public int getPortee() {
+		int portee = this.PORTEE_VISUELLE + listeEffets.sommeEffets(Effet.TCarAff.PORTEE);
+		if (portee > 1) {
+			return portee;
+		}
+		return 1;
+	}
 	
 	public int[][] setCasesVisibles(int[][] visibilite) { // Penser a gerer les lignes de vue
 		int i, j;

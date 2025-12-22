@@ -188,7 +188,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 	
 		// --------------------------- Creation du panneau droit -------------------- //		
-		panneauDroit = new JPanel();
+		// ignorez les trucs dans le paintComponent c'était juste pour tester des trucs (pour afficher les stats du perso courant)
+		panneauDroit = new JPanel() {
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.setColor(COULEUR_FORET);
+				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
+			}
+		};
 		panneauDroit.setLayout(new BoxLayout(panneauDroit, BoxLayout.Y_AXIS));
 		panneauDroit.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));	
 		panneauDroit.setBackground(COULEUR_PLATEAU);
@@ -229,6 +236,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					//logArea.repaint();
 					panneauCarte.repaint();
 					panneauHaut.repaint();
+					panneauDroit.repaint();
 					System.out.println("Termine-moi !");
 				}
 			}

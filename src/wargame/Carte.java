@@ -90,7 +90,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 			switch(r) {
 				case 0: riviereV(pos); break;
 				case 1: riviereH(pos); break;
-	}}}
+			}
+		}
+	}
 	
 	private void riviereV(Position pos) {
 		int x_pont1, x_pont2, y_pont1, y_pont2;
@@ -343,10 +345,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 			
 			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
+			boolean unefois = false;
 			
 			// Tant qu'il reste des actions au monstre il regarde s'il peut attaquer, sinon il avance
 			while(monstre.getAction() > 0) {
-				System.out.println(" -> PA = "+monstre.getAction()+"actions");
+				//System.out.println(" -> PA = "+monstre.getAction()+"actions");
+				//System.out.println("Portee du monstre : " + monstre.getPortee());
 				
 				/*
 				 * 2 cas : 
@@ -361,10 +365,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 				EnsemblePosition newChemin = this.plusCourtChemin(posMonstre, posHeros);
 				distanceHeros = newChemin.getNbPos() - 1;
+				if (unefois == false) {
+					System.out.println("dist = " + distanceHeros);
+					unefois = true;
+				}
 				
 				// Verifie la distance d'attaque
-				if (distanceHeros <= monstre.getPortee()) {
-					System.out.println(" - il peut attaquer, distance = "+distanceHeros+", portee = "+monstre.getPortee());
+				if (distanceHeros <= monstre.getTir() || distanceHeros == 1) {
+					System.out.println(" - il peut attaquer, distance = "+distanceHeros+", portee = "+monstre.getTir());
 					peutAttaquer = true;
 				}
 				
@@ -403,13 +411,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 					//if (monstre.getDeplacement()*i < newChemin.getNbPos()) {
 					// si on ne vient pas de tuer le heros courant, et si on a bien trouvé un heros (si non alors distanceHeros = -1)
 					if (!heros.estMort() && distanceHeros > 0) {
-						System.out.println("SALUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUT");
+						//System.out.println("SALUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUT");
 						Position newPos;
 						if (distanceHeros > monstre.getDeplacement()) {
-							System.out.println("IFFFFFFFFF " + distanceHeros);
+							//System.out.println("IFFFFFFFFF " + distanceHeros);
 							newPos = newChemin.getPosition(monstre.getDeplacement() - 1);
 						} else {
-							System.out.println("ELSEEEEEEE " + distanceHeros);
+							//System.out.println("ELSEEEEEEE " + distanceHeros);
 							newPos = newChemin.getPosition(newChemin.getNbPos() - 2);
 						}
 						this.deplaceSoldat(newPos, monstre);
