@@ -861,16 +861,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 		// heros
 		for (int j = 0 ; j < this.nbHeros ; j++) {
 			Heros heros = listeHeros[j];
-			if (!heros.estMort()) {
-				Image soldat = new ImageIcon("./images/elfe_1.png").getImage();
-				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
-				g.drawImage(soldat, 10+i, 10, 20, 20, null);
-				g.drawImage(barre, 35+i, 10, 54, 20, null);
-				
+			if (!heros.estMort()) {				
 				double pv_max = heros.getPoints();
 				double pv_act = heros.getPointsActuels();
 				double ratio = (pv_act / pv_max) * 100;
-				double taille = (pv_act / pv_max) * 46;
+				double taille = (pv_act / pv_max) * 50 + 1;
 				
 				if (ratio >= 50) {
 					g.setColor(Color.GREEN);
@@ -879,9 +874,15 @@ public class Carte implements IConfig, ICarte, Serializable {
 				} else {
 					g.setColor(Color.ORANGE);
 				}
-				g.fillRect(39+i, 14, (int) taille, 12);
-				g.drawString("" + heros.getNum(), 100+i, 10);
-				i += 100;
+				g.fillRect(51+i, 16, (int) taille, 12);
+				g.drawString("" + heros.getNum(), 35+i, 25);
+				
+				Image soldat = new ImageIcon("./images/elfe_1.png").getImage();
+				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				g.drawImage(soldat, 10+i, 10, 20, 20, null); // à changer pour verif quel soldat c'est (et adapter l'image)
+				g.drawImage(barre, 45+i, 10, 62, 24, null);
+				
+				i += 110; // décalage vers la droite
 			}
 		}
 		// monstre (pas fonctionnel à 100%, il faudrait une scrollbar
