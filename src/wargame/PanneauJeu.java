@@ -172,6 +172,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    panneauInfos = new JPanel() {
 	    	protected void paintComponent(Graphics g) {
 	    		super.paintComponent(g);
+	    		/*
 	    		g.setColor(Color.WHITE);
 	    		if(infoTexte2 != "" && !(infoTexte2.equals(infoTexte))) {
 	    			g.drawString(infoTexte2,10, 15);
@@ -179,6 +180,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    		}else {
 	    			g.drawString(infoTexte,10, 15);
 	    		}
+	    		*/
+	    		carte.dessineInfosBas(g);
 	    	}
 	    	
 	    };
@@ -237,6 +240,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					panneauCarte.repaint();
 					panneauHaut.repaint();
 					panneauDroit.repaint();
+					panneauInfos.repaint();
 					System.out.println("Termine-moi !");
 				}
 			}

@@ -2,9 +2,13 @@ package wargame;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.ImageIcon;
+
 import wargame.ISoldat.TypesH;
 import wargame.ISoldat.TypesM;
 import wargame.Terrain.TypeTerrain;
@@ -331,15 +335,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 		this.nbTours++;
 		this.tourActuel = TOUR_MONSTRE;
 		
-		for (Monstre monstre : this.listeMonstres) {
+		// j'ai changé le for pour que ça marche (au lieu de Monstre monstre : this.listeMonstres)
+		for (int i = 0 ; i < this.nbMonstre ; i++) {
+			Monstre monstre = listeMonstres[i];
 			Heros heros = listeHeros[0];
 			EnsemblePosition chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
 			int distanceHeros = chemin.getNbPos() - 1;
 			System.out.println(" -> Debut du tour");
 			
 			// Le monstre cherche le heros le plus proche
-			for (int i=0; i < this.nbHeros; i++) {
-				Heros test = listeHeros[i];
+			for (int j=0; j < this.nbHeros; j++) {
+				Heros test = listeHeros[j];
 				chemin = this.plusCourtChemin(monstre.getPos(), test.getPos());
 				int distanceTest = chemin.getNbPos() - 1;
 				if (distanceTest < distanceHeros) {
@@ -349,10 +355,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 			
 			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
-			boolean unefois = false;
 			
 			// Tant qu'il reste des actions au monstre il regarde s'il peut attaquer, sinon il avance
-			while(monstre.getAction() > 0) {
+			while(monstre.getAction() > 0 && !monstre.estMort()) {
 				//System.out.println(" -> PA = "+monstre.getAction()+"actions");
 				//System.out.println("Portee du monstre : " + monstre.getPortee());
 				
@@ -369,10 +374,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 				EnsemblePosition newChemin = this.plusCourtChemin(posMonstre, posHeros);
 				distanceHeros = newChemin.getNbPos() - 1;
-				if (unefois == false) {
-					System.out.println("dist = " + distanceHeros);
-					unefois = true;
-				}
 				
 				// Verifie la distance d'attaque
 				if (distanceHeros <= monstre.getTir() || distanceHeros == 1) {
@@ -383,6 +384,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				if (peutAttaquer && !heros.estMort()) { // 1er cas : le heros est a portee du monstre
 					System.out.println(" - Combat");
 					peutAttaquer = monstre.combat(heros);
+					
 					if (!peutAttaquer) System.out.println(" - n'a aps pu combattre : puis = "+monstre.getPuissance()+", tir = "+monstre.getTir());
 				} 
 				
@@ -403,6 +405,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 						monstre.setAction(0);
 					}
 				}
+				
+				
 			}
 			
 			System.out.println(" -> Fin du tour");
@@ -558,6 +562,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// MORT
 	public void mort(Soldat soldat) {
 		System.out.println("je suis appelé avec " + soldat.getClass().getSimpleName());
+		System.out.println("MES PV : " + soldat.getPointsActuels());
 		if (soldat.getPointsActuels() <= 0) {
 			if (soldat instanceof Heros) {
 				this.nbHeros--;
@@ -568,17 +573,20 @@ public class Carte implements IConfig, ICarte, Serializable {
 					}
 					if (trouve) {
 						listeHeros[i] = listeHeros[i+1];
+						//listeHeros[i+1] = null;
 					}
 				}
 			} else {
 				this.nbMonstre--;
 				boolean trouve = false;
 				for (int i=0; i < nbMonstre; i++) {
+					System.out.println("JE MEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEURS");
 					if (listeMonstres[i].getPos().equals(soldat.getPos())) {
 						trouve = true;
 					}
 					if (trouve) {
 						listeMonstres[i] = listeMonstres[i+1];
+						//listeMonstres[i+1] = null;
 					}
 				}
 			}	
@@ -781,7 +789,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			g.setColor(couleur);
 		} else {
 			g.setColor(COULEUR_INCONNU);
-			//g.setColor(couleur); //VISIBILITE DECOMMENTER POUR TESTS
+			g.setColor(couleur); //VISIBILITE DECOMMENTER POUR TESTS
 		}
 		this.dessineInterieurHexagone(g, x, y);
 		g.setColor(Color.BLACK);
@@ -846,6 +854,66 @@ public class Carte implements IConfig, ICarte, Serializable {
 		g.setColor(COULEUR_INCONNU);
 		dessineInterieurHexagone(g, x, y);
 		g.setColor(couleur_base); // juste pour remettre la couleur qu'on avait avant l'appel
+	}
+	
+	public void dessineInfosBas(Graphics g) {
+		int i = 0;
+		// heros
+		for (int j = 0 ; j < this.nbHeros ; j++) {
+			Heros heros = listeHeros[j];
+			if (!heros.estMort()) {
+				Image soldat = new ImageIcon("./images/elfe_1.png").getImage();
+				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				g.drawImage(soldat, 10+i, 10, 20, 20, null);
+				g.drawImage(barre, 35+i, 10, 54, 20, null);
+				
+				double pv_max = heros.getPoints();
+				double pv_act = heros.getPointsActuels();
+				double ratio = (pv_act / pv_max) * 100;
+				double taille = (pv_act / pv_max) * 46;
+				
+				if (ratio >= 50) {
+					g.setColor(Color.GREEN);
+				} else if (ratio < 15) {
+					g.setColor(Color.RED);
+				} else {
+					g.setColor(Color.ORANGE);
+				}
+				g.fillRect(39+i, 14, (int) taille, 12);
+				g.drawString("" + heros.getNum(), 100+i, 10);
+				i += 100;
+			}
+		}
+		// monstre (pas fonctionnel à 100%, il faudrait une scrollbar
+		/*
+		i = 0;
+		System.out.println("NB MONSTRE = " + this.nbMonstre);
+		for (int j = 0 ; j < this.nbMonstre ; j++) {
+			Monstre monstre = listeMonstres[j];
+			if (!monstre.estMort()) {
+				Image soldat = new ImageIcon("./images/elfe_1.png").getImage();
+				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				g.drawImage(soldat, 10+i, 60, 20, 20, null);
+				g.drawImage(barre, 35+i, 60, 54, 20, null);
+				
+				double pv_max = monstre.getPoints();
+				double pv_act = monstre.getPointsActuels();
+				double ratio = (pv_act / pv_max) * 100;
+				double taille = (pv_act / pv_max) * 46;
+				
+				if (ratio >= 50) {
+					g.setColor(Color.GREEN);
+				} else if (ratio < 15) {
+					g.setColor(Color.RED);
+				} else {
+					g.setColor(Color.ORANGE);
+				}
+				g.fillRect(39+i, 64, (int) taille, 12);
+				g.drawString("" + monstre.getNum(), 100+i, 60);
+				i += 100;
+			}
+		}
+		*/
 	}
 	// DESSIN
 	
