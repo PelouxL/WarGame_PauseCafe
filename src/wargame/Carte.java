@@ -197,6 +197,20 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return -1;
 	}
 	
+	public void setVisibilite() {
+		for (int i = 0 ; i < LARGEUR_CARTE*2 ; i++) {
+			for (int j = 0 ; j < HAUTEUR_CARTE ; j++) {
+				if (i+j % 2 == 1) {
+					continue;
+				}
+				visibilite[i][j] = 0; // on reset tout
+			}
+		}
+		for (Heros heros : this.listeHeros) {
+			this.visibilite = heros.setCasesVisibles(this.visibilite);
+		}
+	}
+	
 	// CETTE FONCTION NE DEVRAIT PAS SERVIR, JE LA LAISSE AU CAS OU C'EST POUR LA VISIBILITE
 	// On pourra peut-être enlever le param, et faire en sorte que cette fonction y mette à 1
 	// Et à chaque fois avant de mettre à jour on remet toute la matrice à 0
@@ -480,20 +494,20 @@ public class Carte implements IConfig, ICarte, Serializable {
 	 * Reduction et verif des point d'action a faire en dehors de la fonction si on change
 	 */
 	public boolean deplaceSoldat(Position pos, Soldat soldat) {
-			int x = pos.getX();
-			int y = pos.getY();
-			EnsemblePosition ePos = soldat.zoneDeplacement();
-		
-			if(ePos.contient(pos) && carte[x][y].estLibre() && soldat.getAction() > 0) {
-				int xSoldat = soldat.getPos().getX();
-				int ySoldat = soldat.getPos().getY();
-				
-				this.carte[xSoldat][ySoldat].liberer();
-				this.carte[pos.getX()][pos.getY()].occuper(soldat);
-				soldat.seDeplace(pos);		
-				soldat.ajouterAction(-1);
-				return true;
-			}
+		int x = pos.getX();
+		int y = pos.getY();
+		EnsemblePosition ePos = soldat.zoneDeplacement();
+	
+		if(ePos.contient(pos) && carte[x][y].estLibre() && soldat.getAction() > 0) {
+			int xSoldat = soldat.getPos().getX();
+			int ySoldat = soldat.getPos().getY();
+			
+			this.carte[xSoldat][ySoldat].liberer();
+			this.carte[pos.getX()][pos.getY()].occuper(soldat);
+			soldat.seDeplace(pos);		
+			soldat.ajouterAction(-1);
+			return true;
+		}
 			
 		return false;
 	}
@@ -704,6 +718,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee, Competence choisiComp) {
 		
+		setVisibilite();
+		
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
 				if ((i+j) % 2 == 1) {
@@ -721,15 +737,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 					if (soldat instanceof Monstre) couleur = COULEUR_MONSTRES;
 				}
 				
-				// /!\ IMPORTANT POUR LES TESTS /!\
-				// Décommenter le && en-dessous si on veut tester la carte en voyant tout
-				/* if (getVisibilite(pos) == 0
-					&& getVisibilite(pos) == 1
-					) {
-					couleur = COULEUR_INCONNU;
-				} */
-				
 				dessineCase(g, couleur, pos);
+				
+				
+				
 			}
 			
 			// Zone de deplacement quand case survolee
@@ -821,7 +832,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 			offset_x = OFFSET_X;
 		}
 		
-		g.setColor(couleur);
+		if (getVisibilite(pos) == 1) {
+			g.setColor(couleur);
+		} else {
+			g.setColor(COULEUR_INCONNU);
+		}
 		this.dessineInterieurHexagone(g, x, y);
 		g.setColor(Color.BLACK);
 		this.dessineContourHexagone(g, x, y);
@@ -829,7 +844,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		// Ajout des numeros 
 		Soldat soldat = getSoldat(pos);
 		g.setColor(Color.WHITE);
-		if(soldat instanceof Monstre) {
+		if(soldat instanceof Monstre && getVisibilite(pos) == 1) {
 			g.drawString("" + soldat.getNum(), x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
 		}else if(soldat instanceof Heros) {
 			char lettre = (char)('A' + soldat.getNum());
@@ -875,6 +890,16 @@ public class Carte implements IConfig, ICarte, Serializable {
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
 		g.fillPolygon(liste_x, liste_y, 6);
+	}
+	
+	private void dessineBrouillard(Graphics g, Position pos) {
+		int x = pos.getX(),
+			y = pos.getY();
+		x = x/2;
+		Color couleur_base = g.getColor();
+		g.setColor(COULEUR_INCONNU);
+		dessineInterieurHexagone(g, x, y);
+		g.setColor(couleur_base); // juste pour remettre la couleur qu'on avait avant l'appel
 	}
 	// DESSIN
 	
