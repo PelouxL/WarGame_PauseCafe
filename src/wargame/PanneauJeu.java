@@ -286,8 +286,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 					int y = e.getY();
 					caseSurvolee = carte.coorToPos(x, y);
 					
-					// affichage des infos des soldats
-					if (caseSurvolee.estValide()) {
+					// affichage des infos des soldats (seulement si soldat visible)
+					if (caseSurvolee.estValide() && carte.getVisibilite(caseSurvolee) == 1) {
 						Soldat soldat = carte.getSoldat(caseSurvolee);
 						if(soldat instanceof Soldat) {
 							infoTexte = soldat.toString();

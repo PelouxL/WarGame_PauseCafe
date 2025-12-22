@@ -210,14 +210,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 			this.visibilite = heros.setCasesVisibles(this.visibilite);
 		}
 	}
-	
-	// CETTE FONCTION NE DEVRAIT PAS SERVIR, JE LA LAISSE AU CAS OU C'EST POUR LA VISIBILITE
-	// On pourra peut-être enlever le param, et faire en sorte que cette fonction y mette à 1
-	// Et à chaque fois avant de mettre à jour on remet toute la matrice à 0
-	// Comme ça on a juste à remettre les visibilités actuelles (pas d'ennui à se dire est-ce que ça ça devient invisible)
-	// public void setVisibilite(Position pos, int visibilite) {
-	//  	this.visibilite[pos.getX()][pos.getY()] = visibilite;
-	// }
 	// VISIBILITE
 	
 	
@@ -728,9 +720,15 @@ public class Carte implements IConfig, ICarte, Serializable {
 			
 	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
 		EnsemblePosition ePos = soldat.zoneDeplacement();
-				
-		for (int i = 0; i < ePos.getNbPos(); i++) {
-			this.dessineCase(g, Color.PINK, ePos.getPosition(i));
+		if (getVisibilite(soldat.getPos()) == 1) { // pour les Monstres, on affiche sa zone seulement si le Monstre est visible
+			for (int i = 0; i < ePos.getNbPos(); i++) {
+				Position caseVisible = ePos.getPosition(i);
+				// on dessine la case seulement si elle est visible
+				// /!\ à voir si on change pour faire en sorte qu'on ne puisse pas se déplacer dans une case invisible
+				if (getVisibilite(caseVisible) == 1) {				
+					this.dessineCase(g, Color.PINK, caseVisible);
+				}
+			}
 		}
 	}
 	
@@ -783,6 +781,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			g.setColor(couleur);
 		} else {
 			g.setColor(COULEUR_INCONNU);
+			//g.setColor(couleur); //VISIBILITE DECOMMENTER POUR TESTS
 		}
 		this.dessineInterieurHexagone(g, x, y);
 		g.setColor(Color.BLACK);
