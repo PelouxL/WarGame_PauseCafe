@@ -334,7 +334,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return this.nbTours;
 	}
 	
-	public void jouerSoldats() { // a quoi sert panneau jeu en param?
+	public void jouerSoldats() {
 		// tour des heros vient de finir
 		this.nbTours++;
 		this.tourActuel = TOUR_MONSTRE;
@@ -347,8 +347,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 			
 			// Le monstre cherche le heros le plus proche
 			for (int i=0; i < this.nbHeros; i++) {
-				//System.out.println("NB HEROS -------------------------------------------------------------------------------------------> " + this.nbHeros);
-				//System.out.println("HEROS ==============================================================================================> " + this.listeHeros[0]);
 				Heros test = listeHeros[i];
 				chemin = this.plusCourtChemin(monstre.getPos(), test.getPos());
 				int distanceTest = chemin.getNbPos() - 1;
@@ -370,7 +368,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				 * 2 cas : 
 				 * - Le monstre peut attaquer le heros
 				 * - Le monstre ne peut pas attaquer le heros
-				 * Amelioration possible : le monstre evalu s'il devrait l'attaquer plutot en melee ou a distance
+				 * Amelioration possible : le monstre evalue s'il devrait l'attaquer plutot en melee ou a distance
 				 */
 				
 				Position posHeros = heros.getPos();
@@ -397,41 +395,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 				} 
 				
 				if (!peutAttaquer || heros.estMort()){ // 2eme cas : le monstre doit se rapprocher de sa cible
-					/*
-					System.out.println(" - Decide de se rapprocher");
+					System.out.println("Je me rapproche");
 					
-					// Recuperation la liste des cases accessibles par le monstre
-					EnsemblePosition ePos = monstre.zoneDeplacement();
-					Position plusProche = posMonstre;
-					
-					for (int i=0; i < ePos.getNbPos(); i++) {
-						Position test = ePos.getPosition(i);
-						if (test.distance(posHeros) < plusProche.distance(posHeros) && !(test.equals(posHeros))) {
-							plusProche = test; 
-						}
-					}
-					
-					System.out.println(" - pos la plus proche : "+plusProche.toString()+", pos monstre : "+posMonstre.toString());
-					
-					if (plusProche.equals(posMonstre)) monstre.setAction(0);
-					else {
-						//System.out.println(" - se deplace de "+posMonstre.distance(plusProche)+" cases");
-						this.deplaceSoldat(plusProche, monstre);
-						monstre.seDeplace(plusProche);
-					}
-					
-					System.out.println(" -> reste PA = "+monstre.getAction());
-					*/
-					//if (monstre.getDeplacement()*i < newChemin.getNbPos()) {
 					// si on ne vient pas de tuer le heros courant, et si on a bien trouvé un heros (si non alors distanceHeros = -1)
 					if (!heros.estMort() && distanceHeros > 0) {
-						//System.out.println("SALUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUT");
 						Position newPos;
 						if (distanceHeros > monstre.getDeplacement()) {
-							//System.out.println("IFFFFFFFFF " + distanceHeros);
 							newPos = newChemin.getPosition(monstre.getDeplacement() - 1);
 						} else {
-							//System.out.println("ELSEEEEEEE " + distanceHeros);
 							newPos = newChemin.getPosition(newChemin.getNbPos() - 2);
 						}
 						this.deplaceSoldat(newPos, monstre);
@@ -439,7 +410,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 					} else { // si le monstre vient de tuer, il a fini son tour, peut-être temporaire mais idée quand même
 						monstre.setAction(0);
 					}
-					//}
 				}
 			}
 			
@@ -571,7 +541,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 		while (!frontier.estVide() && continuer) {
 			Position current = frontier.getPosition(0);
 			frontier.retirerPremierePos();
-			//System.out.println("CURRENT : " + current.getX() + " " + current.getY());
 			
 			if (current.equals(fin)) {
 				continuer = false;
@@ -590,29 +559,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 		}
 		return cameFrom;
-	}
-	
-	/*
-	private String afficherTesMorts(Position [][] cameFrom) {
-		String s = "";
-		for (int i = 0 ; i < LARGEUR_CARTE*2 ; i++) {
-			for (int j = 0 ; j < HAUTEUR_CARTE ; j++) {
-				if ((i+j) % 2 == 1 || cameFrom[i][j] == null) {
-					s += "[(  ,  )]";
-				} else {
-					s += "[(";
-					s += cameFrom[i][j].getX();
-					s += ",";
-					s += cameFrom[i][j].getY();
-					s += ")]";
-				}
-			}
-			s += "\n";
-		}
-		return s;
-	}
-	*/
-	
+	}	
 	// ACTION SOLDAT
 	
 	
@@ -718,7 +665,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee, Competence choisiComp) {
 		
-		setVisibilite();
+		setVisibilite(); // permet de mettre à jour les cases visibles des Heros dès qu'on refresh
 		
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
