@@ -145,7 +145,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	// RIVIERE
 	
-	// FORET
 	private void zoneBiome(int nb, Terrain.TypeTerrain type, int rayMax) {
 		for (int i=0; i < nb; i++) {
 			Position pos = trouvePositionVide();
@@ -156,19 +155,16 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 		}
 	}
-	// FORET
 	// OBSTACLES
 	
 	
 	// ELEMENT
-	public Terrain getCase(Position pos) {
+	public Terrain getCase(Position pos) { // try catch 
 		
 		int x = pos.getX();
 		int y = pos.getY();
 		
-		if (pos.estValide()) {
-			return this.carte[x][y];
-		}
+		if (pos.estValide()) { return this.carte[x][y]; }
 		
 		System.out.println("Erreur getCase() : x = "+x+", y = "+y);
 		return null;
@@ -189,7 +185,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		return 0; // pas fini
 	}
-	
 	
 	// VISIBILITE
 	public int getVisibilite(Position pos) {
@@ -462,9 +457,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 				this.carte[xSoldat][ySoldat].liberer();
 				this.carte[pos.getX()][pos.getY()].occuper(soldat);
-				// this.carte[pos.getX()][pos.getY()].appliquerEffetTerrain();
-				soldat.seDeplace(pos);
-				
+				soldat.seDeplace(pos);		
 				soldat.ajouterAction(-1);
 				return true;
 			}
@@ -472,10 +465,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return false;
 	}
 	
+	// FIN TOUR
+	public void finTour() {
+		
+		
+	}
+	// FIN TOUR
+	
 	public void resetActionsHeros() {
 		int i;
 		for (i = 0 ; i < nbHeros ; i++) {
-			listeHeros[i].setAction(2); // Remplacer par NB_ACTION_MAX
+			listeHeros[i].setAction(2); // Remplacer par NB_ACTION_INITIAL
 		}
 	}
 	
