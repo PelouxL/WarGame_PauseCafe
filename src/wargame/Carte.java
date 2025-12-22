@@ -17,6 +17,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	private int nbHeros = 0;
 	private Monstre[] listeMonstres;
 	private int nbMonstre = 0;
+	
 	private int nbTours = 0;
 	private int tourActuel = 0;
 	
@@ -39,15 +40,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 		// OBSTACLES
-		foret(NB_FORET);
-		riviere(NB_RIVIERE);
+		zoneBiome(NB_SABLE, Terrain.TypeTerrain.SABLE, 2);
+		zoneBiome(NB_FORET, Terrain.TypeTerrain.FORET, 4);
 		
-		// Placement des autres obstacles
+		// Placement des terrains aléatoires
 		for(int i = 0; i < NB_OBSTACLES; i++) {
 			Position p = trouvePositionVide();
 			this.carte[p.getX()][p.getY()] = new Terrain(Terrain.TypeTerrain.getTerrainAlea());
 			
 		}
+		
+		riviere(NB_RIVIERE);
 		// OBSTACLES
 		
 		// HEROS
@@ -67,8 +70,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			this.listeMonstres[nbMonstre++] = monstre;
 			this.carte[p.getX()][p.getY()].occuper(monstre);;
 		}
-		// MONSTRES
-				
+		// MONSTRES			
 	}
 
 	
@@ -88,9 +90,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			switch(r) {
 				case 0: riviereV(pos); break;
 				case 1: riviereH(pos); break;
-			}
-		}
-	}
+	}}}
 	
 	private void riviereV(Position pos) {
 		int x_pont1, x_pont2, y_pont1, y_pont2;
@@ -107,26 +107,18 @@ public class Carte implements IConfig, ICarte, Serializable {
 		// Ponts
 		y_pont1 = (int) (Math.random() * pos.getY());
 		y_pont2 = (int) (Math.random() * (HAUTEUR_CARTE-pos.getY()) + pos.getY());
-		System.out.println(" pont1 pont2 : " + y_pont1 + "   " + y_pont2);
 		if (y_pont1 % 2 == pos.getY() % 2) {
 			x_pont1 = pos.getX();
 		} else {
-			if (pos.getX() % 2 == 0) {
-				x_pont1 = pos.getX() + 1;
-			} else {
-				x_pont1 = pos.getX() - 1;
-			}
+			if (pos.getX() % 2 == 0) x_pont1 = pos.getX() + 1;
+			else x_pont1 = pos.getX() - 1;
 		}
 		if (y_pont2 % 2 == pos.getY() % 2) {
 			x_pont2 = pos.getX();
 		} else {
-			if (pos.getX() % 2 == 0) {
-				x_pont2 = pos.getX() + 1;
-			} else {
-				x_pont2 = pos.getX() - 1;
-			}
+			if (pos.getX() % 2 == 0) x_pont2 = pos.getX() + 1;
+			else x_pont2 = pos.getX() - 1;
 		}
-		System.out.println(" pont1 pont2 : " + x_pont1 + "   " + x_pont2);
 		this.carte[x_pont1][y_pont1] = new Terrain(TypeTerrain.PONT);
 		this.carte[x_pont2][y_pont2] = new Terrain(TypeTerrain.PONT);	
 	}
@@ -153,30 +145,26 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	// RIVIERE
 	
-	// FORET
-	private void foret(int nb_foret) {
-		for (int i=0; i < nb_foret; i++) {
+	private void zoneBiome(int nb, Terrain.TypeTerrain type, int rayMax) {
+		for (int i=0; i < nb; i++) {
 			Position pos = trouvePositionVide();
-			EnsemblePosition foret = pos.voisines((int) (Math.random() * 3), true);
+			EnsemblePosition foret = pos.voisines((int) (Math.random() * rayMax-1 + 1), true);
 			for (int j=0; j < foret.getNbPos(); j++) {
 				Position posArbre = foret.getPosition(j);
-				this.carte[posArbre.getX()][posArbre.getY()] = new Terrain(Terrain.TypeTerrain.FORET);
+				this.carte[posArbre.getX()][posArbre.getY()] = new Terrain(type);
 			}
 		}
 	}
-	// FORET
 	// OBSTACLES
 	
 	
 	// ELEMENT
-	public Terrain getCase(Position pos) {
+	public Terrain getCase(Position pos) { // try catch 
 		
 		int x = pos.getX();
 		int y = pos.getY();
 		
-		if (pos.estValide()) {
-			return this.carte[x][y];
-		}
+		if (pos.estValide()) { return this.carte[x][y]; }
 		
 		System.out.println("Erreur getCase() : x = "+x+", y = "+y);
 		return null;
@@ -197,7 +185,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		return 0; // pas fini
 	}
-	
 	
 	// VISIBILITE
 	public int getVisibilite(Position pos) {
@@ -495,8 +482,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 				this.carte[xSoldat][ySoldat].liberer();
 				this.carte[pos.getX()][pos.getY()].occuper(soldat);
-				soldat.seDeplace(pos);
-				
+				soldat.seDeplace(pos);		
 				soldat.ajouterAction(-1);
 				return true;
 			}
@@ -504,10 +490,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return false;
 	}
 	
+	// FIN TOUR
+	public void finTour() {
+		
+		
+	}
+	// FIN TOUR
+	
 	public void resetActionsHeros() {
 		int i;
 		for (i = 0 ; i < nbHeros ; i++) {
-			listeHeros[i].setAction(2); // Remplacer par NB_ACTION_MAX
+			listeHeros[i].setAction(2); // Remplacer par NB_ACTION_INITIAL
 		}
 	}
 	
@@ -875,7 +868,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
 		g.fillPolygon(liste_x, liste_y, 6);
 	}
-	
 	// DESSIN
 	
 	
