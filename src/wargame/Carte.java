@@ -696,38 +696,38 @@ public class Carte implements IConfig, ICarte, Serializable {
 				}
 				dessineCase(g, couleur, pos, false);
 			}
+		}
 
 		
-			// Zone de deplacement quand case survolee
-			if (caseSurvolee != null 
-				&& caseCliquee == null
-				&& caseSurvolee.estValide() 
-				&& getSoldat(caseSurvolee) != null) {
-					
-				dessineZoneDeplacement(g, getSoldat(caseSurvolee));
-			}
+		// Zone de deplacement quand case survolee
+		if (caseSurvolee != null 
+			&& caseCliquee == null
+			&& caseSurvolee.estValide() 
+			&& getSoldat(caseSurvolee) != null) {
 				
-			// Zone de deplacement quand case cliquee
-			if (caseCliquee != null
+			dessineZoneDeplacement(g, getSoldat(caseSurvolee));
+		}
+			
+		// Zone de deplacement quand case cliquee
+		if (caseCliquee != null
+			&& caseCliquee.estValide()
+			&& getSoldat(caseCliquee) != null
+			&& getSoldat(caseCliquee) instanceof Heros
+			&& choisiComp == null) {
+				
+			dessineZoneDeplacement(g, getSoldat(caseCliquee));
+			dessineCaseCliquee(g, caseCliquee);
+		}
+		
+		// Zone des competence
+		if (caseCliquee != null
 				&& caseCliquee.estValide()
 				&& getSoldat(caseCliquee) != null
 				&& getSoldat(caseCliquee) instanceof Heros
-				&& choisiComp == null) {
-					
-				dessineZoneDeplacement(g, getSoldat(caseCliquee));
+				&& choisiComp != null) {
+				
+				dessinePorteeCompetence(g, choisiComp ,getSoldat(caseCliquee), caseSurvolee, caseCliquee);					
 				dessineCaseCliquee(g, caseCliquee);
-			}
-			
-			// Zone des competence
-			if (caseCliquee != null
-					&& caseCliquee.estValide()
-					&& getSoldat(caseCliquee) != null
-					&& getSoldat(caseCliquee) instanceof Heros
-					&& choisiComp != null) {
-					
-					dessinePorteeCompetence(g, choisiComp ,getSoldat(caseCliquee), caseSurvolee, caseCliquee);					
-					dessineCaseCliquee(g, caseCliquee);
-			}
 		}
 		
 		for (int i = 0; i < nbHeros; i++) {
