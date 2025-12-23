@@ -826,11 +826,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 			//g.setColor(couleur);
 		} else {
 			g.setColor(COULEUR_INCONNU);
-			this.dessineInterieurHexagone(g, x, y, null);
 			//g.setColor(couleur); // VISIBILITE DECOMMENTER POUR TESTS
+			this.dessineInterieurHexagone(g, x, y, null);
 		}
 		g.setColor(Color.BLACK);
 		this.dessineContourHexagone(g, x, y);
+		
 		
 		
 		// Ajout des numeros 
