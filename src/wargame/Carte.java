@@ -19,6 +19,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	private int nbHeros = 0;
 	private Monstre[] listeMonstres;
 	private int nbMonstre = 0;
+	
 	private int nbTours = 0;
 	private int tourActuel = 0;
 	
@@ -41,22 +42,29 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 		// OBSTACLES
-		// Placement de la riviere
-		Position p = trouvePositionVide();
-		this.carte[p.getX()][p.getY()] =  new Terrain(Terrain.TypeTerrain.EAU);
-		riviere(p);
+
 		
-		// Placement des autres obstacles
+		// Placement de la riviere
+	//	Position p = trouvePositionVide();
+		//this.carte[p.getX()][p.getY()] =  new Terrain(Terrain.TypeTerrain.EAU);
+		//riviere(p);
+	
+		zoneBiome(NB_SABLE, Terrain.TypeTerrain.SABLE, 2);
+		zoneBiome(NB_FORET, Terrain.TypeTerrain.FORET, 4);
+		
+		// Placement des terrains aléatoires
 		for(int i = 0; i < NB_OBSTACLES; i++) {
-			p = trouvePositionVide();
+			Position p = trouvePositionVide();
 			this.carte[p.getX()][p.getY()] = new Terrain(Terrain.TypeTerrain.getTerrainAlea());
 			
 		}
+		
+		riviere(NB_RIVIERE);
 		// OBSTACLES
 		
 		// HEROS
 	    for(int i = 0; i < NB_HEROS; i++) {
-			p = trouvePositionVide();
+			Position p = trouvePositionVide();
 			Heros heros = new Heros(this, TypesH.getTypeHAlea(), "Goat"+i, p);
 			this.listeHeros[nbHeros++] = heros;
 			this.carte[p.getX()][p.getY()].occuper(heros);
@@ -66,13 +74,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 	    
 	    // MONSTRES
 		for(int i = 0; i < NB_MONSTRES; i++) {
-			p = trouvePositionVide();
+			Position p = trouvePositionVide();
 			Monstre monstre = new Monstre(this, TypesM.getTypeMAlea(), "Kostine"+i, p);
 			this.listeMonstres[nbMonstre++] = monstre;
 			this.carte[p.getX()][p.getY()].occuper(monstre);;
 		}
-		// MONSTRES
-				
+		// MONSTRES			
 	}
 
 	
@@ -84,7 +91,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	 
 	
 	// RIVIERE
-	private void riviere(Position pos) {
+	private void riviere(int pos) {
 		int r = (int) (Math.random() * 3);
 		switch(r) {
 			case 0: riviereV(pos); break;
@@ -108,26 +115,18 @@ public class Carte implements IConfig, ICarte, Serializable {
 		// Ponts
 		y_pont1 = (int) (Math.random() * pos.getY());
 		y_pont2 = (int) (Math.random() * (HAUTEUR_CARTE-pos.getY()) + pos.getY());
-		System.out.println(" pont1 pont2 : " + y_pont1 + "   " + y_pont2);
 		if (y_pont1 % 2 == pos.getY() % 2) {
 			x_pont1 = pos.getX();
 		} else {
-			if (pos.getX() % 2 == 0) {
-				x_pont1 = pos.getX() + 1;
-			} else {
-				x_pont1 = pos.getX() - 1;
-			}
+			if (pos.getX() % 2 == 0) x_pont1 = pos.getX() + 1;
+			else x_pont1 = pos.getX() - 1;
 		}
 		if (y_pont2 % 2 == pos.getY() % 2) {
 			x_pont2 = pos.getX();
 		} else {
-			if (pos.getX() % 2 == 0) {
-				x_pont2 = pos.getX() + 1;
-			} else {
-				x_pont2 = pos.getX() - 1;
-			}
+			if (pos.getX() % 2 == 0) x_pont2 = pos.getX() + 1;
+			else x_pont2 = pos.getX() - 1;
 		}
-		System.out.println(" pont1 pont2 : " + x_pont1 + "   " + x_pont2);
 		this.carte[x_pont1][y_pont1] = new Terrain(TypeTerrain.PONT);
 		this.carte[x_pont2][y_pont2] = new Terrain(TypeTerrain.PONT);	
 	}
@@ -153,18 +152,27 @@ public class Carte implements IConfig, ICarte, Serializable {
 		this.carte[x_pont2][pos.getY()] = new Terrain(TypeTerrain.PONT);
 	}
 	// RIVIERE
+	private void zoneBiome(int nb, Terrain.TypeTerrain type, int rayMax) {
+		for (int i=0; i < nb; i++) {
+			Position pos = trouvePositionVide();
+			EnsemblePosition foret = pos.voisines((int) (Math.random() * rayMax-1 + 1), true);
+			for (int j=0; j < foret.getNbPos(); j++) {
+				Position posArbre = foret.getPosition(j);
+				this.carte[posArbre.getX()][posArbre.getY()] = new Terrain(type);
+			}
+		}
+	}
+	// OBSTACLES
 	
+
 	
 	// ELEMENT
-	public Terrain getCase(Position pos) {
+	public Terrain getCase(Position pos) { // try catch 
 		
 		int x = pos.getX();
 		int y = pos.getY();
 		
-		  if (x >= 0 && x < carte.length &&
-			        y >= 0 && y < carte[0].length) {
-			        return carte[x][y];
-			    }
+		if (pos.estValide()) { return this.carte[x][y]; }
 		
 		System.out.println("Erreur getCase() : x = "+x+", y = "+y);
 		return null;
@@ -178,6 +186,18 @@ public class Carte implements IConfig, ICarte, Serializable {
 	    return t.getOccupant();
 	}
 	
+	// FIN DU JEU
+	public int verifierFinJeu() {
+		if (this.nbHeros == 0) { // IA a gagné
+			return -1;
+		} else {
+			if (this.nbMonstre == 0) { // joueur a gagné
+				return 1;
+			}
+		}
+		return 0; // pas fini
+	}
+
 	// VISIBILITE
 	public int getVisibilite(Position pos) {
 		if (pos.estValide()) {
@@ -187,13 +207,19 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return -1;
 	}
 	
-	// CETTE FONCTION NE DEVRAIT PAS SERVIR, JE LA LAISSE AU CAS OU C'EST POUR LA VISIBILITE
-	// On pourra peut-être enlever le param, et faire en sorte que cette fonction y mette à 1
-	// Et à chaque fois avant de mettre à jour on remet toute la matrice à 0
-	// Comme ça on a juste à remettre les visibilités actuelles (pas d'ennui à se dire est-ce que ça ça devient invisible)
-	// public void setVisibilite(Position pos, int visibilite) {
-	//  	this.visibilite[pos.getX()][pos.getY()] = visibilite;
-	// }
+	public void setVisibilite() {
+		for (int i = 0 ; i < LARGEUR_CARTE*2 ; i++) {
+			for (int j = 0 ; j < HAUTEUR_CARTE ; j++) {
+				if (i+j % 2 == 1) {
+					continue;
+				}
+				visibilite[i][j] = 0; // on reset tout
+			}
+		}
+		for (Heros heros : this.listeHeros) {
+			this.visibilite = heros.setCasesVisibles(this.visibilite);
+		}
+	}
 	// VISIBILITE
 	
 	
@@ -310,7 +336,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return this.nbTours;
 	}
 	
-	public void jouerSoldats() { // a quoi sert panneau jeu en param?
+	public void jouerSoldats() {
 		// tour des heros vient de finir
 		this.nbTours++;
 		this.tourActuel = TOUR_MONSTRE;
@@ -322,7 +348,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 			System.out.println(" -> Debut du tour");
 			
 			// Le monstre cherche le heros le plus proche
-			for (int i=1; i < this.nbHeros; i++) {
+
+			for (int i=0; i < this.nbHeros; i++) {
 				Heros test = listeHeros[i];
 				chemin = this.plusCourtChemin(monstre.getPos(), test.getPos());
 				int distanceTest = chemin.getNbPos() - 1;
@@ -333,16 +360,18 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 			
 			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
+			boolean unefois = false;
 			
 			// Tant qu'il reste des actions au monstre il regarde s'il peut attaquer, sinon il avance
 			while(monstre.getAction() > 0) {
-				System.out.println(" -> PA = "+monstre.getAction()+"actions");
+				//System.out.println(" -> PA = "+monstre.getAction()+"actions");
+				//System.out.println("Portee du monstre : " + monstre.getPortee());
 				
 				/*
 				 * 2 cas : 
 				 * - Le monstre peut attaquer le heros
 				 * - Le monstre ne peut pas attaquer le heros
-				 * Amelioration possible : le monstre evalu s'il devrait l'attaquer plutot en melee ou a distance
+				 * Amelioration possible : le monstre evalue s'il devrait l'attaquer plutot en melee ou a distance
 				 */
 				
 				Position posHeros = heros.getPos();
@@ -351,10 +380,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 				EnsemblePosition newChemin = this.plusCourtChemin(posMonstre, posHeros);
 				distanceHeros = newChemin.getNbPos() - 1;
+				if (unefois == false) {
+					System.out.println("dist = " + distanceHeros);
+					unefois = true;
+				}
 				
 				// Verifie la distance d'attaque
-				if (distanceHeros <= monstre.getPortee()) {
-					System.out.println(" - il peut attaquer, distance = "+distanceHeros+", portee = "+monstre.getPortee());
+				if (distanceHeros <= monstre.getTir() || distanceHeros == 1) {
+					System.out.println(" - il peut attaquer, distance = "+distanceHeros+", portee = "+monstre.getTir());
 					peutAttaquer = true;
 				}
 				
@@ -365,11 +398,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 				} 
 				
 				if (!peutAttaquer || heros.estMort()){ // 2eme cas : le monstre doit se rapprocher de sa cible
-					/*
-					System.out.println(" - Decide de se rapprocher");
-					
+					System.out.println("Je me rapproche");
+
 					// Recuperation la liste des cases accessibles par le monstre
-					EnsemblePosition ePos = monstre.zoneDeplacement();
+				/*	EnsemblePosition ePos = monstre.zoneDeplacement();
 					Position plusProche = posMonstre;
 					
 					for (int i=0; i < ePos.getNbPos(); i++) {
@@ -391,15 +423,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 					System.out.println(" -> reste PA = "+monstre.getAction());
 					*/
 					//if (monstre.getDeplacement()*i < newChemin.getNbPos()) {
+
 					// si on ne vient pas de tuer le heros courant, et si on a bien trouvé un heros (si non alors distanceHeros = -1)
 					if (!heros.estMort() && distanceHeros > 0) {
-						System.out.println("SALUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUT");
 						Position newPos;
 						if (distanceHeros > monstre.getDeplacement()) {
-							System.out.println("IFFFFFFFFF " + distanceHeros);
 							newPos = newChemin.getPosition(monstre.getDeplacement() - 1);
 						} else {
-							System.out.println("ELSEEEEEEE " + distanceHeros);
 							newPos = newChemin.getPosition(newChemin.getNbPos() - 2);
 						}
 						this.deplaceSoldat(newPos, monstre);
@@ -407,7 +437,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 					} else { // si le monstre vient de tuer, il a fini son tour, peut-être temporaire mais idée quand même
 						monstre.setAction(0);
 					}
-					//}
 				}
 			}
 			
@@ -460,29 +489,43 @@ public class Carte implements IConfig, ICarte, Serializable {
 	 * Reduction et verif des point d'action a faire en dehors de la fonction si on change
 	 */
 	public boolean deplaceSoldat(Position pos, Soldat soldat) {
-			int x = pos.getX();
-			int y = pos.getY();
-			EnsemblePosition ePos = soldat.zoneDeplacement();
-		
-			if(ePos.contient(pos) && carte[x][y].estLibre() && soldat.getAction() > 0) {
-				int xSoldat = soldat.getPos().getX();
-				int ySoldat = soldat.getPos().getY();
-				
-				this.carte[xSoldat][ySoldat].liberer();
-				this.carte[pos.getX()][pos.getY()].occuper(soldat);
-				soldat.seDeplace(pos);
-				
-				soldat.ajouterAction(-1);
-				return true;
-			}
+		int x = pos.getX();
+		int y = pos.getY();
+		EnsemblePosition ePos = soldat.zoneDeplacement();
+	
+		if(ePos.contient(pos) && carte[x][y].estLibre() && soldat.getAction() > 0) {
+			int xSoldat = soldat.getPos().getX();
+			int ySoldat = soldat.getPos().getY();
+			
+			this.carte[xSoldat][ySoldat].liberer();
+			this.carte[pos.getX()][pos.getY()].occuper(soldat);
+			soldat.seDeplace(pos);		
+			soldat.ajouterAction(-1);
+			return true;
+		}
 			
 		return false;
 	}
 	
+	// FIN TOUR
+	public void finTour() {
+		
+		
+	}
+	// FIN TOUR
+	
 	public void resetActionsHeros() {
 		int i;
 		for (i = 0 ; i < nbHeros ; i++) {
-			listeHeros[i].setAction(2);
+
+			listeHeros[i].setAction(2); // Remplacer par NB_ACTION_INITIAL
+		}
+	}
+	
+	public void soignerHeros() {
+		int i;
+		for (i = 0 ; i < nbHeros ; i++) {
+			listeHeros[i].ajouterPv(5*listeHeros[i].getAction());
 		}
 	}	
 	
@@ -524,7 +567,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 		while (!frontier.estVide() && continuer) {
 			Position current = frontier.getPosition(0);
 			frontier.retirerPremierePos();
-			//System.out.println("CURRENT : " + current.getX() + " " + current.getY());
 			
 			if (current.equals(fin)) {
 				continuer = false;
@@ -543,29 +585,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 		}
 		return cameFrom;
-	}
-	
-	/*
-	private String afficherTesMorts(Position [][] cameFrom) {
-		String s = "";
-		for (int i = 0 ; i < LARGEUR_CARTE*2 ; i++) {
-			for (int j = 0 ; j < HAUTEUR_CARTE ; j++) {
-				if ((i+j) % 2 == 1 || cameFrom[i][j] == null) {
-					s += "[(  ,  )]";
-				} else {
-					s += "[(";
-					s += cameFrom[i][j].getX();
-					s += ",";
-					s += cameFrom[i][j].getY();
-					s += ")]";
-				}
-			}
-			s += "\n";
-		}
-		return s;
-	}
-	*/
-	
+	}	
 	// ACTION SOLDAT
 	
 	
@@ -618,6 +638,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee, Competence choisiComp) {
+		
+		setVisibilite(); // permet de mettre à jour les cases visibles des Heros dès qu'on refresh
+		
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
 				if ((i+j) % 2 == 1) {
@@ -627,16 +650,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 				Position pos = new Position(i, j);
 				Color couleur = COULEUR_VIDE;
 				
-				// /!\ IMPORTANT POUR LES TESTS /!\
-				// Décommenter le && en-dessous si on veut tester la carte en voyant tout
-				/* if (getVisibilite(pos) == 0
-					&& getVisibilite(pos) == 1
-					) {
-					couleur = COULEUR_INCONNU;
-				} */
-				
-				
+
+				if (getSoldat(pos) == null) {
+					couleur = carte[i][j].getType().getCouleur();
+				} else {
+					Soldat soldat = carte[i][j].getOccupant();
+					if (soldat instanceof Heros) couleur = COULEUR_HEROS;
+					if (soldat instanceof Monstre) couleur = COULEUR_MONSTRES;
+				}
+		
 				dessineCase(g, couleur, pos, false);
+				
 			}
 		}
 			
@@ -696,7 +720,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur, Position caseSurvolee, Position caseCliquee) {
 		EnsemblePosition ePos = lanceur.getPos().voisinesCroix(competence.getType().getDistance());
-		EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone());
+		EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone(), true);
 		
 		for (int i = 0; i < ePos.getNbPos(); i++) {
 			Soldat soldat = (getSoldat(ePos.getPosition(i)));
@@ -741,20 +765,23 @@ public class Carte implements IConfig, ICarte, Serializable {
 			offset_x = OFFSET_X;
 		}
 		
-		g.setColor(couleur);
-		if(trans == false) {
-			this.dessineChoixTerrain(g, x, y, pos);
-		}else {
-			this.dessineInterieurHexagone(g, x, y, pos, null);
+		if (getVisibilite(pos) == 1) {
+			g.setColor(couleur);
+		} else {
+			g.setColor(COULEUR_INCONNU);
+			//g.setColor(couleur); //VISIBILITE DECOMMENTER POUR TESTS
 		}
+		this.dessineInterieurHexagone(g, x, y, pos, null);
+		
 		g.setColor(Color.BLACK);
 		this.dessineContourHexagone(g, x, y);
 		
 		// Ajout des numeros 
 		Soldat soldat = getSoldat(pos);
 		g.setColor(Color.WHITE);
-		if(soldat instanceof Monstre) {
-			
+
+		if(soldat instanceof Monstre && getVisibilite(pos) == 1) {
+
 			g.drawString("" + soldat.getNum(), x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
 		}else if(soldat instanceof Heros) {
 			char lettre = (char)('A' + soldat.getNum());
@@ -827,7 +854,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 
 	}
-
+	
+	private void dessineBrouillard(Graphics g, Position pos) {
+		int x = pos.getX(),
+			y = pos.getY();
+		x = x/2;
+		Color couleur_base = g.getColor();
+		g.setColor(COULEUR_INCONNU);
+		dessineInterieurHexagone(g, x, y, pos, null);
+		g.setColor(couleur_base); // juste pour remettre la couleur qu'on avait avant l'appel
+	}
+	// DESSIN
 	
 	
 }

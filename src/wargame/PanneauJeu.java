@@ -58,6 +58,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private JButton boutonRetour;
 	private JButton boutonAffiche;
 	
+	// fin de jeu
+	private int finJeu = 0;
+	private String messageFinJeu = "";
+	
+	
 	public PanneauJeu(Carte c) {
 		this.carte = c;
 		setLayout( new BorderLayout());
@@ -177,7 +182,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 	
 		// --------------------------- Creation du panneau droit -------------------- //		
-		panneauDroit = new JPanel();
+		// ignorez les trucs dans le paintComponent c'était juste pour tester des trucs (pour afficher les stats du perso courant)
+		panneauDroit = new JPanel() {
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.setColor(COULEUR_FORET);
+				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
+			}
+		};
 		panneauDroit.setLayout(new BoxLayout(panneauDroit, BoxLayout.Y_AXIS));
 		panneauDroit.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));	
 		panneauDroit.setBackground(COULEUR_PLATEAU);
@@ -214,11 +226,15 @@ public class PanneauJeu extends JPanel implements IConfig {
 		
 		boutonFin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				carte.jouerSoldats();
-				tourActuel.setText(Integer.toString(carte.getNbTours()));
-				tourActuel.repaint();
-				panneauCarte.repaint();
-				System.out.println("Termine-moi !");
+				if (finJeu == 0) {
+					carte.jouerSoldats();
+					//verifFinJeu();
+					//logArea.repaint();
+					panneauCarte.repaint();
+					panneauHaut.repaint();
+					panneauDroit.repaint();
+					System.out.println("Termine-moi !");
+				}
 			}
 		});
 		
@@ -247,15 +263,21 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 			// Effet au deplacement de la souris
 			public void mouseMoved(MouseEvent e) {
-				int x = e.getX();
-				int y = e.getY();
-				caseSurvolee = carte.coorToPos(x, y);
-				
-				// affichage des infos des soldats
-				if (caseSurvolee.estValide()) {
-					Soldat soldat = carte.getSoldat(caseSurvolee);
-					if(soldat instanceof Soldat) {
-						infoTexte = soldat.toString();
+
+				if (finJeu == 0) {
+					int x = e.getX();
+					int y = e.getY();
+					caseSurvolee = carte.coorToPos(x, y);
+					
+					// affichage des infos des soldats (seulement si soldat visible)
+					if (caseSurvolee.estValide() && carte.getVisibilite(caseSurvolee) == 1) {
+						Soldat soldat = carte.getSoldat(caseSurvolee);
+						if(soldat instanceof Soldat) {
+							infoTexte = soldat.toString();
+						}else {
+							infoTexte ="";
+						}
+
 					}else {
 						infoTexte ="";
 					}
