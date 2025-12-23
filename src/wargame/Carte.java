@@ -13,23 +13,21 @@ public class Carte implements IConfig, ICarte, Serializable {
 	private Terrain[][] carte;
 	private int[][] visibilite;
 	
-	private Heros[] listeHeros;
-	private int nbHeros = 0;
-	private Monstre[] listeMonstres;
-	private int nbMonstre = 0;
+	private ArrayList<Heros> listeHeros;
+	private ArrayList<Monstre> listeMonstres;
 	
 	private int nbTours = 0;
 	private int tourActuel = 0;
 	
-	private List<String> combatLog = new ArrayList<>();
+	private ArrayList<String> combatLog = new ArrayList<String>();
 	private int nbLog = 1;
 
 	public Carte() {
 		carte = new Terrain[LARGEUR_CARTE*2][HAUTEUR_CARTE];
 		visibilite = new int[LARGEUR_CARTE*2][HAUTEUR_CARTE];
 		
-		listeHeros = new Heros[NB_HEROS];
-		listeMonstres = new Monstre[NB_MONSTRES];
+		listeHeros = new ArrayList<Heros>();
+		listeMonstres = new ArrayList<Monstre>();
 		
 		// Remplissage de la matrice par de l'herbe
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
@@ -57,7 +55,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	    for(int i = 0; i < NB_HEROS; i++) {
 			Position p = trouvePositionVide();
 			Heros heros = new Heros(this, TypesH.getTypeHAlea(), "Goat"+i, p);
-			this.listeHeros[nbHeros++] = heros;
+			this.listeHeros.add(heros);
 			this.carte[p.getX()][p.getY()].occuper(heros);
 			this.visibilite = heros.setCasesVisibles(this.visibilite);
 		}
@@ -67,7 +65,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		for(int i = 0; i < NB_MONSTRES; i++) {
 			Position p = trouvePositionVide();
 			Monstre monstre = new Monstre(this, TypesM.getTypeMAlea(), "Kostine"+i, p);
-			this.listeMonstres[nbMonstre++] = monstre;
+			this.listeMonstres.add(monstre);
 			this.carte[p.getX()][p.getY()].occuper(monstre);;
 		}
 		// MONSTRES			
@@ -150,7 +148,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	private void zoneBiome(int nb, Terrain.TypeTerrain type, int rayMax) {
 		for (int i=0; i < nb; i++) {
 			Position pos = trouvePositionVide();
-			EnsemblePosition foret = pos.voisines((int) (Math.random() * rayMax-1 + 1), true);
+			EnsemblePosition foret = pos.voisines((int) (Math.random() * rayMax), true);
 			for (int j=0; j < foret.getNbPos(); j++) {
 				Position posArbre = foret.getPosition(j);
 				this.carte[posArbre.getX()][posArbre.getY()] = new Terrain(type);
@@ -178,13 +176,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	// FIN DU JEU
 	public int verifierFinJeu() {
-		if (this.nbHeros == 0) { // IA a gagné
-			return -1;
-		} else {
-			if (this.nbMonstre == 0) { // joueur a gagné
-				return 1;
-			}
-		}
+		if (this.listeHeros.isEmpty()) return -1; // Perdu
+		if (this.listeMonstres.isEmpty()) return 1; // Gagne
 		return 0; // pas fini
 	}
 	
@@ -254,92 +247,38 @@ public class Carte implements IConfig, ICarte, Serializable {
 		if (listePos.getNbPos() == 0) {
 			return null;
 		}
-		return listePos.getPosition((int)(Math.random()*listePos.getNbPos()-1));
+		return listePos.getPosition((int)(Math.random()*listePos.getNbPos())); // modif -1 retire
 	}
 	// POSITION VIDE
 	
 	
 	// TOUR DES MONSTRES
-	public Heros trouveHeros() { return this.listeHeros[(int)(Math.random()*nbHeros-1)]; }
+	/* public Heros trouveHeros() {
+		int i = (int) (Math.random()*listeHeros.size()-1);
+		return listeHeros.get(i);
+	}*/
 	
-	/* public Heros trouveHeros(Position pos) {
-		
-		/* 
-		 * Ameliorations possibles :
-		 * - Comparer les pdv des heros trouves pour estimer quelles serait la meilleure cible
-		 * - Prioriser un heros que le monstre peut tuer
-		 * - Si aucun heros n'est trouve en melee ou a distance alors chercher le heros 
-		 *   le plus proche ou qui a le moins de vie
-		 * 
-		 */
-		
-		// On regarde d'abord s'il y a des heros adjacents
-		// Heros heros = this.trouveHerosMelee(pos);
-		
-		// Si aucun heros n'est trouvé alors on regarde les heros a distance
-		/* if (heros == null) {
-			heros = this.trouveHerosDistance(pos);
-		} */
-		
-		// Si toujours aucun heros n'est trouve alors on cherche un heros sur la carte
-		/* if (heros == null) {
-			heros = this.trouveHeros();
-		}
-		
-		return heros; */
-	
-	/* private Heros trouveHerosMelee(Position pos) {
-		Heros[] HerosMelee = new Heros[6];
-		int nbHerosMelee = 0;
-		int i;
-		int dx, dy;
-		int [] coordsx = {-2, -1, -1, 1, 1, 2};
-		int [] coordsy = {0, 1, -1, 1, -1, 0};
-		
-		// On regarde les 6 cases autour de pos
-		for (i = 0 ; i < 6 ; i++) {
-			dx = coordsx[i];
-			dy = coordsy[i];
-			Element e = this.carte[pos.getX() + dx][pos.getY() + dy];
-			if (e.pos.estValide() && e != null && e instanceof Heros) {
-				HerosMelee[nbHerosMelee++] = (Heros) e;
-			}
-		}
-		
-		if (nbHerosMelee == 0) { return null; }
-		
-		return HerosMelee[(int)(Math.random()*nbHerosMelee-1)];
-	} */
-	
-	/*
-	private Heros trouveHerosDistance(Position pos, Int portee) {
-		int nbHerosDistance = 0;
-		Heros[] HerosDistance = new Heros[NB_HEROS-4]; // 6 quand hexagones
-		
-		// Il faut d'abord savoir gerer les lignes de vue pour pouvoir gerer les heros a distance
-		
-		return null;
-	}
-	*/
-	
-	public int getNbTours() {
-		return this.nbTours;
-	}
+	public int getNbTours() { return this.nbTours; }
 	
 	public void jouerSoldats() {
+		
 		// tour des heros vient de finir
 		this.nbTours++;
 		this.tourActuel = TOUR_MONSTRE;
 		
 		for (Monstre monstre : this.listeMonstres) {
-			Heros heros = listeHeros[0];
-			EnsemblePosition chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
-			int distanceHeros = chemin.getNbPos() - 1;
+			
 			System.out.println(" -> Debut du tour");
 			
-			// Le monstre cherche le heros le plus proche
-			for (int i=0; i < this.nbHeros; i++) {
-				Heros test = listeHeros[i];
+			// On recupere le chemin le plus court vers le heros 0
+			if (listeHeros.isEmpty()) return;
+			Heros heros = listeHeros.get(0);
+			EnsemblePosition chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
+			int distanceHeros = chemin.getNbPos() - 1;
+			
+			// On compare les chemins de chaque heros pour trouver le heros le plus proche
+			for (int i=1; i < this.listeHeros.size(); i++) {
+				Heros test = listeHeros.get(i);
 				chemin = this.plusCourtChemin(monstre.getPos(), test.getPos());
 				int distanceTest = chemin.getNbPos() - 1;
 				if (distanceTest < distanceHeros) {
@@ -351,10 +290,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
 			boolean unefois = false;
 			
-			// Tant qu'il reste des actions au monstre il regarde s'il peut attaquer, sinon il avance
+			// Tant qu'il a des PA le monstre attaque si il peut, sinon il avance
 			while(monstre.getAction() > 0) {
-				//System.out.println(" -> PA = "+monstre.getAction()+"actions");
-				//System.out.println("Portee du monstre : " + monstre.getPortee());
 				
 				/*
 				 * 2 cas : 
@@ -482,16 +419,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// FIN TOUR
 	
 	public void resetActionsHeros() {
-		int i;
-		for (i = 0 ; i < nbHeros ; i++) {
-			listeHeros[i].setAction(2); // Remplacer par NB_ACTION_INITIAL
+		for (Heros h : listeHeros) {
+			h.setAction(2); // Remplacer par NB_ACTION_INITIAL
 		}
 	}
 	
 	public void soignerHeros() {
-		int i;
-		for (i = 0 ; i < nbHeros ; i++) {
-			listeHeros[i].ajouterPv(5*listeHeros[i].getAction());
+		for (Heros h : listeHeros) {
+			h.ajouterPv(5*h.getAction());
 		}
 	}	
 	
@@ -557,32 +492,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	// MORT
 	public void mort(Soldat soldat) {
-		System.out.println("je suis appelé avec " + soldat.getClass().getSimpleName());
 		if (soldat.getPointsActuels() <= 0) {
-			if (soldat instanceof Heros) {
-				this.nbHeros--;
-				boolean trouve = false;
-				for (int i=0; i < nbHeros; i++) {
-					if (listeHeros[i].getPos().equals(soldat.getPos())) {
-						trouve = true;
-					}
-					if (trouve) {
-						listeHeros[i] = listeHeros[i+1];
-					}
-				}
-			} else {
-				this.nbMonstre--;
-				boolean trouve = false;
-				for (int i=0; i < nbMonstre; i++) {
-					if (listeMonstres[i].getPos().equals(soldat.getPos())) {
-						trouve = true;
-					}
-					if (trouve) {
-						listeMonstres[i] = listeMonstres[i+1];
-					}
-				}
-			}	
-			
+			// Suppression du soldat de la liste correspondante
+			if (soldat instanceof Heros) listeHeros.remove(soldat);
+			else listeMonstres.remove(soldat);
+				
+			// Suppression du soldat de la carte
 			this.carte[soldat.getPos().getX()][soldat.getPos().getY()].liberer();
 		}
 	}
@@ -716,7 +631,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 	}
-	
 			
 	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
 		EnsemblePosition ePos = soldat.zoneDeplacement();
