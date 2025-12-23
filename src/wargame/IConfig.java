@@ -10,9 +10,6 @@ public interface IConfig {
 	int NB_PIX_CASE = 20; // taille des cases
 	int NB_HEROS = 6; int NB_MONSTRES = 15; int NB_OBSTACLES = 20;
 	int TOUR_HEROS = 0; int TOUR_MONSTRE = 1;
-	int NB_RIVIERE = (int) (Math.random()*2 + 1); // 2 riviere max
-	int NB_FORET = 10;
-	int NB_SABLE = 5;
 	
 	// OFFSET X POUR AFFICHAGE CARTE
 	int OFFSET_X = NB_PIX_CASE / 2;
@@ -57,6 +54,10 @@ public interface IConfig {
 	Color COULEUR_MONSTRES = Color.black;
 	
 	// TERRAINS
+	int NB_RIVIERE = (int) (Math.random()*2 + 1); // 2 riviere max
+	int NB_FORET = 10;
+	int NB_SABLE = 5;
+	
 	Color COULEUR_HERBE = Color.decode("#69C24C"); // vert clair
 	Color COULEUR_EAU = Color.BLUE;                // bleu
 	Color COULEUR_FORET = Color.decode("#0A5C36"); // vert fonce 

@@ -1,6 +1,7 @@
 package wargame;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -78,11 +79,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				carte.toutDessiner(g, caseSurvolee, caseCliquee, choisiComp);
-				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
+				if (dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
 					carte.dessineCaseCliquee(g, dragPersoFin);
 				}	
 				verifFinJeu();
-				if(finJeu != 0) {
+				if (finJeu != 0) {
 					afficherFinJeu(g);
 				}
 			}
@@ -136,26 +137,28 @@ public class PanneauJeu extends JPanel implements IConfig {
 		// ----- action d'affichage/désaffichage ---- //
 		boutonAfficheLog.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				afficheLog = !afficheLog;
-				
-				if(afficheLog) {
-					panneauTrans.setVisible(true);
-					panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
+				if (finJeu == 0) {
+					afficheLog = !afficheLog;
 					
-					panneauTrans.revalidate();
-					updateCombatLog();
-					panneauTrans.repaint();
-				}else {
-					// on cache et supprime les panneaux
-					panneauTrans.setVisible(false);
-					panneauBouton.remove(boutonAfficheLog);
-					
-					// on ajout notre bouton au dessus de nos layer et definit où il se place
-					layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));				
-					boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
+					if(afficheLog) {
+						panneauTrans.setVisible(true);
+						panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
+						
+						panneauTrans.revalidate();
+						updateCombatLog();
+						panneauTrans.repaint();
+					}else {
+						// on cache et supprime les panneaux
+						panneauTrans.setVisible(false);
+						panneauBouton.remove(boutonAfficheLog);
+						
+						// on ajout notre bouton au dessus de nos layer et definit où il se place
+						layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));				
+						boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
+					}
+					// on repaint uniquement notre layer
+					layers.repaint();
 				}
-				// on repaint uniquement notre layer
-				layers.repaint();
 			}
 		});
 		
@@ -170,6 +173,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    panneauInfos = new JPanel() {
 	    	protected void paintComponent(Graphics g) {
 	    		super.paintComponent(g);
+	    		/*
 	    		g.setColor(Color.WHITE);
 	    		if(infoTexte2 != "" && !(infoTexte2.equals(infoTexte))) {
 	    			g.drawString(infoTexte2,10, 15);
@@ -177,6 +181,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    		}else {
 	    			g.drawString(infoTexte,10, 15);
 	    		}
+	    		*/
+	    		carte.dessineInfosBas(g);
 	    	}
 	    	
 	    };
@@ -222,8 +228,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 		// ---------- Creation des boutons de la carte ---------- //
 		boutonFin = new JButton("Fin de tour");
 		boutonRetour = new JButton("Retour arrière");
+		boutonRevenirMenu = new JButton("Revenir au menu");
 		panneauHaut.add(boutonRetour);
 		panneauHaut.add(boutonFin);
+		panneauHaut.add(boutonRevenirMenu);
 		
 		boutonFin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -234,6 +242,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					panneauCarte.repaint();
 					panneauHaut.repaint();
 					panneauDroit.repaint();
+					panneauInfos.repaint();
 					System.out.println("Termine-moi !");
 				}
 			}
@@ -241,10 +250,24 @@ public class PanneauJeu extends JPanel implements IConfig {
 		
 		boutonRetour.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Ajouter des vrai méthodes 
-				System.out.println("Retourne moi !");
+				if (finJeu == 0) {
+					// Ajouter des vrai méthodes 
+					System.out.println("Retourne moi !");
+				}
 			}
 		});
+		
+		boutonRevenirMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFrame fenetre = (JFrame) SwingUtilities.getWindowAncestor(panneauHaut);
+				fenetre.dispose();
+				new FenetreMenu();
+			}
+		});
+		
+		boutonFin.setVisible(true);
+		boutonRetour.setVisible(true);
+		boutonRevenirMenu.setVisible(false);
 		
 		
 		// ------------------------ Mises en place des layout ----------------------//
@@ -282,8 +305,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 					}else {
 						infoTexte ="";
 					}
-				}else {
-					infoTexte ="";
+					panneauInfos.repaint();
+					panneauCarte.repaint();
 				}
 					
 				panneauInfos.repaint();
@@ -292,24 +315,26 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 			// creation de l'evenement du dragg 
 			public void mouseDragged(MouseEvent e) {
-				if(dragPerso) {
-					int x = e.getX();
-			        int y = e.getY();
-					
-			        Position essaie = carte.coorToPos(x, y);
-			        
-			        Soldat s = carte.getSoldat(dragPersoInit);
-			        
-			        // permet de ne pas sortir des deplacements
-			        if(!s.zoneDeplacement().contient(essaie) && !(essaie.equals(dragPersoInit))) {
-			        	return;
-			        	// gerer exeption
-			        }
-
-					dragPersoFin.setX(essaie.getX());
-					dragPersoFin.setY(essaie.getY());
-					deplacePerso = false;
-					panneauCarte.repaint();
+				if (finJeu == 0) {
+					if(dragPerso) {
+						int x = e.getX();
+				        int y = e.getY();
+						
+				        Position essaie = carte.coorToPos(x, y);
+				        
+				        Soldat s = carte.getSoldat(dragPersoInit);
+				        
+				        // permet de ne pas sortir des deplacements
+				        if(!s.zoneDeplacement().contient(essaie) && !(essaie.equals(dragPersoInit))) {
+				        	return;
+				        	// gerer exeption
+				        }
+	
+						dragPersoFin.setX(essaie.getX());
+						dragPersoFin.setY(essaie.getY());
+						deplacePerso = false;
+						panneauCarte.repaint();
+					}
 				}
 			}
 		});
@@ -373,7 +398,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 							caseCliquee = null;
 							deplacePerso = false;
 							infoTexte2 ="";
-							
+							/* OCTODAMS (remettre ?)
+							deplacePerso = false;
+							caseCliquee = null;
+							caseAction = null;
+							*/
 							choisiComp = null;
 							nettoyerPanneauDroit();
 							
@@ -393,26 +422,29 @@ public class PanneauJeu extends JPanel implements IConfig {
 					nettoyerPanneauDroit();
 				}
 				
+				// OCTODAMS (enlever ?)
 				panneauInfos.repaint();
 				panneauCarte.repaint();
 				panneauDroit.repaint();
 			}
 			
 			public void mouseReleased(MouseEvent e) {
-				// si on est entrain de dragg une unité
-				if(dragPerso && dragPersoFin != null) {
-					if(!(dragPersoFin.estValide())){
-						dragPerso = false;
-						return;
-						// surement gerer l'exeptionnelle 
-					}
-					// on pose
-					carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getSoldat(dragPersoInit)));	
-					
-					infoTexte="";
-				}		
-				dragPerso = false;
-				repaint();
+				if (finJeu == 0) {
+					// si on est entrain de dragg une unité
+					if(dragPerso && dragPersoFin != null) {
+						if(!(dragPersoFin.estValide())){
+							dragPerso = false;
+							return;
+							// surement gerer l'exeptionnelle 
+						}
+						// on pose
+						carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getSoldat(dragPersoInit)));	
+						
+						infoTexte="";
+					}		
+					dragPerso = false;
+					repaint();
+				}
 			}
 			
 		});
