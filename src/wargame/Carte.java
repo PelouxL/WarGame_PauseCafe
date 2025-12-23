@@ -91,12 +91,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 	 
 	
 	// RIVIERE
-	private void riviere(int pos) {
-		int r = (int) (Math.random() * 3);
-		switch(r) {
-			case 0: riviereV(pos); break;
-			case 1: riviereH(pos); break;
-			case 2: riviereV(pos); riviereH(pos); break;
+	private void riviere(int nb_riviere) {
+		for (int i=0; i < nb_riviere; i++) {
+			Position pos = trouvePositionVide();
+			int r = (int) (Math.random() * 2);
+			switch(r) {
+				case 0: riviereV(pos); break;
+				case 1: riviereH(pos); break;
+			}
 		}
 	}
 	
@@ -658,12 +660,33 @@ public class Carte implements IConfig, ICarte, Serializable {
 					if (soldat instanceof Heros) couleur = COULEUR_HEROS;
 					if (soldat instanceof Monstre) couleur = COULEUR_MONSTRES;
 				}
-		
-				dessineCase(g, couleur, pos, false);
-				
+				if (getVisibilite(pos) == 1) {
+					dessineCase(g, couleur, pos, false);
+				}
 			}
 		}
 			
+		for(int i = 0; i < listeHeros.length; i++) {
+			listeHeros[i].dessinSoldat(g, this);
+		}
+		
+		for(int i = 0; i < listeMonstres.length; i++) {
+			listeMonstres[i].dessinSoldat(g, this);
+		}
+		
+		// brouillard
+		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
+		    for(int j = 0; j < HAUTEUR_CARTE; j++) {
+		        if ((i + j) % 2 == 1) continue;
+
+		        Position pos = new Position(i, j);
+
+		        if (getVisibilite(pos) == 0) {
+		            dessineBrouillard(g, pos);
+		        }
+		    }
+		}
+		
 			// Zone de deplacement quand case survolee
 			if (caseSurvolee != null 
 				&& caseCliquee == null
@@ -697,13 +720,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 		
 		
-		for(int i = 0; i < listeHeros.length; i++) {
-			listeHeros[i].dessinSoldat(g, this);
-		}
-		
-		for(int i = 0; i < listeMonstres.length; i++) {
-			listeMonstres[i].dessinSoldat(g, this);
-		}
+
 	}
 	
 	
@@ -765,16 +782,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 			offset_x = OFFSET_X;
 		}
 		
-		if (getVisibilite(pos) == 1) {
+		if(trans == false) {			
+			this.dessineChoixTerrain(g, x, y, pos);
+			g.setColor(Color.BLACK);
+			this.dessineContourHexagone(g, x, y);
+		}else if(trans == true  && getVisibilite(pos) == 1) {
 			g.setColor(couleur);
-		} else {
-			g.setColor(COULEUR_INCONNU);
-			//g.setColor(couleur); //VISIBILITE DECOMMENTER POUR TESTS
+			this.dessineInterieurHexagone(g, x, y, pos, null);
+			
 		}
-		this.dessineInterieurHexagone(g, x, y, pos, null);
 		
-		g.setColor(Color.BLACK);
-		this.dessineContourHexagone(g, x, y);
+		
 		
 		// Ajout des numeros 
 		Soldat soldat = getSoldat(pos);

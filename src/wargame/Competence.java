@@ -57,7 +57,7 @@ public class Competence implements ICompetence, Serializable{
 		case BOULE_DE_FEU:	
 			atq += caster.recupIdentite() + " lance une boule de feu en zone !\n";
 			// 	definition de la zonne d'attaque
-			EnsemblePosition zoneAttaque = receveur.voisines(type.getDegatsZone(), true);
+			EnsemblePosition zoneAttaque = receveur.voisines(type.getDegatsZone(), false);
 			zoneAttaque.ajouterPos(receveur);
 			for(int i = 0; i < zoneAttaque.getNbPos(); i++) {
 				Soldat soldats = carte.getSoldat(zoneAttaque.getPosition(i));
@@ -107,7 +107,7 @@ public class Competence implements ICompetence, Serializable{
 			break;
 		case SOIN_DE_ZONE:
 			atq += caster.recupIdentite() + " Lance un sort de soin de zone !\n";
-			EnsemblePosition zoneSoin = receveur.voisines(type.getDegatsZone(), true);
+			EnsemblePosition zoneSoin = receveur.voisines(type.getDegatsZone(), false);
 			for(int i = 0; i < zoneSoin.getNbPos(); i++) {				
 				Soldat soldats = carte.getSoldat(zoneSoin.getPosition(i));
 				if(soldats != null) {

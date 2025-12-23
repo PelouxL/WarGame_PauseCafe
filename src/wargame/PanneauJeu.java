@@ -57,6 +57,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private JButton boutonFin;
 	private JButton boutonRetour;
 	private JButton boutonAffiche;
+	private JButton boutonRevenirMenu;
 	
 	// fin de jeu
 	private int finJeu = 0;
@@ -508,5 +509,33 @@ public class PanneauJeu extends JPanel implements IConfig {
 		}
 	}
 	
+	public void verifFinJeu() {
+		int fin = carte.verifierFinJeu();
+		if (fin != 0) {
+			if (fin == -1) {
+				logArea.setText("L'IA a gagné... Fin du jeu");
+			} else {
+				if (fin == 1) {
+					logArea.setText("Vous avez gagné ! Fin du jeu");
+				}
+			}
+		}
+		finJeu = fin;
+	}
 	
+	
+	public void afficherFinJeu(Graphics g) {
+		int x, y;
+		x = LARGEUR_PANNEAU_CARTE / 2;
+		y = HAUTEUR_PANNEAU_CARTE / 2;
+		g.setColor(new Color(0, 0, 0, 200));
+		g.fillRect(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
+		g.setColor(Color.WHITE);
+		if (finJeu == 1) {
+			g.drawString("Vous avez gagné !", x, y);
+		}
+		if (finJeu == -1) {
+			g.drawString("Vous avez perdu...", x, y);
+		}
+	}
 }    
