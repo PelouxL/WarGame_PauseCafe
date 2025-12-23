@@ -876,8 +876,19 @@ public class Carte implements IConfig, ICarte, Serializable {
 				}
 				g.fillRect(51+i, 16, (int) taille, 12);
 				g.drawString("" + heros.getNum(), 35+i, 25);
-				
-				Image soldat = new ImageIcon("./images/elfe_1.png").getImage();
+								
+				Image soldat;
+				if (heros.getType() == TypesH.ELF) {
+					soldat = new ImageIcon("./images/persos/elfe_map.png").getImage();
+				} else if (heros.getType() == TypesH.NAIN){
+					soldat = new ImageIcon("./images/persos/nain_map.png").getImage();
+				} else if (heros.getType() == TypesH.HUMAIN){
+					soldat = new ImageIcon("./images/persos/humain_map.png").getImage();
+				} else if (heros.getType() == TypesH.HOBBIT){
+					soldat = new ImageIcon("./images/persos/hobbit_map.png").getImage();
+				} else {
+					soldat = new ImageIcon("./images/eau.png").getImage();
+				}
 				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
 				g.drawImage(soldat, 10+i, 10, 20, 20, null); // à changer pour verif quel soldat c'est (et adapter l'image)
 				g.drawImage(barre, 45+i, 10, 62, 24, null);
