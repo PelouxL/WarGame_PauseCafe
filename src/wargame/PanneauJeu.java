@@ -79,9 +79,12 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				carte.toutDessiner(g, caseSurvolee, caseCliquee, choisiComp);
 				if(dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
-
 					carte.dessineCaseCliquee(g, dragPersoFin);
-				}			
+				}	
+				verifFinJeu();
+				if(finJeu != 0) {
+					afficherFinJeu(g);
+				}
 			}
 		};
 		panneauCarte.setBackground(Color.BLACK);
@@ -210,14 +213,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 				}
 			}
 		};
-
-		JTextArea tourActuel = new JTextArea();
 			
         panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
 		panneauHaut.setBackground(COULEUR_PLATEAU);
 		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-		panneauHaut.add(tourActuel);
-		tourActuel.setText(Integer.toString(carte.getNbTours()));
+
 
 		// ---------- Creation des boutons de la carte ---------- //
 		boutonFin = new JButton("Fin de tour");
