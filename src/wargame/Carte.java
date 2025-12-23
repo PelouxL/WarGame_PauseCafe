@@ -1,7 +1,9 @@
 package wargame;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -514,7 +516,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee, Competence choisiComp) {
-		
 		for(int i = 0; i < LARGEUR_CARTE*2; i++) {
 			for(int j = 0; j < HAUTEUR_CARTE; j++) {
 				if ((i+j) % 2 == 1) {
@@ -523,14 +524,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 				Position pos = new Position(i, j);
 				Color couleur = COULEUR_VIDE;
-				
-				if (getSoldat(pos) == null) {
-					couleur = carte[i][j].getType().getCouleur();
-				} else {
-					Soldat soldat = carte[i][j].getOccupant();
-					if (soldat instanceof Heros) couleur = COULEUR_HEROS;
-					if (soldat instanceof Monstre) couleur = COULEUR_MONSTRES;
-				}
 				
 				// /!\ IMPORTANT POUR LES TESTS /!\
 				// Décommenter le && en-dessous si on veut tester la carte en voyant tout
@@ -541,8 +534,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 				} */
 				
 				
-				dessineCase(g, couleur, pos);
+				dessineCase(g, couleur, pos, false);
 			}
+		}
 			
 			// Zone de deplacement quand case survolee
 			if (caseSurvolee != null 
@@ -575,7 +569,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 					dessineCaseCliquee(g, caseCliquee);
 			}
 				
-		}
+		
 		
 		for(int i = 0; i < listeHeros.length; i++) {
 			listeHeros[i].dessinSoldat(g, this);
@@ -589,14 +583,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 			
 	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
-		EnsemblePosition ePos = soldat.zoneDeplacement();
-				
+		EnsemblePosition ePos = soldat.zoneDeplacement();	
+	    
 		for (int i = 0; i < ePos.getNbPos(); i++) {
-			g.drawImage(imgTerrainDeplacement, ePos.getPosition(i).getX()*NB_PIX_CASE , ePos.getPosition(i).getY()*NB_PIX_CASE*3/4, 20, 20, null);
-
-			//this.dessineCase(g, Color.PINK, ePos.getPosition(i));
+			//g.drawImage(imgTerrainDeplacement, ePos.getPosition(i).getX()*NB_PIX_CASE /2, ePos.getPosition(i).getY()*NB_PIX_CASE*3/4, 20, 20, null);			
+			this.dessineCase(g, new Color(212, 74, 105, 150), ePos.getPosition(i), true);
 		}
-	}
+
+	} 
 	
 	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur, Position caseSurvolee, Position caseCliquee) {
 		EnsemblePosition ePos = lanceur.getPos().voisinesCroix(competence.getType().getDistance());
@@ -606,19 +600,19 @@ public class Carte implements IConfig, ICarte, Serializable {
 			Soldat soldat = (getSoldat(ePos.getPosition(i)));
 			if(soldat != null) {
 				if(soldat instanceof Heros) {
-					this.dessineCase(g, Color.decode("#6B1818"), ePos.getPosition(i));
+					this.dessineCase(g, Color.decode("#6B1818"), ePos.getPosition(i), true);
 				}else {
-					this.dessineCase(g, Color.decode("#403939"), ePos.getPosition(i));
+					this.dessineCase(g, Color.decode("#403939"), ePos.getPosition(i), true);
 				}
 			}else {
 				// penser a changer la couleur en fonction d'un spell degat / soin
-				this.dessineCase(g, COULEUR_PORTEE_COMP, ePos.getPosition(i));
+				this.dessineCase(g, COULEUR_PORTEE_COMP, ePos.getPosition(i), true);
 			}
 		}
 		
 		if(caseSurvolee.estValide() && ePos.contient(caseSurvolee)){
 			for(int j = 0; j < zoneAtt.getNbPos(); j++) {
-				this.dessineCase(g, competence.typeCouleurAttaque(caseSurvolee) , zoneAtt.getPosition(j));
+				this.dessineCase(g, competence.typeCouleurAttaque(caseSurvolee) , zoneAtt.getPosition(j), true);
 				
 			}
 		}
@@ -629,17 +623,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public void dessineCaseCliquee(Graphics g, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
-		int offset_x = 0;
-		if (y % 2 == 1) {
-			offset_x = OFFSET_X;
-		}
 		
 		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
 		g.setColor(couleur);
-		this.dessineInterieurHexagone(g, x/2, y);
+		this.dessineInterieurHexagone(g, x/2, y, pos, null);
 	}
 	
-	public void dessineCase(Graphics g, Color couleur, Position pos) {
+	// prends un boolean en param pour savoir si c'est une cases en surbrillance ou pas
+	public void dessineCase(Graphics g, Color couleur, Position pos, Boolean trans) {
 		int x = pos.getX(),
 			y = pos.getY();
 		int offset_x = 0;
@@ -648,10 +639,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 			offset_x = OFFSET_X;
 		}
 		
-	
-		
 		g.setColor(couleur);
-		this.dessineInterieurHexagone(g, x, y);
+		if(trans == false) {
+			this.dessineChoixTerrain(g, x, y, pos);
+		}else {
+			this.dessineInterieurHexagone(g, x, y, pos, null);
+		}
 		g.setColor(Color.BLACK);
 		this.dessineContourHexagone(g, x, y);
 		
@@ -688,10 +681,25 @@ public class Carte implements IConfig, ICarte, Serializable {
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
 		
-		//g.drawPolygon(liste_x, liste_y, 6);
+		g.drawPolygon(liste_x, liste_y, 6);
 	}
 	
-	private void dessineInterieurHexagone(Graphics g, int x, int y) {
+	// permet de choixir l'image au terrain associe 
+	public void dessineChoixTerrain(Graphics g, int x, int y, Position pos) {
+		if (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.HERBE) {
+			dessineInterieurHexagone( g,  x,  y,  pos,  imgTerrainHerbe);
+		}else if  (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.EAU) {
+			dessineInterieurHexagone( g,  x,  y,  pos,  imgTerrainEau);
+		}else if  (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.FORET) {
+			dessineInterieurHexagone( g,  x,  y,  pos,  imgTerrainForet);
+		}else if  (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.ROCHER) {
+			dessineInterieurHexagone( g,  x,  y,  pos,  imgTerrainRocher);
+		}else {
+			dessineInterieurHexagone( g,  x,  y,  pos,  null);
+		}
+	}
+	
+	private void dessineInterieurHexagone(Graphics g, int x, int y, Position pos, Image imgTerrain) {
 		int offset_x = 0;
 		if (y % 2 == 1) {
 			offset_x = NB_PIX_CASE / 2;
@@ -708,21 +716,16 @@ public class Carte implements IConfig, ICarte, Serializable {
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
 						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
-		if(carte[x][y].getType() == TypeTerrain.HERBE) {
-			g.drawImage(imgTerrainHerbe, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4, 20, 20, null);
-		}else if(carte[x][y].getType() == TypeTerrain.EAU) {
-			g.drawImage(imgTerrainEau, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4 , 20, 20, null);	
-		}else if(carte[x][y].getType() == TypeTerrain.FORET) {
-			g.drawImage(imgTerrainForet, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4 , 20, 20, null);	
-		}else if(carte[x][y].getType() == TypeTerrain.ROCHER) {
-			g.drawImage(imgTerrainRocher, x*NB_PIX_CASE +offset_x, y*NB_PIX_CASE*3/4 , 20, 20, null);	
-		}else {
+		
+		if(imgTerrain == null) {
 			g.fillPolygon(liste_x, liste_y, 6);
+		}else {
+			g.drawImage(imgTerrain, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4, 20, 20, null);
+
 		}
 
 	}
-	
-	// DESSIN
+
 	
 	
 }

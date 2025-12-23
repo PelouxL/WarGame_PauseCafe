@@ -46,7 +46,7 @@ public interface IConfig {
 	Color COULEUR_PLATEAU = Color.decode("#8B4513");
 	Color COULEUR_BOUTON_COMP = Color.decode("#260923");
 	Color COULEUR_BOUTON_COMP_INDISPONIBLE = Color.decode("#DDCEDE");
-	Color COULEUR_PORTEE_COMP = Color.decode("#C1D11B");
+	Color COULEUR_PORTEE_COMP = new Color(255, 235 , 56, 150);
 	
 	// SOLDATS
 	Color COULEUR_HEROS = Color.red;

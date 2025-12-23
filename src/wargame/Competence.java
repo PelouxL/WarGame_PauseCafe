@@ -229,13 +229,13 @@ public class Competence implements ICompetence, Serializable{
 	public Color typeCouleurAttaque(Position pos){
 		switch(type.getClasseCompetence()) {
 		case ATTAQUE:
-			return Color.RED;
+			return new Color(255,0,0, 180);
 		case SOINS:
-			return Color.GREEN;
+			return new Color(0,255,0, 180);
 		case DEBUFF:
-			return Color.magenta;
+			return new Color(126, 14, 134, 180);
 		case BUFF:
-			return Color.YELLOW;
+			return new Color(255, 235, 56, 180);
 		default:
 			return Color.PINK;
 		}		
