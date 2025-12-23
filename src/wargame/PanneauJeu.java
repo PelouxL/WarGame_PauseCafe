@@ -231,7 +231,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		boutonFin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (finJeu == 0) {
-					carte.jouerSoldats();
+					carte.finTour();
 					//verifFinJeu();
 					//logArea.repaint();
 					panneauCarte.repaint();

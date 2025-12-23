@@ -1,5 +1,6 @@
 package wargame;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.io.Serializable;
 
 public class Terrain implements IConfig, Serializable {
@@ -24,19 +25,19 @@ public class Terrain implements IConfig, Serializable {
 		 * SABLE : reduction de la portee de deplacement
 		 */
 		
-		HERBE (COULEUR_HERBE, true, null, null, 1),
-		ROCHER (COULEUR_ROCHER, false, null, null, 9999),
-		FORET (COULEUR_FORET, true, Effet.TypeEffet.FORET_DENSE, TypeMoment.TANT_QUE_DESSUS, 1),
-		EAU (COULEUR_EAU, false, null, null, 9999),
-		PONT (COULEUR_PONT, true, null, null, 1),
-		FEU (COULEUR_FEU, true, null, null, 1),
-		ACIDE (COULEUR_ACIDE, true, Effet.TypeEffet.POISON, TypeMoment.FIN_TOUR, 1),
-		VILLAGE (COULEUR_VILLAGE, true, Effet.TypeEffet.SOUTIEN_POPULAIRE, TypeMoment.DEBUT_TOUR, 1),
-		SABLE (COULEUR_SABLE, true, Effet.TypeEffet.SABLES_MOUVANTS, TypeMoment.TANT_QUE_DESSUS, 2); // pourquoi cout = 2?
-
+		HERBE   (COULEUR_HERBE,   true,  null, null, 1),
+		ROCHER  (COULEUR_ROCHER,  false, null, null, 9999),
+		FORET   (COULEUR_FORET,   true,  Effet.TypeEffet.FORET_DENSE, TypeMoment.TANT_QUE_DESSUS, 1),
+		EAU     (COULEUR_EAU,     false, null, null, 9999),
+		PONT    (COULEUR_PONT,    true,  null, null, 1),
+		FEU     (COULEUR_FEU,     true,  Effet.TypeEffet.SOL_BRULANT, TypeMoment.FIN_TOUR, 1),
+		ACIDE   (COULEUR_ACIDE,   true,  Effet.TypeEffet.POISON, TypeMoment.FIN_TOUR, 1),
+		VILLAGE (COULEUR_VILLAGE, true,  Effet.TypeEffet.SOUTIEN_POPULAIRE, TypeMoment.FIN_TOUR, 1),
+		SABLE   (COULEUR_SABLE,   true,  Effet.TypeEffet.SABLES_MOUVANTS, TypeMoment.TANT_QUE_DESSUS, 2);
+		
 		private final Color COULEUR;
 		private final boolean ACCESSIBLE; // Changer pour gerer des unité volante par ex?
-		private final Effet.TypeEffet effet; // Effet appliqué par la case
+		private final Effet.TypeEffet effet; // Effet appliqué par la case, remplacer par une liste?
 		private final TypeMoment moment; // Moment d'application de l'effet
 		private final int COUT;
 
@@ -112,13 +113,14 @@ public class Terrain implements IConfig, Serializable {
 			// Verification si l'effet a deja ete applique
 			int i = listeEffetsOccupant.contient(this.TYPE.getEffet());
 			
-			// S'il l'effet n'existe aps deja : application de l'effet
+			// S'il l'effet n'existe pas deja : application de l'effet
 			if (i == -1) listeEffetsOccupant.ajouterEffet(effetTerrain());
 			
 			// Sinon on reinitialise la duree restante de l'effet
-			else listeEffetsOccupant.getEffet(i).setDureeRestante(this.TYPE.getEffet().getDuree());;
+			else listeEffetsOccupant.getEffet(i).setDureeRestante(this.TYPE.getEffet().getDuree());
 		}
 	}
+	
 	// EFFET DES TERRAINS
 	
 	

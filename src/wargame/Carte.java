@@ -38,8 +38,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 		// OBSTACLES
-		zoneBiome(NB_SABLE, Terrain.TypeTerrain.SABLE, 2);
-		zoneBiome(NB_FORET, Terrain.TypeTerrain.FORET, 4);
+		zoneBiome(NB_SABLE, Terrain.TypeTerrain.SABLE, 2, 2);
+		zoneBiome(NB_FORET, Terrain.TypeTerrain.FORET, 2, 4);
+		zoneBiome(NB_FEU, Terrain.TypeTerrain.FEU, 2, 2);
 		
 		// Placement des terrains aléatoires
 		for(int i = 0; i < NB_OBSTACLES; i++) {
@@ -145,10 +146,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	// RIVIERE
 	
-	private void zoneBiome(int nb, Terrain.TypeTerrain type, int rayMax) {
+	private void zoneBiome(int nb, Terrain.TypeTerrain type, int rayMin, int rayMax) {
 		for (int i=0; i < nb; i++) {
 			Position pos = trouvePositionVide();
-			EnsemblePosition foret = pos.voisines((int) (Math.random() * rayMax), true);
+			EnsemblePosition foret = pos.voisines((int) (Math.random() * (rayMax-rayMin) + rayMin), true);
 			for (int j=0; j < foret.getNbPos(); j++) {
 				Position posArbre = foret.getPosition(j);
 				this.carte[posArbre.getX()][posArbre.getY()] = new Terrain(type);
@@ -158,7 +159,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// OBSTACLES
 	
 	
-	// ELEMENT
+	// ELEMENTS
 	public Terrain getCase(Position pos) { // try catch 
 		
 		int x = pos.getX();
@@ -173,13 +174,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 	public Soldat getSoldat(Position pos) {	
 		return this.getCase(pos).getOccupant();
 	}
+	// ELEMENTS
 	
-	// FIN DU JEU
-	public int verifierFinJeu() {
-		if (this.listeHeros.isEmpty()) return -1; // Perdu
-		if (this.listeMonstres.isEmpty()) return 1; // Gagne
-		return 0; // pas fini
-	}
 	
 	// VISIBILITE
 	public int getVisibilite(Position pos) {
@@ -413,10 +409,58 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 	// FIN TOUR
 	public void finTour() {
+		// Effets appliques a la fin du tour des monstres
+		appliquerEffets();
 		
+		// Tour des monstres
+		jouerSoldats();
+	}
+	
+	
+	public void appliquerEffets() {
 		
+		/*
+		 * Ordre d'application :
+		 * 1 - Ajout des effets des terrains
+		 * 2 - Proc de la liste d'effets
+		 * 3 - Reduction de la duree des effets
+		 */
+		
+		// Recuperation de la liste de TOUT les soldats
+		ArrayList<Soldat> listeSoldats = new ArrayList<Soldat>();
+		listeSoldats.addAll(listeMonstres);
+		listeSoldats.addAll(listeHeros);
+		
+		// Applications des effets
+		for (Soldat s : listeSoldats) {
+			int x = s.getPos().getX();
+			int y = s.getPos().getY();
+			TypeTerrain terrain = carte[x][y].getType();
+			
+			// 1 - Ajout des effets FIN_TOUR des terrains a la liste d'effets
+			if (terrain.getMoment() == Terrain.TypeMoment.FIN_TOUR) {
+				s.getListeEffets().ajouterEffet(new Effet(terrain.getEffet()));
+			}
+			
+			// 2 - Application des effets de degats aux soldats
+			s.setPointsActuels(s.getPointsActuels() + s.getListeEffets().sommeEffets(Effet.TCarAff.VIE));
+			
+			// 3 - Reduction de la duree des effets si vivant
+			if (!s.estMort()) s.getListeEffets().majEffets();
+			else mort(s);
+		}
 	}
 	// FIN TOUR
+	
+	
+	// FIN DU JEU
+	public int verifierFinJeu() {
+		if (this.listeHeros.isEmpty()) return -1; // Perdu
+		if (this.listeMonstres.isEmpty()) return 1; // Gagne
+		return 0; // pas fini
+	}
+	// FIN DU JEU
+		
 	
 	public void resetActionsHeros() {
 		for (Heros h : listeHeros) {
@@ -672,8 +716,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 	}
-			
-			
+						
 	public void dessineCaseCliquee(Graphics g, Position pos) {
 		int x = pos.getX(),
 			y = pos.getY();
