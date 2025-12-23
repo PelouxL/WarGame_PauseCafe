@@ -1,11 +1,12 @@
 package wargame;
 
+import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class Soldat implements ISoldat, ICompetence, Serializable{
+public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializable{
 
 	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3, NB_ACTION_MAX;
 
@@ -286,6 +287,18 @@ public abstract class Soldat implements ISoldat, ICompetence, Serializable{
 	}
 	// DEPLACEMENT
 	
+	
+	public void dessinSoldat(Graphics g, Carte c) {
+		int x = pos.getX();
+		int y = pos.getY();
+		int offset_x = 0;
+		x = x/2;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
+		
+		g.drawImage(imgSpritePersoMage, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4 - NB_PIX_CASE*1/4, 20, 20, null);
+	}
 	
 	public String toString() {
 		

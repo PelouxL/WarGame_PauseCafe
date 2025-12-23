@@ -57,7 +57,7 @@ public class Competence implements ICompetence, Serializable{
 		case BOULE_DE_FEU:	
 			atq += caster.recupIdentite() + " lance une boule de feu en zone !\n";
 			// 	definition de la zonne d'attaque
-			EnsemblePosition zoneAttaque = receveur.voisines(type.getDegatsZone(), false);
+			EnsemblePosition zoneAttaque = receveur.voisines(type.getDegatsZone());
 			zoneAttaque.ajouterPos(receveur);
 			for(int i = 0; i < zoneAttaque.getNbPos(); i++) {
 				Soldat soldats = carte.getSoldat(zoneAttaque.getPosition(i));
@@ -107,7 +107,7 @@ public class Competence implements ICompetence, Serializable{
 			break;
 		case SOIN_DE_ZONE:
 			atq += caster.recupIdentite() + " Lance un sort de soin de zone !\n";
-			EnsemblePosition zoneSoin = receveur.voisines(type.getDegatsZone(), false);
+			EnsemblePosition zoneSoin = receveur.voisines(type.getDegatsZone());
 			for(int i = 0; i < zoneSoin.getNbPos(); i++) {				
 				Soldat soldats = carte.getSoldat(zoneSoin.getPosition(i));
 				if(soldats != null) {
@@ -216,7 +216,7 @@ public class Competence implements ICompetence, Serializable{
 			ePos = pos.voisinesCroix(type.getDistance());
 			break;
 		case "libre":
-			ePos = pos.voisines(type.getDistance(), false);
+			ePos = pos.voisines(type.getDistance());
 			break;
 		default:
 			ePos = null;
@@ -229,13 +229,13 @@ public class Competence implements ICompetence, Serializable{
 	public Color typeCouleurAttaque(Position pos){
 		switch(type.getClasseCompetence()) {
 		case ATTAQUE:
-			return Color.RED;
+			return new Color(255,0,0, 180);
 		case SOINS:
-			return Color.GREEN;
+			return new Color(0,255,0, 180);
 		case DEBUFF:
-			return Color.magenta;
+			return new Color(126, 14, 134, 180);
 		case BUFF:
-			return Color.YELLOW;
+			return new Color(255, 235, 56, 180);
 		default:
 			return Color.PINK;
 		}		

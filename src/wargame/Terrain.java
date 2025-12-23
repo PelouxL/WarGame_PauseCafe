@@ -14,6 +14,7 @@ public class Terrain implements IConfig, Serializable {
 		// ACIDE (COULEUR_ACIDE, true, 1), // dot sur x tour si termine dessus
 		VILLAGE (COULEUR_VILLAGE, true, 2); // soin si passe son tour dessus
 
+
 		private final Color COULEUR;
 		private final boolean ACCESSIBLE; // Changer pour gerer des unité volante par ex?
 		private final int COUT;
@@ -24,8 +25,13 @@ public class Terrain implements IConfig, Serializable {
 			this.COUT = cout;
 		}
 		
-		public Color getCouleur() { return this.COULEUR; }
-		public boolean getAccessible() { return this.ACCESSIBLE; }
+		public Color getCouleur() {
+			return this.COULEUR;
+		}
+		
+		public boolean getAccessible() {
+			return this.ACCESSIBLE;
+		}
 		
 		public int getCout() {
 			return this.COUT;
@@ -50,15 +56,25 @@ public class Terrain implements IConfig, Serializable {
 	}
 	
 	// Methodes
-	public TypeTerrain getType() { return this.TYPE; }
-	public Soldat getOccupant() { return this.occupant; }
-	public boolean estLibre() { return (occupant == null) && (this.TYPE.ACCESSIBLE); }
-	public void occuper(Soldat soldat) { this.occupant = soldat; }
-	public void liberer() { this.occupant = null; }
-	
-	public void effet() {
-		// ??????????????
+	public TypeTerrain getType() {
+		return this.TYPE;
 	}
+	
+	public Soldat getOccupant() {
+		return this.occupant;
+	}
+	
+	public boolean estLibre() {
+		return (occupant == null) && (this.TYPE.ACCESSIBLE);
+	}
+	
+	public void occuper(Soldat soldat) {
+		this.occupant = soldat;
+	}
+	
+	public void liberer() {
+		this.occupant = null;
+	}		
 	
 	// Affichage
 	public String toString() { 
