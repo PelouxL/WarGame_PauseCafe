@@ -2,15 +2,25 @@ package wargame;
 
 public class Effet {
 	
+	public final static int INFINI = -1;
+	
 	public enum TCarAff{ // Types de caracteritique pouvant etre affectee
-		PORTEE, DEPLACEMENT, VIE, PUISSANCE_ATQ, PUISSANCE_SOIN, ACTION;
+		PORTEE, DEPLACEMENT, VIE, PUISSANCE, ACTION;
 	}
 		
 	public enum TypeEffet {
-		FORET_DENSE (TCarAff.PORTEE, -3, -1),
-		SABLES_MOUVANTS (TCarAff.DEPLACEMENT, -1, -1),
-		POISON (TCarAff.VIE, -5, 3),
-		SOUTIEN_POPULAIRE (TCarAff.PUISSANCE_ATQ, 10, 1);
+		// PORTEE
+		FORET_DENSE (TCarAff.PORTEE, -3, INFINI),
+		// DEPLACEMENT
+		SABLES_MOUVANTS (TCarAff.DEPLACEMENT, -1, INFINI),
+		// VIE
+		POISON (TCarAff.VIE, -10, 3),
+		MALADIE (TCarAff.VIE, -5, INFINI),
+		SOUTIEN_POPULAIRE (TCarAff.VIE, 10, 1),
+		SOL_BRULANT (TCarAff.VIE, -15, 1),
+		// PUISSANCE
+		// ACTION
+		FATIGUE (TCarAff.ACTION, -1, 1);
 		
 		private TCarAff carAff; // caracteristique affectee par l'effet
 		private int valeur;     // valeur du malus/bonus

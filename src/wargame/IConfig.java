@@ -54,9 +54,10 @@ public interface IConfig {
 	Color COULEUR_MONSTRES = Color.black;
 	
 	// TERRAINS
-	int NB_RIVIERE = (int) (Math.random()*2 + 1); // 2 riviere max
+	int NB_RIVIERE = (int) (Math.random()*2 + 1); // 1 ou 2 riviere
 	int NB_FORET = 10;
 	int NB_SABLE = 5;
+	int NB_FEU = 1;
 	
 	Color COULEUR_HERBE = Color.decode("#69C24C"); // vert clair
 	Color COULEUR_EAU = Color.BLUE;                // bleu

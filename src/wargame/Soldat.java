@@ -60,7 +60,11 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	
 	
 	// DEGATS
-	public int getPuissance() { return this.PUISSANCE + listeEffets.sommeEffets(Effet.TCarAff.PUISSANCE_ATQ); }
+	public int getPuissance() { 
+		int puissance = this.PUISSANCE + listeEffets.sommeEffets(Effet.TCarAff.PUISSANCE); 
+		if (puissance >= 0) return puissance;
+		return 0; 
+	}
 	public int getTir() { return this.TIR; }
 	// DEGATS
 	
@@ -81,7 +85,11 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	public void setTour() { this.tour = 0; }
 	public void joueTour(int tour) {} // on sait pas ce que ça fait ???
 	
-	public int getAction() { return this.action + listeEffets.sommeEffets(Effet.TCarAff.ACTION); }
+	public int getAction() { 
+		int action = this.action + listeEffets.sommeEffets(Effet.TCarAff.ACTION);
+		if (action >= 0 ) return action;
+		return 0;
+	}
 	public void setAction(int action) { this.action = action; }
 	public void ajouterAction(int nbAction) { this.action += nbAction; }
 	// TOUR/ACTION
@@ -93,9 +101,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	// PORTEE VISUELLE
 	public int getPortee() {
 		int portee = this.PORTEE_VISUELLE + listeEffets.sommeEffets(Effet.TCarAff.PORTEE);
-		if (portee > 1) {
-			return portee;
-		}
+		if (portee >= 1) return portee;
 		return 1;
 	}
 	
@@ -107,7 +113,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 		for (i = -portee*2 ; i <= portee*2 ; i++) {
 			for (j = -portee*2 ; j <= portee*2 ; j++) {
 				if (i + x >= 0 && i + x < Carte.LARGEUR_CARTE*2
-				  && j + y >= 0 && j + y < Carte.HAUTEUR_CARTE) {
+					&& j + y >= 0 && j + y < Carte.HAUTEUR_CARTE) {
 					if (this.pos.distance(new Position(i+x, j+y)) <= portee) {
 						visibilite[i+x][j+y] = 1;
 					}
