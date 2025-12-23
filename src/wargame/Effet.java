@@ -7,7 +7,7 @@ public class Effet {
 	}
 		
 	public enum TypeEffet {
-		FORET_DENSE (TCarAff.PORTEE, -5, -1),
+		FORET_DENSE (TCarAff.PORTEE, -3, -1),
 		SABLES_MOUVANTS (TCarAff.DEPLACEMENT, -1, -1),
 		POISON (TCarAff.VIE, -5, 3),
 		SOUTIEN_POPULAIRE (TCarAff.PUISSANCE_ATQ, 10, 1);

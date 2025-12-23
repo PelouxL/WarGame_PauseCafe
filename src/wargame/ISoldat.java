@@ -2,14 +2,21 @@ package wargame;
 
 public interface ISoldat {
     static enum TypesH {
-      	HUMAIN (40,3,10,2), NAIN (80,1,20,0), ELF (70,5,10,6), HOBBIT (20,3,5,2),
-      	ANGE (80, 3, 5, 3), POUBELLEMALICIEUSE (30, 1, 20, 2);
+      	HUMAIN (50, 7, 20, 5, 3),
+      	NAIN (150, 7, 30, 0, 2),
+      	ELF (30, 10, 5, 10, 3),
+      	HOBBIT (30, 8, 10, 5, 4),
+      	ANGE (80, 5, 30, 15, 2),
+      	POUBELLEMALICIEUSE (1, 3, 100, 0, 5);
 
-      	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT = 3;
+      	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
 
-      	TypesH(int points, int portee, int puissance, int tir) {
-    	  	POINTS_DE_VIE = points; PORTEE_VISUELLE = portee;
-    	  	PUISSANCE = puissance; TIR = tir;
+      	TypesH(int points, int portee, int puissance, int tir, int deplacement) {
+    	  	POINTS_DE_VIE = points;
+    	  	PORTEE_VISUELLE = portee;
+    	  	PUISSANCE = puissance;
+    	  	TIR = tir;
+    	  	DEPLACEMENT = deplacement;
       	}
 
 		public int getPoints() { return POINTS_DE_VIE; }
@@ -24,14 +31,20 @@ public interface ISoldat {
    	}
 
    	public static enum TypesM {
-      	TROLL (100,1,30,0), ORC (40,2,10,3), GOBELIN (20,2,5,2),
-      	DEMON (50, 3, 5, 1), MAITREDUCAFE (80, 8, 10, 5);
+      	TROLL (150, 3, 50, 0, 2),
+      	ORC (40, 2, 10, 3, 3),
+      	GOBELIN (30, 5, 10, 5, 5),
+      	DEMON (50, 4, 30, 15, 4),
+      	MAITREDUCAFE (300, 1, 100, 0, 2);
 
-      	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT = 3;
+      	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
       	
-      	TypesM(int points, int portee, int puissance, int tir) {
-    	 	POINTS_DE_VIE = points; PORTEE_VISUELLE = portee;
-    	  	PUISSANCE = puissance; TIR = tir;
+      	TypesM(int points, int portee, int puissance, int tir, int deplacement) {
+    	 	POINTS_DE_VIE = points;
+    	 	PORTEE_VISUELLE = portee;
+    	  	PUISSANCE = puissance;
+    	  	TIR = tir;
+    	  	DEPLACEMENT = deplacement;
       	}
 
 		public int getPoints() { return POINTS_DE_VIE; }
