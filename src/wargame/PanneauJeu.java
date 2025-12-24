@@ -48,6 +48,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	// information du panneauInfo
 	private String infoTexte ="";
 	private String infoTexte2 ="";
+	private int indiceHerosSurvole = -1;
 	
 	// different sections
 	private JPanel panneauCarte;
@@ -185,7 +186,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    			g.drawString(infoTexte,10, 15);
 	    		}
 	    		*/
-	    		carte.dessineInfosBas(g);
+	    		carte.dessineInfosBas(g, indiceHerosSurvole);
 	    	}
 	    	
 	    };
@@ -299,8 +300,12 @@ public class PanneauJeu extends JPanel implements IConfig {
 						Soldat soldat = carte.getSoldat(caseSurvolee);
 						if(soldat instanceof Soldat) {
 							infoTexte = soldat.toString();
+							if (soldat instanceof Heros) {
+								indiceHerosSurvole = carte.getIndiceHeros((Heros) soldat);
+							}
 						}else {
 							infoTexte ="";
+							indiceHerosSurvole = -1;
 						}
 					}else {
 						infoTexte ="";

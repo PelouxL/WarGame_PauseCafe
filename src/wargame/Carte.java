@@ -890,7 +890,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		g.setColor(couleur_base); // juste pour remettre la couleur qu'on avait avant l'appel
 	}
 	
-	public void dessineInfosBas(Graphics g) {
+	public void dessineInfosBas(Graphics g, int indiceHerosSurvole) {
 		int i = 0, j = 0;
 		// heros
 		for (int k = 0 ; k < this.nbHeros ; k++) {
@@ -900,6 +900,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 				double pv_act = heros.getPointsActuels();
 				double ratio = (pv_act / pv_max) * 100;
 				double taille = (pv_act / pv_max) * 50 + 1;
+				
+				if (k == indiceHerosSurvole) {
+					g.setColor(Color.RED);
+					g.fillRect(5+i, 5+j, 110, 35);
+				}
 				
 				if (ratio >= 50) {
 					g.setColor(Color.GREEN);
