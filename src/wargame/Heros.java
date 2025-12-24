@@ -19,4 +19,30 @@ public class Heros extends Soldat{
 	public String getNom() {
 		return this.NOM;
 	}
+	
+	public String trouverImg() {
+		String path = "./images/persos/";
+		switch(this.getType()) {
+		   case HUMAIN:
+			   path += "humain";
+			   break;
+		   case NAIN:
+			   path += "nain";
+			   break;
+		   case ELF:
+			   path += "elfe";
+			   break;
+		   case HOBBIT:
+			   path += "hobbit";
+			   break;
+		   case ANGE:
+			   path += "humain"; // placeholder
+			   break;
+		   case POUBELLEMALICIEUSE:
+			   path += "humain"; // placeholder
+			   break;
+		}
+	    path += "_map.png";
+	    return path;
+	}
 }
