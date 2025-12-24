@@ -7,6 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+
+import wargame.ISoldat.TypesH;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -530,6 +533,75 @@ public class PanneauJeu extends JPanel implements IConfig {
 			logArea.append(s + "\n");
 		}
 	}
+	
+	
+	// Barres de vie en bas
+	private void mettreAJourPanneauInfos(Graphics g) {
+		int i = 0, j = 0;
+		nettoyerPanneauInfos();
+		// heros
+		int nbHeros = carte.getNbHeros();
+		Heros [] listeHeros = carte.getListeHeros();
+		for (int k = 0 ; k < nbHeros ; k++) {
+			Heros heros = listeHeros[k];
+			if (!heros.estMort()) {				
+				double pv_max = heros.getPoints();
+				double pv_act = heros.getPointsActuels();
+				double ratio = (pv_act / pv_max) * 100;
+				double taille = (pv_act / pv_max) * 50 + 1;
+				
+				if (ratio >= 50) {
+					g.setColor(Color.GREEN);
+				} else if (ratio < 15) {
+					g.setColor(Color.RED);
+				} else {
+					g.setColor(Color.ORANGE);
+				}
+				g.fillRect(51+i, 16+j, (int) taille, 12);
+				g.drawString("" + heros.getNum(), 35+i, 25+j);
+								
+				Image soldat = new ImageIcon(heros.trouverImg()).getImage();
+				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				g.drawImage(soldat, 10+i, 10+j, 20, 20, null);
+				g.drawImage(barre, 45+i, 10+j, 62, 24, null);
+				
+				i += 110; // décalage vers la droite
+				if (k == 7) { // on peut avoir 8 persos par ligne, donc on va à la ligne en-dessous (si on change le nb de heros...)
+					// /!\ ça gère pas si on a au moins 17 heros
+					i = 0;
+					j = 50;
+				}
+			}
+		}
+		panneauInfos.revalidate();
+		panneauInfos.repaint();
+	}
+	
+	private JButton creeBoutonHeros(Heros heros) {
+		JButton boutonHeros = new JButton("" + heros.getNum());
+			
+		ImageIcon icon = new ImageIcon(heros.trouverImg()); 
+		boutonHeros.setIcon(icon); 
+		boutonHeros.setForeground(Color.white);
+	   
+	 
+		boutonHeros.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {	
+	    		
+	    		panneauCarte.repaint();
+	    		panneauInfos.repaint();
+	    	}
+	    });
+			
+		return boutonHeros;
+	}
+	
+	private void nettoyerPanneauInfos() {
+		panneauInfos.removeAll();
+		panneauInfos.revalidate();
+		panneauInfos.repaint();
+	}
+	
 	
 	// FIN DU JEU
 	public void verifFinJeu() {
