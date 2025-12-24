@@ -196,6 +196,24 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return this.listeMonstres;
 	}
 	
+	public int getIndiceHeros(Heros heros) {
+		for (int i = 0 ; i < nbHeros ; i++) {
+			if (listeHeros[i].getNum() == heros.getNum()) {
+				return i;
+			}
+		}
+		return -1; // erreur
+	}
+	
+	public int getIndiceMonstre(Monstre monstre) {
+		for (int i = 0 ; i < nbMonstre ; i++) {
+			if (listeMonstres[i].getNum() == monstre.getNum()) {
+				return i;
+			}
+		}
+		return -1; // erreur
+	}
+	
 	// FIN DU JEU
 	public int verifierFinJeu() {
 		if (this.nbHeros == 0) { // IA a gagné
@@ -226,8 +244,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 				visibilite[i][j] = 0; // on reset tout
 			}
 		}
-		for (Heros heros : this.listeHeros) {
-			this.visibilite = heros.setCasesVisibles(this.visibilite);
+		for (int i = 0 ; i < nbHeros ; i++) {
+			this.visibilite = listeHeros[i].setCasesVisibles(this.visibilite);
 		}
 	}
 	// VISIBILITE
@@ -805,7 +823,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			g.setColor(couleur);
 		} else {
 			g.setColor(COULEUR_INCONNU);
-			g.setColor(couleur); //VISIBILITE DECOMMENTER POUR TESTS
+			//g.setColor(couleur); //VISIBILITE DECOMMENTER POUR TESTS
 		}
 		this.dessineInterieurHexagone(g, x, y);
 		g.setColor(Color.BLACK);
