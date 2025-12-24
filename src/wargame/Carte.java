@@ -824,6 +824,16 @@ public class Carte implements IConfig, ICarte, Serializable {
 			dessineInterieurHexagone( g,  x,  y, imgTerrainForet);
 		}else if  (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.ROCHER) {
 			dessineInterieurHexagone( g,  x,  y, imgTerrainRocher);
+		}else if  (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.VILLAGE) {
+			dessineInterieurHexagone( g,  x,  y, imgTerrainVillage);
+		}else if  (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.FEU) {
+			dessineInterieurHexagone( g,  x,  y, imgTerrainFeu);
+		}else if  (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.ACIDE) {
+			dessineInterieurHexagone( g,  x,  y, imgTerrainAcide);
+		}else if  (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.SABLE) {
+			dessineInterieurHexagone( g,  x,  y, imgTerrainSable);
+		}else if  (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.PONT) {
+			dessineInterieurHexagone( g,  x,  y, imgTerrainPont);
 		}else {
 			dessineInterieurHexagone( g,  x,  y, null);
 		}
