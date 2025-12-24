@@ -180,6 +180,22 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return this.getCase(pos).getOccupant();
 	}
 	
+	public int getNbHeros() {
+		return this.nbHeros;
+	}
+	
+	public int getNbMonstre() {
+		return this.nbMonstre;
+	}
+	
+	public Heros [] getListeHeros() {
+		return this.listeHeros;
+	}
+	
+	public Monstre [] getListeMonstres() {
+		return this.listeMonstres;
+	}
+	
 	// FIN DU JEU
 	public int verifierFinJeu() {
 		if (this.nbHeros == 0) { // IA a gagné
@@ -857,10 +873,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	
 	public void dessineInfosBas(Graphics g) {
-		int i = 0;
+		int i = 0, j = 0;
 		// heros
-		for (int j = 0 ; j < this.nbHeros ; j++) {
-			Heros heros = listeHeros[j];
+		for (int k = 0 ; k < this.nbHeros ; k++) {
+			Heros heros = listeHeros[k];
 			if (!heros.estMort()) {				
 				double pv_max = heros.getPoints();
 				double pv_act = heros.getPointsActuels();
@@ -874,8 +890,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 				} else {
 					g.setColor(Color.ORANGE);
 				}
-				g.fillRect(51+i, 16, (int) taille, 12);
-				g.drawString("" + heros.getNum(), 35+i, 25);
+				g.fillRect(51+i, 16+j, (int) taille, 12);
+				g.drawString("" + heros.getNum(), 35+i, 25+j);
 								
 				Image soldat;
 				if (heros.getType() == TypesH.ELF) {
@@ -890,10 +906,15 @@ public class Carte implements IConfig, ICarte, Serializable {
 					soldat = new ImageIcon("./images/eau.png").getImage();
 				}
 				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
-				g.drawImage(soldat, 10+i, 10, 20, 20, null); // à changer pour verif quel soldat c'est (et adapter l'image)
-				g.drawImage(barre, 45+i, 10, 62, 24, null);
+				g.drawImage(soldat, 10+i, 10+j, 20, 20, null);
+				g.drawImage(barre, 45+i, 10+j, 62, 24, null);
 				
 				i += 110; // décalage vers la droite
+				if (k == 7) { // on peut avoir 8 persos par ligne, donc on va à la ligne en-dessous (si on change le nb de heros...)
+					// /!\ ça gère pas si on a au moins 17 heros
+					i = 0;
+					j = 50;
+				}
 			}
 		}
 		// monstre (pas fonctionnel à 100%, il faudrait une scrollbar
