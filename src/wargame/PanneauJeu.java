@@ -6,6 +6,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import wargame.ISoldat.TypesH;
@@ -536,35 +537,18 @@ public class PanneauJeu extends JPanel implements IConfig {
 	
 	
 	// Barres de vie en bas
+	// j'abandonne ff (j'ai effacé des trucs mais ça marchait pas mieux)
+	/*
 	private void mettreAJourPanneauInfos(Graphics g) {
 		int i = 0, j = 0;
-		nettoyerPanneauInfos();
 		// heros
+		//nettoyerPanneauInfos();
 		int nbHeros = carte.getNbHeros();
 		Heros [] listeHeros = carte.getListeHeros();
 		for (int k = 0 ; k < nbHeros ; k++) {
 			Heros heros = listeHeros[k];
-			if (!heros.estMort()) {				
-				double pv_max = heros.getPoints();
-				double pv_act = heros.getPointsActuels();
-				double ratio = (pv_act / pv_max) * 100;
-				double taille = (pv_act / pv_max) * 50 + 1;
-				
-				if (ratio >= 50) {
-					g.setColor(Color.GREEN);
-				} else if (ratio < 15) {
-					g.setColor(Color.RED);
-				} else {
-					g.setColor(Color.ORANGE);
-				}
-				g.fillRect(51+i, 16+j, (int) taille, 12);
-				g.drawString("" + heros.getNum(), 35+i, 25+j);
-								
-				Image soldat = new ImageIcon(heros.trouverImg()).getImage();
-				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
-				g.drawImage(soldat, 10+i, 10+j, 20, 20, null);
-				g.drawImage(barre, 45+i, 10+j, 62, 24, null);
-				
+			if (!heros.estMort()) {
+				panneauInfos.add(creeBoutonHeros(heros, g, i, j));
 				i += 110; // décalage vers la droite
 				if (k == 7) { // on peut avoir 8 persos par ligne, donc on va à la ligne en-dessous (si on change le nb de heros...)
 					// /!\ ça gère pas si on a au moins 17 heros
@@ -573,18 +557,19 @@ public class PanneauJeu extends JPanel implements IConfig {
 				}
 			}
 		}
-		panneauInfos.revalidate();
-		panneauInfos.repaint();
 	}
 	
-	private JButton creeBoutonHeros(Heros heros) {
+	private JButton creeBoutonHeros(Heros heros, Graphics g, int i, int j) {
 		JButton boutonHeros = new JButton("" + heros.getNum());
 			
-		ImageIcon icon = new ImageIcon(heros.trouverImg()); 
-		boutonHeros.setIcon(icon); 
-		boutonHeros.setForeground(Color.white);
-	   
-	 
+		//ImageIcon icon = new ImageIcon(heros.trouverImg()); 
+		//boutonHeros.setIcon(icon); 
+		boutonHeros.setBackground(new Color(0,0,0,0));
+		boutonHeros.setForeground(new Color(0,0,0,0));
+		//boutonHeros.setIconTextGap(0);
+		boutonHeros.setBounds(10+i, 9+j, 100, 26);
+		boutonHeros.setHorizontalAlignment(SwingConstants.RIGHT);
+		
 		boutonHeros.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {	
 	    		
@@ -601,6 +586,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauInfos.revalidate();
 		panneauInfos.repaint();
 	}
+	*/
 	
 	
 	// FIN DU JEU
