@@ -303,7 +303,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	}
 	// DEPLACEMENT
 	
-	
+	/*
 	public void dessinSoldat(Graphics g, Carte c) {
 		int x = pos.getX();
 		int y = pos.getY();
@@ -315,7 +315,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 		
 		g.drawImage(imgSpritePersoMage, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4 - NB_PIX_CASE*1/4, 20, 20, null);
 	}
-	
+	*/
 	public String toString() {
 		
 		String s = "";

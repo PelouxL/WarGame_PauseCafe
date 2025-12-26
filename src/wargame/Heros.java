@@ -12,7 +12,7 @@ public class Heros extends Soldat{
 		TYPE = type;
 
 	}
-	
+	/*
 	public void dessinSoldat(Graphics g, Carte c) {
 		int x = super.getPos().getX();
 		int y = super.getPos().getY();
@@ -24,7 +24,7 @@ public class Heros extends Soldat{
 		
 		g.drawImage(imgSpritePersoMage, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4 - NB_PIX_CASE*1/4, 20, 20, null);
 	}
-	
+	*/
 	public TypesH getType() {
 		return this.TYPE;
 	}

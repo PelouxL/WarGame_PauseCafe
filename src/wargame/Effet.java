@@ -1,6 +1,8 @@
 package wargame;
 
-public class Effet {
+import java.io.Serializable;
+
+public class Effet implements Serializable {
 	
 	public final static int INFINI = -1;
 	

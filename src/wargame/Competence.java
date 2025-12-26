@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 public class Competence implements ICompetence, Serializable{
 	private final TypeCompetence type;
 	private int tempsRestantCompetence;
-	private Image imageCompetence;
+	private transient Image imageCompetence;
 	
 	public Competence(TypeCompetence type) {
 		this.type = type;

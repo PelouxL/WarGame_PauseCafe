@@ -78,9 +78,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauCarte = new JPanel() {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				carte.toutDessiner(g, caseSurvolee, caseCliquee, choisiComp);
+				RenduCarte.dessiner(g, carte, caseSurvolee, caseCliquee, choisiComp);
 				if (dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
-					carte.dessineCaseCliquee(g, dragPersoFin);
+					RenduCarte.dessinerCaseCliquee(g, dragPersoFin);
 				}	
 				verifFinJeu();
 				if (finJeu != 0) {
@@ -182,7 +182,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    			g.drawString(infoTexte,10, 15);
 	    		}
 	    		*/
-	    		carte.dessineInfosBas(g);
+	    		
+	    		RenduCarte.dessineInfosBas(g, c);
 	    	}
 	    	
 	    };
@@ -471,8 +472,13 @@ public class PanneauJeu extends JPanel implements IConfig {
 	}
 	
 	private JButton creeBoutonCompetence(Competence competence) {
-		JButton boutonCompetence = new JButton(competence.getType().getNom());
-			
+		String s = competence.getType().getNom();
+		if(competence.peutUtiliser()) {
+		}else {
+			s +=  "\n "+competence.getTempsRestant()+ " tour(s) restant";
+		}
+		JButton boutonCompetence = new JButton(s);
+
 		ImageIcon icon = new ImageIcon(competence.trouverImg()); 
 	    boutonCompetence.setIcon(icon); 
 	    boutonCompetence.setForeground(Color.white);
@@ -530,6 +536,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 
 	public void setCarte(Carte c) {
 	    this.carte = c;
+	    repaint();
 	}
 	
 	// tiens le journal a jour
@@ -570,4 +577,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 			g.drawString("Vous avez perdu...", x, y);
 		}
 	}
+	
+
 }    

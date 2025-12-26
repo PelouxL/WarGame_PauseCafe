@@ -1,8 +1,9 @@
 package wargame;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ListeEffets {
+public class ListeEffets implements Serializable{
 	private ArrayList<Effet> liste;
 	
 	public ListeEffets() {

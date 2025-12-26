@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,12 +17,14 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 public class FenetreCarte extends JFrame {
 	final Carte[] carteActive = { new Carte() };
-	
+    private PanneauJeu panneauCarte;
+
 	public FenetreCarte(Carte carte) {
-		super("Wargame : Le combat final, kostine a l'attaque");
+		super();
 		
 		carteActive[0] = carte;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,7 +52,7 @@ public class FenetreCarte extends JFrame {
 		menuFichier.add(menuQuitter);
 		
 		// ------------- Creation PanneauJeu ----------- //
-		PanneauJeu panneauCarte = new PanneauJeu(carteActive[0]);
+		panneauCarte = new PanneauJeu(carteActive[0]);
 		panneauCarte.setPreferredSize(new Dimension(IConfig.LARGEUR_FENETRE, IConfig.HAUTEUR_FENETRE));
 		
 		// ------------- Action du Menu --------------- //
@@ -57,45 +60,13 @@ public class FenetreCarte extends JFrame {
 		
 		menuSauvegarder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					FileOutputStream fichier = new FileOutputStream("Carte.ser");
-					ObjectOutputStream oos = new ObjectOutputStream(fichier);
-					oos.writeObject(carteActive[0]);
-					oos.flush();
-					oos.close();
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				new FenetreMenuSauvegarde(FenetreCarte.this);
 			}
 		});
 		
 		menuCharger.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FileInputStream fichier;
-				try {
-	
-					fichier = new FileInputStream("Carte.ser");
-					ObjectInputStream ois = new ObjectInputStream(fichier);
-					carteActive[0] = (Carte) ois.readObject();
-					panneauCarte.setCarte(carteActive[0]);
-					
-					panneauCarte.repaint();
-					
-					
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				new FenetreMenuChargement(FenetreCarte.this);
 				
 			}
 		});
@@ -110,4 +81,56 @@ public class FenetreCarte extends JFrame {
 		pack();
 		setVisible(true);
 	}
+	
+	  public Carte getCarte() {
+	        return carteActive[0];
+	    }
+
+	    public PanneauJeu getPanneau() {
+	        return panneauCarte;
+	    }
+
+	    // Méthode pour sauvegarder un slot
+	    public void sauvegarderSlot(int slot) {
+	        try {
+	            File file = new File("Carte_slot" + slot + ".ser");
+	            if(file.exists()) {
+	            	// on demande si on ecrase ou non la sauvegarde
+	                int rep = JOptionPane.showConfirmDialog(this,
+	                        "Le slot " + slot + " existe déjà. Écraser la sauvegarde ?",
+	                        "Écraser la sauvegarde",
+	                        JOptionPane.YES_NO_OPTION);
+	                //on sort si il ne veux pas
+	                if(rep != JOptionPane.YES_OPTION) return;
+	            }
+	            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
+	            oos.writeObject(carteActive[0]);
+	            oos.close();
+	            JOptionPane.showMessageDialog(this, "Sauvegarde réussie !");
+	        } catch(Exception e) {
+	            JOptionPane.showMessageDialog(this, "Erreur lors de la sauvegarde !");
+	        }
+	    }
+
+	    // Méthode pour charger un slot
+	    public void chargerSlot(int slot) {
+	        try {
+	            File file = new File("Carte_slot" + slot + ".ser");
+	            if(!file.exists()) {
+	                JOptionPane.showMessageDialog(this, "Aucune sauvegarde dans ce slot !");
+	                return;
+	            }
+	            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+	            carteActive[0] = (Carte) ois.readObject();
+	            ois.close();
+
+	            panneauCarte.setCarte(carteActive[0]);
+	            panneauCarte.repaint();
+
+	            JOptionPane.showMessageDialog(this, "Chargement réussi !");
+	        } catch(Exception e) {
+	            e.printStackTrace();
+	            JOptionPane.showMessageDialog(this, "Erreur lors du chargement !");
+	        }
+	    }
 }

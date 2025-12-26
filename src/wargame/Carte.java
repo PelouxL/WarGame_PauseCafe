@@ -620,9 +620,16 @@ public class Carte implements IConfig, ICarte, Serializable {
 				 		 + x2 * (y3-y1)
 				 		 + x3 * (y1-y2)) / 2.0 );
 	}
-	// COORTOPOS
 	
+	public List<Heros> getListeHeros(){
+		return listeHeros;
+	}
 	
+	public List<Monstre> getListeMonstres(){
+		return listeMonstres;
+	}
+	
+	/*
 	// DESSIN
 	public void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee, Competence choisiComp) {
 		
@@ -691,7 +698,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 		}
 	}
-			
+	
 	public void dessineZoneDeplacement(Graphics g, Soldat soldat) {
 		EnsemblePosition ePos = soldat.zoneDeplacement();
 		if (getVisibilite(soldat.getPos()) == 1) { // pour les Monstres, on affiche sa zone seulement si le Monstre est visible
@@ -762,7 +769,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			this.dessineInterieurHexagone(g, x, y, null);
 			
 		}
-		*/
+		
 		
 		if (getVisibilite(pos) == 1) {
 			if (trans) {
@@ -814,7 +821,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		g.drawPolygon(liste_x, liste_y, 6);
 	}
 	
-	// permet de choixir l'image au terrain associe 
+ /*	// permet de choixir l'image au terrain associe 
 	public void dessineChoixTerrain(Graphics g, int x, int y, Position pos) {
 		if (carte[pos.getX()][pos.getY()].getType() == TypeTerrain.HERBE) {
 			dessineInterieurHexagone( g,  x,  y, imgTerrainHerbe);
@@ -914,7 +921,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				
 				i += 110; // décalage vers la droite
 			}
-		}
+		} */
 		// monstre (pas fonctionnel à 100%, il faudrait une scrollbar
 		/*
 		i = 0;
@@ -949,6 +956,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// DESSIN
 	
 	
-}
+
 
 
