@@ -30,12 +30,7 @@ public class RenduCarte implements IConfig {
        MÉTHODE PRINCIPALE
        ======================= */
 
-    public static void dessiner(
-            Graphics g,
-            Carte carte,
-            Position caseSurvolee,
-            Position caseCliquee,
-            Competence competenceChoisie) {
+    public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie) {
 
         carte.setVisibilite();
 
@@ -49,7 +44,7 @@ public class RenduCarte implements IConfig {
             }
         }
 
-        if (caseSurvolee != null && caseCliquee == null && carte.getSoldat(caseSurvolee) != null) {
+        if (caseSurvolee != null && carte.getVisibilite(caseSurvolee) != 0 &&caseCliquee == null && carte.getSoldat(caseSurvolee) != null) {
             dessinerZoneDeplacement(g, carte, carte.getSoldat(caseSurvolee));
         }
 

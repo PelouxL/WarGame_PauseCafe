@@ -28,7 +28,12 @@ public class FenetreMenuChargement extends JFrame{
         	JButton bouton = new JButton("slot"+slot);
         	bouton.addActionListener(new ActionListener() {
     			public void actionPerformed(ActionEvent e) {
-    				fenetre.chargerSlot(slot);
+    				if(fenetre == null) {
+    					FenetreCarte fenetreJ = new FenetreCarte(new Carte());
+    					
+    					fenetreJ.chargerSlot(slot);
+    					dispose();
+    				}
         		}
         	});
         add(bouton);

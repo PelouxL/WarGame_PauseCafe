@@ -67,22 +67,8 @@ public class FenetreMenu extends JFrame implements IConfig{
 			
 			bouttonCharger.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					FileInputStream fichier;
-						try {
-							fichier = new FileInputStream("Carte.ser");
-							ObjectInputStream ois = new ObjectInputStream(fichier);
-							new FenetreCarte((Carte) ois.readObject());
-							dispose();
-						} catch (FileNotFoundException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (ClassNotFoundException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
+					new FenetreMenuChargement(null);
+					dispose();
 				}	
 			});
 			
