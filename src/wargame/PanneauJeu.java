@@ -504,8 +504,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    			}
 	    		}else {
 	    			choisiComp = null;
-	    			
-	    			// utiliserCompetence(); // Appeler la fonction qui utilise la compétence
 	    		}
 	    		panneauCarte.repaint();
 	    	}

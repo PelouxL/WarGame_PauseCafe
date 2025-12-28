@@ -34,11 +34,14 @@ public class Competence implements ICompetence, Serializable{
 		}else {
 		
 			// peut-être faire une surchage de la methode pour ne pas viser de hero
-			if(lanceur.getPos().distance(receveur) <= type.getDistance()){
+			if(lanceur.getPos().distance(receveur) <= type.getDistance()
+			   && this.zoneAttaque(lanceur.getPos()).contient(receveur) ){
+				
 				this.appliquerCompetence(lanceur.getPos(), receveur, carte);
 				lanceur.setAction(lanceur.getAction() - type.getCoutAction());
+				tempsRestantCompetence = type.getTempsRechargement();
 			}
-			tempsRestantCompetence = type.getTempsRechargement();
+		
 		}
 	}
 	

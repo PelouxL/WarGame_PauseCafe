@@ -425,8 +425,17 @@ public class Carte implements IConfig, ICarte, Serializable {
 		
 		// Tour des monstres
 		jouerSoldats();
+		decrementerCompSoldat();
 	}
 	
+	public void decrementerCompSoldat() {
+		for(Soldat sh : listeHeros) {
+			sh.decrementerTempsRecharge();
+		}
+		for(Soldat sm : listeMonstres) {
+			sm.decrementerTempsRecharge();
+		}
+	}
 	
 	public void appliquerEffets() {
 		

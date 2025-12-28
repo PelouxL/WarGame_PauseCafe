@@ -11,10 +11,8 @@ import wargame.Terrain.TypeTerrain;
 
 public class RenduCarte implements IConfig {
 
-    /* =======================
-       IMAGES (VUE UNIQUEMENT)
-       ======================= */
 
+	// images
     private static final Image imgTerrainHerbe   = new ImageIcon("./images/terrain/img_terrain_herbe.png").getImage();
     private static final Image imgTerrainEau     = new ImageIcon("./images/terrain/img_terrain_eau.png").getImage();
     private static final Image imgTerrainForet   = new ImageIcon("./images/terrain/img_terrain_foret.png").getImage();
@@ -25,10 +23,6 @@ public class RenduCarte implements IConfig {
     private static final Image imgTerrainSable   = new ImageIcon("./images/terrain/img_terrain_sable.png").getImage();
     private static final Image imgTerrainPont    = new ImageIcon("./images/terrain/img_terrain_pont.png").getImage();
 
-    
-    /* =======================
-       MÉTHODE PRINCIPALE
-       ======================= */
 
     public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie) {
 
@@ -70,10 +64,8 @@ public class RenduCarte implements IConfig {
         }
     }
 
-    /* =======================
-       DESSIN DES CASES
-       ======================= */
-
+    
+    // DESSIN
     private static void dessinerCase(Graphics g, Carte carte, Position pos, boolean transparent) {
 
         int x = pos.getX() / 2;
@@ -107,10 +99,7 @@ public class RenduCarte implements IConfig {
         }
     }
 
-    /* =======================
-       HEXAGONES
-       ======================= */
-
+    // HEXAGONE
     private static void dessinerInterieurHexagone(Graphics g, int x, int y, Image img) {
 
         int offsetX = (y % 2 == 1) ? NB_PIX_CASE / 2 : 0;
@@ -150,9 +139,7 @@ public class RenduCarte implements IConfig {
         };
     }
 
-    /* =======================
-       ZONES & COMPÉTENCES
-       ======================= */
+    // ZONE ET COMPETENECES
 
     private static void dessinerZoneDeplacement(Graphics g, Carte carte, Soldat soldat) {
         EnsemblePosition zone = soldat.zoneDeplacement();
@@ -214,27 +201,6 @@ public class RenduCarte implements IConfig {
         dessinerInterieurHexagone(g, x, y, null); // null = remplissage avec la couleur définie
     }
 
-
-		/*
-    public static void dessinerPorteeCompetence(
-            Graphics g,
-            Carte carte,
-            Competence competence,
-            Soldat lanceur,
-            Position survolee) {
-
-        if (survolee == null) return;
-
-        EnsemblePosition zone = survolee.voisines(
-                competence.getType().getDistance(), true);
-
-        for (int i = 0; i < zone.getNbPos(); i++) {
-            Position p = zone.getPosition(i);
-            g.setColor(competence.typeCouleurAttaque(survolee));
-            dessinerInterieurHexagone(g, p.getX() / 2, p.getY(), null);
-        }
-    }
-    */
     
 	public static void dessineInfosBas(Graphics g, Carte c) {
 		int i = 0;
