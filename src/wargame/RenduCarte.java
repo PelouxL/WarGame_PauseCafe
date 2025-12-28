@@ -22,8 +22,12 @@ public class RenduCarte implements IConfig {
     private static final Image imgTerrainAcide   = new ImageIcon("./images/terrain/img_terrain_acide.png").getImage();
     private static final Image imgTerrainSable   = new ImageIcon("./images/terrain/img_terrain_sable.png").getImage();
     private static final Image imgTerrainPont    = new ImageIcon("./images/terrain/img_terrain_pont.png").getImage();
-
-
+    private static final Image imgPersoMapElf    = new ImageIcon("./images/persos/elfe_map.png").getImage();
+    private static final Image imgPersoMapHumain = new ImageIcon("./images/persos/humain_map.png").getImage();
+    private static final Image imgPersoMapNaim   = new ImageIcon("./images/persos/naim_map.png").getImage();
+    private static final Image imgPersoMapHobbit = new ImageIcon("./images/persos/hobbit_map.png").getImage();
+    private static final Image imgBarreDeVie = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+    
     public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie) {
 
         carte.setVisibilite();
@@ -224,17 +228,17 @@ public class RenduCarte implements IConfig {
 								
 				Image soldat;
 				if (heros.getType() == TypesH.ELF) {
-					soldat = new ImageIcon("./images/persos/elfe_map.png").getImage();
+					soldat = imgPersoMapElf ;
 				} else if (heros.getType() == TypesH.NAIN){
-					soldat = new ImageIcon("./images/persos/nain_map.png").getImage();
+					soldat = imgPersoMapNaim;
 				} else if (heros.getType() == TypesH.HUMAIN){
-					soldat = new ImageIcon("./images/persos/humain_map.png").getImage();
+					soldat = imgPersoMapHumain;
 				} else if (heros.getType() == TypesH.HOBBIT){
-					soldat = new ImageIcon("./images/persos/hobbit_map.png").getImage();
+					soldat = imgPersoMapHobbit;
 				} else {
-					soldat = new ImageIcon("./images/eau.png").getImage();
+					soldat = imgTerrainEau;
 				}
-				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				Image barre = imgBarreDeVie;
 				g.drawImage(soldat, 10+i, 10, 20, 20, null); // à changer pour verif quel soldat c'est (et adapter l'image)
 				g.drawImage(barre, 45+i, 10, 62, 24, null);
 				
