@@ -9,6 +9,12 @@ import wargame.ISoldat.TypesH;
 import wargame.ISoldat.TypesM;
 import wargame.Terrain.TypeTerrain;
 
+/**
+ * Représente la carte du wargame.
+ * Elle gère les terrains, les soldats (héros et monstres),
+ * la visibilité ainsi que le déroulement des tours.
+ */
+
 public class Carte implements IConfig, ICarte, Serializable {
 	private Terrain[][] carte;
 	private int[][] visibilite;
@@ -22,6 +28,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 	private ArrayList<String> combatLog = new ArrayList<String>();
 	private int nbLog = 1;
 
+	/** Initialise la carte du jeu.
+	 * <p>
+	 * La carte est remplie de terrains par défaut, des obstacles
+	 * et des biomes sont générés aléatoirement.
+	 * Les héros et les monstres sont également placés
+	 * sur des positions libres.
+	 */
 	public Carte() {
 		carte = new Terrain[LARGEUR_CARTE*2][HAUTEUR_CARTE];
 		visibilite = new int[LARGEUR_CARTE*2][HAUTEUR_CARTE];
@@ -75,6 +88,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 
 	
 	// LOG DES COMBATS
+	/**
+	 * permet d'ajouter l'historique d'un combat au log
+	 * @param msg a ajouter
+	 */
 	public void addCombatMessage(String msg) { combatLog.add(nbLog + " - " + msg); nbLog++; }
 	public List<String> getCombatLog(){ return combatLog; }
 	public void clearCombatLog() { combatLog.clear(); }
@@ -155,11 +172,14 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 		}
 	}
-	// OBSTACLES
-	
 
 	
 	// ELEMENTS
+	/**
+	 * permet de réccuperer le terrain correspondant a la position
+	 * @param pos position de notre case
+	 * @return le terrain a cette le position
+	 */
 	public Terrain getCase(Position pos) { // try catch 
 		
 		int x = pos.getX();
@@ -167,10 +187,15 @@ public class Carte implements IConfig, ICarte, Serializable {
 		
 		if (pos.estValide()) { return this.carte[x][y]; }
 		
-		System.out.println("Erreur getCase() : x = "+x+", y = "+y);
+		//System.out.println("Erreur getCase() : x = "+x+", y = "+y);
 		return null;
 	}
 	
+	/***
+	 * permet de reccuperer un soldat a une position donnée en parametre
+	 * @param pos position de notre case
+	 * @return renvoie le soldat a la position pos si il existe
+	 */
 	public Soldat getSoldat(Position pos) {	
 		Terrain t = this.getCase(pos);
 	    if (t == null) {
@@ -178,18 +203,25 @@ public class Carte implements IConfig, ICarte, Serializable {
 	    }
 	    return t.getOccupant();
 	}
-	// ELEMENTS
 	
 	
 	// VISIBILITE
+	/**
+	 * Permet de savoir si le joueur a la vision sur cette positio ou non
+	 * @param pos position de la case visible ou non
+	 * @return renvoie si il est visible ou -1 sinon
+	 */
 	public int getVisibilite(Position pos) {
 		if (pos.estValide()) {
 			return this.visibilite[pos.getX()][pos.getY()];
 		}
-		System.out.println("Erreur : getVisibilite :  0 <= x < " + LARGEUR_CARTE + " | 0 <= y < " + HAUTEUR_CARTE);
+		//System.out.println("Erreur : getVisibilite :  0 <= x < " + LARGEUR_CARTE + " | 0 <= y < " + HAUTEUR_CARTE);
 		return -1;
 	}
 	
+	/**
+	 * permet de rendre visible les zones autours des heros
+	 */
 	public void setVisibilite() {
 		for (int i = 0 ; i < LARGEUR_CARTE*2 ; i++) {
 			for (int j = 0 ; j < HAUTEUR_CARTE ; j++) {
@@ -203,10 +235,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 			this.visibilite = heros.setCasesVisibles(this.visibilite);
 		}
 	}
-	// VISIBILITE
 	
 	
 	// POSITION VIDE
+	/**
+	 * permet de trouver une position vide aléatoirement dans la carte
+	 */
 	public Position trouvePositionVide() {
 		int x, y;
 		Position pos;
@@ -224,8 +258,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 		
 		return pos;
 	}
-
-	public Position trouvePositionVide(Position pos) { // utile?
+	/**
+	 * permet de trouver une position vide aléatoirement dans la carte
+	 * depuis une position donnée en param
+	 * @param pos position où il faut regarder ses cases adjacentes
+	 */
+	public Position trouvePositionVide(Position pos) {
 		EnsemblePosition listePos = new EnsemblePosition(8);
 		int i;
 		int dx, dy, x, y;
@@ -249,26 +287,16 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		return listePos.getPosition((int)(Math.random()*listePos.getNbPos())); // modif -1 retire
 	}
-	// POSITION VIDE
-	
-	
-	// TOUR DES MONSTRES
-	/* public Heros trouveHeros() {
-		int i = (int) (Math.random()*listeHeros.size()-1);
-		return listeHeros.get(i);
-	}*/
 	
 	public int getNbTours() { return this.nbTours; }
 	
-	public void jouerSoldats() {
-		
+	/**
+	 * Permet de faire jouer les Monstres et de géré leur "IA"
+	 */
+	public void jouerSoldats() {	
 		// tour des heros vient de finir
 		this.nbTours++;
 		this.tourActuel = TOUR_MONSTRE;
-		
-		// j'ai changé le for pour que ça marche (au lieu de Monstre monstre : this.listeMonstres)
-		/* for (int i = 0 ; i < this.nbMonstre ; i++) {
-			Monstre monstre = listeMonstres[i];*/
 		
 		for (Monstre monstre : this.listeMonstres) {
 			
@@ -294,7 +322,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 			
 			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
 			
-			// while(monstre.getAction() > 0 && !monstre.estMort()) {
 			while(monstre.getAction() > 0) {
 				
 				/*
@@ -359,11 +386,16 @@ public class Carte implements IConfig, ICarte, Serializable {
 		this.soignerHeros();
 		this.resetActionsHeros();
 		
-	}
-	// TOUR DES MONSTRES
-	
+	}	
 	
 	// ACTION SOLDAT (actionHeros a revoir surement)
+	
+	
+	/**
+	 * Permet la gestion du deplacement et de l'affrontement
+	 * @param pos est la position du heros jouer
+	 * @param pos2 est la position où on veux se deplacer/attaquer
+	 */
 	public boolean actionHeros(Position pos, Position pos2) {
 		
 		if (!pos.estValide() || !pos2.estValide()
@@ -395,6 +427,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 	 * A modifier si on decide de pouvoir deplacer un soldat via autre chose qu'un deplacement (ex : competence)
 	 * Reduction et verif des point d'action a faire en dehors de la fonction si on change
 	 */
+	
+	/**
+	 * permet de déplacer un soldat 
+	 * @param pos position où l'on veux se deplacer
+	 * @param soldat Le soldat qu'on veux deplacer
+	 */
 	public boolean deplaceSoldat(Position pos, Soldat soldat) {
 		int x = pos.getX();
 		int y = pos.getY();
@@ -415,6 +453,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	
 	// FIN TOUR
+	/**
+	 * Permet de géré tout evenement de fin de tour tel que 
+	 * appliquer les effets des terrains
+	 * faire jouer les monstres
+	 * et reduire le cooldown des competences
+	 */
 	public void finTour() {
 		// Effets appliques a la fin du tour des monstres
 		appliquerEffets();
@@ -424,7 +468,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 		decrementerCompSoldat();
 	}
 	
-	public void decrementerCompSoldat() {
+	private void decrementerCompSoldat() {
 		for(Soldat sh : listeHeros) {
 			sh.decrementerTempsRecharge();
 		}
@@ -433,6 +477,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 	}
 	
+	/**
+	 * Gère les effets des differents terrains sur les Soldats 
+	 */
 	public void appliquerEffets() {
 		
 		/*
@@ -466,16 +513,18 @@ public class Carte implements IConfig, ICarte, Serializable {
 			else mort(s);
 		}
 	}
-	// FIN TOUR
 	
 	
 	// FIN DU JEU
+	/**
+	 * Verifie si un camp ou l'autres a gagné
+	 * @return
+	 */
 	public int verifierFinJeu() {
 		if (this.listeHeros.isEmpty()) return -1; // Perdu
 		if (this.listeMonstres.isEmpty()) return 1; // Gagne
 		return 0; // pas fini
 	}
-	// FIN DU JEU
 		
 	
 	public void resetActionsHeros() {
@@ -495,6 +544,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	
 	// algo qui reconstruit le chemin dans le bon sens (peut-être inutile ? Mais plus propre)
+	/**
+	 * Permet de trouver le chemins le plus court pour l'ia des Monstres
+	 * tout en esquivant les obstacle
+	 * @param debut position d'où part le monstre
+	 * @param fin position où doit arriver le monstre
+	 * @return renvoie les positions utilisé pour le plus court chemin
+	 */
 	public EnsemblePosition plusCourtChemin(Position debut, Position fin) {
 		Position current = fin;
 		Position [] path = new Position[500];
@@ -546,11 +602,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 		}
 		return cameFrom;
-	}	
-	// ACTION SOLDAT
-	
+	}		
 	
 	// MORT
+	
+	/**
+	 * Vérifie si un soldat est mort, si c'est le cas alors on le supprime du jeu
+	 */
 	public void mort(Soldat soldat) {
 		if (soldat.getPointsActuels() <= 0) {
 			// Suppression du soldat de la liste correspondante
@@ -564,6 +622,12 @@ public class Carte implements IConfig, ICarte, Serializable {
 	
 
 	// COORTOPOS
+	/**
+	 * Permet de convertir la position en pixel de la souris en position de matrice x y
+	 * @param cx pixel sur l'axe x
+	 * @param cy pixel sur l'axe y
+	 * @return renvoie la position dans la matrice terrain
+	 */
 	public Position coorToPos(int cx, int cy) {
 		Position test = coorToPosRect(cx, cy);
 		// on teste si en décalant vers le haut d'1/4 d'hexa ça reste à la même pos
