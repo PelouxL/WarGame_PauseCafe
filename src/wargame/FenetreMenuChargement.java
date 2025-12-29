@@ -14,8 +14,19 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+/**
+ * Fenêtre du chargement des sauvegardes.
+ * <p>
+ * Cette classe affiche le menu des sauvegardes disponible
+ * et permet de charger une sauvegardes existante.
+ */
 public class FenetreMenuChargement extends JFrame{
 	
+	 /**
+     * Constructeur de la fenêtre du menu des chargements.
+     * <p>
+     * Initialise les boutons, leur disposition et les actions associées.
+     */
 	public FenetreMenuChargement(FenetreCarte fenetre) {
 		super("Menu des sauvegardes");		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

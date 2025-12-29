@@ -25,6 +25,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.List;
 
+/**
+ * Représente le panneau principal de jeu.
+ * <p>
+ * Ce panneau contient la carte, les informations sur les soldats,
+ * le journal de combat, et gère les interactions utilisateur 
+ * comme les déplacements, actions et utilisation de compétences.
+ */
 public class PanneauJeu extends JPanel implements IConfig {
 	private Carte carte;
 	private Position caseSurvolee;
@@ -64,7 +71,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private int finJeu = 0;
 	private String messageFinJeu = "";
 	
-	
+	  /**
+     * Crée un panneau de jeu pour une carte donnée.
+     * 
+     * @param c la carte à afficher et gérer
+     */
 	public PanneauJeu(Carte c) {
 		this.carte = c;
 		setLayout( new BorderLayout());
@@ -454,6 +465,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 
 	
 	// -------------------COMPETENCE------------------
+
 	private void mettreAJourPanneauDroit() {
 		panneauDroit.removeAll();
 		if(caseCliquee != null) {
@@ -546,6 +558,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 		}
 	}
 	
+	 /**
+     * Vérifie si le jeu est terminé et met à jour le journal en conséquence.
+     */
 	public void verifFinJeu() {
 		int fin = carte.verifierFinJeu();
 		if (fin != 0) {
@@ -560,7 +575,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 		finJeu = fin;
 	}
 	
-	
+	   /**
+     * Affiche un écran de fin de jeu semi-transparent.
+     * 
+     * @param g contexte graphique
+     */
 	public void afficherFinJeu(Graphics g) {
 		int x, y;
 		x = LARGEUR_PANNEAU_CARTE / 2;

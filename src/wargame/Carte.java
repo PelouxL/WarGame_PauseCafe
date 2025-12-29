@@ -11,6 +11,7 @@ import wargame.Terrain.TypeTerrain;
 
 /**
  * Représente la carte du wargame.
+ * <p>
  * Elle gère les terrains, les soldats (héros et monstres),
  * la visibilité ainsi que le déroulement des tours.
  */

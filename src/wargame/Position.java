@@ -2,10 +2,21 @@ package wargame;
 
 import java.io.Serializable;
 
+/**
+ * Représente une position sur la carte du jeu.
+ * <p>
+ * Une position possède des coordonnées (x, y) et permet
+ * de calculer ses voisines, distances et valider sa validité.
+ */
 public class Position implements IConfig, Serializable {
 	private int x, y;
 	
-	// Constructeur
+	/**
+     * Crée une nouvelle position avec des coordonnées données.
+     * 
+     * @param x coordonnée X
+     * @param y coordonnée Y
+     */
 	public Position(int x, int y) { 
 		this.x = x; 
 		this.y = y;
@@ -18,6 +29,11 @@ public class Position implements IConfig, Serializable {
 	public void setY(int y) { this.y = y; }
 	
 	// Methodes
+	/**
+    * Vérifie si la position est valide sur la carte.
+    * 
+    * @return true si la position est valide, false sinon
+    */
 	public boolean estValide() {
 		if (x < 0 || x >= LARGEUR_CARTE*2 || y < 0 || y >= HAUTEUR_CARTE) return false; 
 		else {
@@ -27,6 +43,11 @@ public class Position implements IConfig, Serializable {
 	}
 	
 	// POSITIONS VOISINES
+	/**
+     * Retourne les positions voisines immédiates (rayon 1).
+     * 
+     * @return un ensemble de positions voisines
+     */
 	public EnsemblePosition voisines() {
 		EnsemblePosition voisines = new EnsemblePosition(6);
 		
@@ -43,6 +64,13 @@ public class Position implements IConfig, Serializable {
 		return voisines;
 	}
 	
+	/**
+     * Retourne les positions voisines jusqu'à un certain rayon.
+     * 
+     * @param rayon distance maximale des positions voisines
+     * @param centre true si la position centrale doit être incluse
+     * @return un ensemble de positions voisines
+     */
 	public EnsemblePosition voisines(int rayon, boolean centre) {
 		int nbVoisinesMax = (3 * rayon) * (rayon +1) +1 ;
 		EnsemblePosition voisines = new EnsemblePosition(nbVoisinesMax);
@@ -78,7 +106,6 @@ public class Position implements IConfig, Serializable {
 		return resultat;
 	}
 	
-	// NE FONCTIONNE PAS , OUT OF BOUNDS
 	public EnsemblePosition voisinesCroix(int rayon) {
 		EnsemblePosition voisines = new EnsemblePosition(6*rayon);
 		
@@ -95,6 +122,12 @@ public class Position implements IConfig, Serializable {
 		return voisines;
 	}	
 	
+	 /**
+     * Vérifie si une position donnée est voisine immédiate.
+     * 
+     * @param pos position à vérifier
+     * @return true si la position est voisine, false sinon
+     */
 	public boolean estVoisine(Position pos) {
 		return this.voisines().contient(pos);
 	}
@@ -102,6 +135,12 @@ public class Position implements IConfig, Serializable {
 	
 	
 	// DISTANCE
+	  /**
+     * Calcule la distance entre cette position et une autre.
+     * 
+     * @param p autre position
+     * @return distance en nombre de cases
+     */
 	public int distance(Position p) {
 		int [] cube1 = this.cube();
 		int [] cube2 = p.cube();
@@ -125,34 +164,21 @@ public class Position implements IConfig, Serializable {
 		return resultat;
 	}
 	
-	
-	/* ANCIENNE VERSION
-	public int[] cube() {
-		int x, y, z;
-		int col = this.getX() / 2;
-		x = col - (this.getY() - (this.getY() % 2)) / 2;
-		z = this.getY();
-		y = -x - z;
-		int [] resultat = {x, y, z};
-		return resultat;
-	}
-	
-	public int[] coord(int x, int y, int z) {
-		int ligne = z;
-		int col = x + (ligne - (ligne % 2)) / 2;
-		int offset_x = ligne % 2;
-		col = col * 2 + offset_x;
-		int [] resultat = {ligne, col};
-		return resultat;
-	}
-	*/
-	
-	// DISTANCE
+	  /**
+     * Vérifie si deux positions sont égales.
+     * 
+     * @param pos position à comparer
+     * @return true si les coordonnées sont identiques, false sinon
+     */
 	public boolean equals(Position pos) {
 		return (this.x == pos.x && this.y == pos.y);
 	}
 	
-	
+	  /**
+     * Représentation textuelle de la position.
+     * 
+     * @return chaîne sous la forme "(x,y)"
+     */
 	public String toString() {
 		return "("+x+","+y+")";
 	}

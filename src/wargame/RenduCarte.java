@@ -9,6 +9,12 @@ import javax.swing.ImageIcon;
 import wargame.ISoldat.TypesH;
 import wargame.Terrain.TypeTerrain;
 
+/**
+ * Classe utilitaire pour le rendu graphique de la carte du jeu.
+ * <p>
+ * Elle permet de dessiner les cases, les hexagones, les soldats, 
+ * ainsi que les zones de déplacement et de portée des compétences.
+ */
 public class RenduCarte implements IConfig {
 
 
@@ -28,6 +34,15 @@ public class RenduCarte implements IConfig {
     private static final Image imgPersoMapHobbit = new ImageIcon("./images/persos/hobbit_map.png").getImage();
     private static final Image imgBarreDeVie = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
     
+    /**
+     * Dessine toute la carte, y compris les cases, les soldats, et les zones de compétence.
+     * 
+     * @param g Graphics utilisé pour le dessin
+     * @param carte la carte contenant toutes les cases et soldats
+     * @param caseSurvolee la case actuellement survolée par la souris
+     * @param caseCliquee la case actuellement sélectionnée
+     * @param competenceChoisie compétence sélectionnée (peut être null)
+     */
     public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie) {
 
         carte.setVisibilite();
@@ -70,6 +85,14 @@ public class RenduCarte implements IConfig {
 
     
     // DESSIN
+    /**
+     * Dessine une case hexagonale.
+     * 
+     * @param g Graphics
+     * @param carte Carte
+     * @param pos Position de la case
+     * @param transparent true si la case doit être dessinée avec transparence
+     */
     private static void dessinerCase(Graphics g, Carte carte, Position pos, boolean transparent) {
 
         int x = pos.getX() / 2;
@@ -156,6 +179,12 @@ public class RenduCarte implements IConfig {
         }
     }
 
+    /**
+     * Dessine une case comme "cliquée" avec un surlignage semi-transparent.
+     *
+     * @param g l'objet Graphics utilisé pour dessiner
+     * @param pos la position de la case à surligner
+     */
     public static void dessinerCaseCliquee(Graphics g, Position pos) {
         g.setColor(new Color(100, 0, 0, 40));
         dessinerInterieurHexagone(g, pos.getX() / 2, pos.getY(), null);
@@ -205,7 +234,12 @@ public class RenduCarte implements IConfig {
         dessinerInterieurHexagone(g, x, y, null); // null = remplissage avec la couleur définie
     }
 
-    
+    /**
+     * Dessine les informations des héros en bas de l'écran.
+     * 
+     * @param g Graphics
+     * @param c Carte contenant les héros
+     */
 	public static void dessineInfosBas(Graphics g, Carte c) {
 		int i = 0;
 		// heros

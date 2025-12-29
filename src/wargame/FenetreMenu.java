@@ -8,15 +8,23 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.awt.Color;
 import java.awt.Component;
 
+/**
+ * Fenêtre principale du menu du jeu.
+ * <p>
+ * Cette classe affiche le menu initial du jeu Wargame, 
+ * avec des boutons permettant de lancer une nouvelle partie, 
+ * charger une partie existante ou quitter le jeu.
+ */
 public class FenetreMenu extends JFrame implements IConfig{
 	
+    /**
+     * Constructeur de la fenêtre du menu.
+     * <p>
+     * Initialise les boutons, leur disposition et les actions associées.
+     */
 		public FenetreMenu () {
 			super("Wargame 2: l'avenement du cafe, le retour");
 
