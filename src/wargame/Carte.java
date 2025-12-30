@@ -38,7 +38,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 		// OBSTACLES
-		riviere(NB_RIVIERE);
 		zoneBiome(NB_SABLE, Terrain.TypeTerrain.SABLE, 2, 2);
 		zoneBiome(NB_FORET, Terrain.TypeTerrain.FORET, 2, 4);
 		zoneBiome(NB_FEU, Terrain.TypeTerrain.FEU, 2, 2);

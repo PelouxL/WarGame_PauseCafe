@@ -8,12 +8,9 @@ import javax.swing.ImageIcon;
 public final class RenduSoldat implements IConfig {
 	private static final Image imgSpritePersoMage = new ImageIcon("./images/sprite_perso/img_sprite_perso_mage.png").getImage();
 	private static final Image imgSpritePersoMonstre = new ImageIcon("./images/sprite_perso/img_sprite_perso_monstre.png").getImage();
-
 	
     private RenduSoldat() {} 
-
-    
-    
+  
     public static void dessiner(Graphics g, Soldat s) {
         Position pos = s.getPos();
 

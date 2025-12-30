@@ -473,29 +473,28 @@ public class PanneauJeu extends JPanel implements IConfig {
 	
 	private JButton creeBoutonCompetence(Competence competence) {
 		String s = competence.getType().getNom();
-		if(competence.peutUtiliser()) {
-		}else {
-			s +=  "\n "+competence.getTempsRestant()+ " tour(s) restant";
-		}
 		JButton boutonCompetence = new JButton(s);
-
-		ImageIcon icon = new ImageIcon(competence.trouverImg()); 
+		ImageIcon icon = new ImageIcon(competence.trouverImg());
+		
+		// Afficher le temps restant
+		if(!competence.peutUtiliser()) s +=  "\n "+competence.getTempsRestant()+ " tour(s) restant";
+		
+		// Initialisation du bouton
+		boutonCompetence.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, 50)); // pas pris en compte?
 	    boutonCompetence.setIcon(icon); 
 	    boutonCompetence.setForeground(Color.white);
-	    if(!competence.peutUtiliser()){
-	    	 boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
-	    }else {
-	    	 boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
-	    }
-	   
 	 
+	    if(!competence.peutUtiliser()) boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
+	    else boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+	    
+	    // Action
 	    boutonCompetence.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {	
 	    		if(choisiComp == null) {	
 	    			choisiComp = competence;
+	    			
 	    			if(choisiComp.peutUtiliser()) {
 	    				changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
-	    				
 	    			}else if(carte.getSoldat(caseCliquee).getAction() < choisiComp.getType().getCoutAction()){
 	    				System.out.println("Vous n'aveez pas les point d'action necessaire ! ");
 	    			}else {
