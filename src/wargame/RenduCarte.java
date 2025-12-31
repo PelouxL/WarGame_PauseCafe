@@ -3,29 +3,39 @@ package wargame;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-
 import javax.swing.ImageIcon;
-
-import wargame.ISoldat.TypesH;
 import wargame.Terrain.TypeTerrain;
 
 public class RenduCarte implements IConfig {
 
 
-	// images
-    private static final Image imgTerrainHerbe   = new ImageIcon("./images/terrain/img_terrain_herbe.png").getImage();
-    private static final Image imgTerrainEau     = new ImageIcon("./images/terrain/img_terrain_eau.png").getImage();
-    private static final Image imgTerrainForet   = new ImageIcon("./images/terrain/img_terrain_foret.png").getImage();
-    private static final Image imgTerrainRocher  = new ImageIcon("./images/terrain/img_terrain_rocher.png").getImage();
-    private static final Image imgTerrainVillage = new ImageIcon("./images/terrain/img_terrain_village.png").getImage();
-    private static final Image imgTerrainFeu     = new ImageIcon("./images/terrain/img_terrain_feu.png").getImage();
-    private static final Image imgTerrainAcide   = new ImageIcon("./images/terrain/img_terrain_acide.png").getImage();
-    private static final Image imgTerrainSable   = new ImageIcon("./images/terrain/img_terrain_sable.png").getImage();
-    private static final Image imgTerrainPont    = new ImageIcon("./images/terrain/img_terrain_pont.png").getImage();
-    private static final Image imgPersoMapElf    = new ImageIcon("./images/persos/elfe_map.png").getImage();
-    private static final Image imgPersoMapHumain = new ImageIcon("./images/persos/humain_map.png").getImage();
-    private static final Image imgPersoMapNaim   = new ImageIcon("./images/persos/naim_map.png").getImage();
-    private static final Image imgPersoMapHobbit = new ImageIcon("./images/persos/hobbit_map.png").getImage();
+	// IMAGES
+	
+	// terrains
+    private static final Image imgTerrainHerbe    = new ImageIcon("./images/terrain/img_terrain_herbe.png").getImage();
+    private static final Image imgTerrainEau      = new ImageIcon("./images/terrain/img_terrain_eau.png").getImage();
+    private static final Image imgTerrainForet    = new ImageIcon("./images/terrain/img_terrain_foret.png").getImage();
+    private static final Image imgTerrainRocher   = new ImageIcon("./images/terrain/img_terrain_rocher.png").getImage();
+    private static final Image imgTerrainVillage  = new ImageIcon("./images/terrain/img_terrain_village.png").getImage();
+    private static final Image imgTerrainFeu      = new ImageIcon("./images/terrain/img_terrain_feu.png").getImage();
+    private static final Image imgTerrainAcide    = new ImageIcon("./images/terrain/img_terrain_acide.png").getImage();
+    private static final Image imgTerrainSable    = new ImageIcon("./images/terrain/img_terrain_sable.png").getImage();
+    private static final Image imgTerrainPont     = new ImageIcon("./images/terrain/img_terrain_pont.png").getImage();
+    
+    // héros
+    private static final Image imgPersoMapElf     = new ImageIcon("./images/persos/elfe_map.png").getImage();
+    private static final Image imgPersoMapHumain  = new ImageIcon("./images/persos/humain_map.png").getImage();
+    private static final Image imgPersoMapNain    = new ImageIcon("./images/persos/nain_map.png").getImage();
+    private static final Image imgPersoMapHobbit  = new ImageIcon("./images/persos/hobbit_map.png").getImage();
+    private static final Image imgPersoMapAnge    = new ImageIcon("./images/persos/ange_map.png").getImage();
+    
+    // monstres
+    private static final Image imgPersoMapTroll   = new ImageIcon("./images/persos/troll_map.png").getImage();
+    private static final Image imgPersoMapOrc     = new ImageIcon("./images/persos/orc_map.png").getImage();
+    private static final Image imgPersoMapGobelin = new ImageIcon("./images/persos/gobelin_map.png").getImage();
+    private static final Image imgPersoMapDemon   = new ImageIcon("./images/persos/demon_map.png").getImage();
+    
+    // autre
     private static final Image imgBarreDeVie = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
     
     public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie) {
@@ -206,15 +216,22 @@ public class RenduCarte implements IConfig {
     }
 
     
-	public static void dessineInfosBas(Graphics g, Carte c) {
-		int i = 0;
+	public static void dessineInfosBas(Graphics g, Carte c, int indiceHerosSurvole) {
+		int i = 0, j = 0;
 		// heros
-		for (Heros heros : c.getListeHeros()) {
+        int nbHeros = c.getNbHeros();
+		for (int k = 0 ; k < nbHeros ; k++) {
+			Heros heros = c.getListeHeros().get(k);
 			if (!heros.estMort()) {				
 				double pv_max = heros.getPoints();
 				double pv_act = heros.getPointsActuels();
 				double ratio = (pv_act / pv_max) * 100;
 				double taille = (pv_act / pv_max) * 50 + 1;
+				
+				if (k == indiceHerosSurvole) {
+					g.setColor(Color.RED);
+					g.fillRect(5+i, 5+j, 110, 35);
+				}
 				
 				if (ratio >= 50) {
 					g.setColor(Color.GREEN);
@@ -223,27 +240,50 @@ public class RenduCarte implements IConfig {
 				} else {
 					g.setColor(Color.ORANGE);
 				}
-				g.fillRect(51+i, 16, (int) taille, 12);
-				g.drawString("" + heros.getNum(), 35+i, 25);
+				g.fillRect(51+i, 16+j, (int) taille, 12);
+				g.drawString("" + heros.getNum(), 35+i, 25+j);
 								
-				Image soldat;
-				if (heros.getType() == TypesH.ELF) {
-					soldat = imgPersoMapElf ;
-				} else if (heros.getType() == TypesH.NAIN){
-					soldat = imgPersoMapNaim;
-				} else if (heros.getType() == TypesH.HUMAIN){
-					soldat = imgPersoMapHumain;
-				} else if (heros.getType() == TypesH.HOBBIT){
-					soldat = imgPersoMapHobbit;
-				} else {
-					soldat = imgTerrainEau;
-				}
-				Image barre = imgBarreDeVie;
-				g.drawImage(soldat, 10+i, 10, 20, 20, null); // à changer pour verif quel soldat c'est (et adapter l'image)
-				g.drawImage(barre, 45+i, 10, 62, 24, null);
+				Image im_heros = new ImageIcon(heros.trouverImg()).getImage();
+				Image im_barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				g.drawImage(im_heros, 10+i, 10+j, 20, 20, null);
+				g.drawImage(im_barre, 45+i, 10+j, 62, 24, null);
 				
 				i += 110; // décalage vers la droite
+				if (k == 7) { // on peut avoir 8 persos par ligne, donc on va à la ligne en-dessous (si on change le nb de heros...)
+					// /!\ ça gère pas si on a au moins 17 heros
+					i = 0;
+					j = 50;
+				}
 			}
 		}
+		// monstre (pas fonctionnel à 100%, il faudrait une scrollbar
+		/*
+		i = 0;
+		System.out.println("NB MONSTRE = " + this.nbMonstre);
+		for (int j = 0 ; j < this.nbMonstre ; j++) {
+			Monstre monstre = listeMonstres[j];
+			if (!monstre.estMort()) {
+				Image soldat = new ImageIcon("./images/elfe_1.png").getImage();
+				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				g.drawImage(soldat, 10+i, 60, 20, 20, null);
+				g.drawImage(barre, 35+i, 60, 54, 20, null);
+				
+				double pv_max = monstre.getPoints();
+				double pv_act = monstre.getPointsActuels();
+				double ratio = (pv_act / pv_max) * 100;
+				double taille = (pv_act / pv_max) * 46;
+				
+				if (ratio >= 50) {
+					g.setColor(Color.GREEN);
+				} else if (ratio < 15) {
+					g.setColor(Color.RED);
+				} else {
+					g.setColor(Color.ORANGE);
+				}
+				g.fillRect(39+i, 64, (int) taille, 12);
+				g.drawString("" + monstre.getNum(), 100+i, 60);
+				i += 100;
+			}
+		}*/
 	}
 }

@@ -188,7 +188,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    		}
 	    		*/
 	    		
-	    		RenduCarte.dessineInfosBas(g, c);
+	    		RenduCarte.dessineInfosBas(g, c, indiceHerosSurvole);
 	    		//carte.dessineInfosBas(g, indiceHerosSurvole);
 	    	}
 	    	
