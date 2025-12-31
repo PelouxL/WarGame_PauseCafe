@@ -36,7 +36,7 @@ public class Heros extends Soldat{
 			   path += "hobbit";
 			   break;
 		   case ANGE:
-			   path += "humain"; // placeholder
+			   path += "ange";
 			   break;
 		   case POUBELLEMALICIEUSE:
 			   path += "humain"; // placeholder

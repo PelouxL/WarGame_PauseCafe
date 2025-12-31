@@ -18,4 +18,27 @@ public class Monstre extends Soldat {
 	public String getNom() {
 		return this.NOM;
 	}
+	
+	public String trouverImg() {
+		String path = "./images/persos/";
+		switch(this.getType()) {
+		   case TROLL:
+			   path += "troll";
+			   break;
+		   case ORC:
+			   path += "orc";
+			   break;
+		   case GOBELIN:
+			   path += "gobelin";
+			   break;
+		   case DEMON:
+			   path += "demon";
+			   break;
+		   case MAITREDUCAFE:
+			   path += "demon"; // placeholder
+			   break;
+		}
+	    path += "_map.png";
+	    return path;
+	}
 }
