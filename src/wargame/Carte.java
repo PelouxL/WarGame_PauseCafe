@@ -1,9 +1,13 @@
 package wargame;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 
 import wargame.ISoldat.TypesH;
 import wargame.ISoldat.TypesM;
@@ -180,6 +184,51 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	// ELEMENTS
 	
+	public int getNbHeros() {
+		return this.nbHeros;
+	}
+	
+	public int getNbMonstre() {
+		return this.nbMonstre;
+	}
+
+	public List<Heros> getListeHeros(){
+		return listeHeros;
+	}
+	
+	public List<Monstre> getListeMonstres(){
+		return listeMonstres;
+	}
+	
+	public int getIndiceHeros(Heros heros) {
+		for (int i = 0 ; i < nbHeros ; i++) {
+			if (listeHeros[i].getNum() == heros.getNum()) {
+				return i;
+			}
+		}
+		return -1; // erreur
+	}
+	
+	public int getIndiceMonstre(Monstre monstre) {
+		for (int i = 0 ; i < nbMonstre ; i++) {
+			if (listeMonstres[i].getNum() == monstre.getNum()) {
+				return i;
+			}
+		}
+		return -1; // erreur
+	}
+	
+	// FIN DU JEU
+	public int verifierFinJeu() {
+		if (this.nbHeros == 0) { // IA a gagné
+			return -1;
+		} else {
+			if (this.nbMonstre == 0) { // joueur a gagné
+				return 1;
+			}
+		}
+		return 0; // pas fini
+	}
 	
 	// VISIBILITE
 	public int getVisibilite(Position pos) {
@@ -199,8 +248,8 @@ public class Carte implements IConfig, ICarte, Serializable {
 				visibilite[i][j] = 0; // on reset tout
 			}
 		}
-		for (Heros heros : this.listeHeros) {
-			this.visibilite = heros.setCasesVisibles(this.visibilite);
+		for (int i = 0 ; i < nbHeros ; i++) {
+			this.visibilite = listeHeros[i].setCasesVisibles(this.visibilite);
 		}
 	}
 	// VISIBILITE
@@ -266,24 +315,19 @@ public class Carte implements IConfig, ICarte, Serializable {
 		this.nbTours++;
 		this.tourActuel = TOUR_MONSTRE;
 		
-		// j'ai changé le for pour que ça marche (au lieu de Monstre monstre : this.listeMonstres)
-		/* for (int i = 0 ; i < this.nbMonstre ; i++) {
-			Monstre monstre = listeMonstres[i];*/
-		
-		for (Monstre monstre : this.listeMonstres) {
-			
-			System.out.println(" -> Debut du tour");
-			
+		// j'ai changé le for pour que ça marche (au lieu de Monstre monstre : this.listeMonstres)				
+		for (int i = 0 ; i < this.nbMonstre ; i++) {
 			// On recupere le chemin le plus court vers le heros 0
 			if (listeHeros.isEmpty()) return;
 			Heros heros = listeHeros.get(0);
+			Monstre monstre = listeMonstres.get(i);
 			EnsemblePosition chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
 			int distanceHeros = chemin.getNbPos() - 1;
+			System.out.println(" -> Debut du tour");
 			
-			// On compare les chemins de chaque heros pour trouver le heros le plus proche
-			for (int i=1; i < this.listeHeros.size(); i++) {
-				Heros test = listeHeros.get(i);
-				
+			// Le monstre cherche le heros le plus proche
+			for (int j=0; j < this.nbHeros; j++) {
+				Heros test = listeHeros.get(j);
 				chemin = this.plusCourtChemin(monstre.getPos(), test.getPos());
 				int distanceTest = chemin.getNbPos() - 1;
 				if (distanceTest < distanceHeros) {
@@ -294,8 +338,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 			
 			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
 			
-			// while(monstre.getAction() > 0 && !monstre.estMort()) {
-			while(monstre.getAction() > 0) {
+			// Tant qu'il reste des actions au monstre il regarde s'il peut attaquer, sinon il avance
+			while(monstre.getAction() > 0 && !monstre.estMort()) {
+				//System.out.println(" -> PA = "+monstre.getAction()+"actions");
+				//System.out.println("Portee du monstre : " + monstre.getPortee());
 				
 				/*
 				 * 2 cas : 
@@ -626,13 +672,196 @@ public class Carte implements IConfig, ICarte, Serializable {
 				 		 + x3 * (y1-y2)) / 2.0 );
 	}
 	
-	public List<Heros> getListeHeros(){
-		return listeHeros;
+	// je laisse en comm c'est juste pour que je puisse màj avec mes modifs plus facilement après
+	/*
+	public void dessinePorteeCompetence(Graphics g, Competence competence, Soldat lanceur, Position caseSurvolee, Position caseCliquee) {
+		EnsemblePosition ePos = lanceur.getPos().voisinesCroix(competence.getType().getDistance());
+		EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone(), false);
+		
+		for (int i = 0; i < ePos.getNbPos(); i++) {
+			Soldat soldat = (getSoldat(ePos.getPosition(i)));
+			if(soldat != null) {
+				if(soldat instanceof Heros) {
+					this.dessineCase(g, Color.decode("#6B1818"), ePos.getPosition(i));
+				}else {
+					this.dessineCase(g, Color.decode("#403939"), ePos.getPosition(i));
+				}
+			}else {
+				// penser a changer la couleur en fonction d'un spell degat / soin
+				this.dessineCase(g, COULEUR_PORTEE_COMP, ePos.getPosition(i));
+			}
+		}
+		
+		if(caseSurvolee.estValide() && ePos.contient(caseSurvolee)){
+			for(int j = 0; j < zoneAtt.getNbPos(); j++) {
+				this.dessineCase(g, competence.typeCouleurAttaque(caseSurvolee) , zoneAtt.getPosition(j));
+				
+			}
+		}
+		
+	}
+			
+			
+	public void dessineCaseCliquee(Graphics g, Position pos) {
+		int x = pos.getX(),
+			y = pos.getY();
+		Color couleur = new Color(100,0,0,20); // gestion de l'oppacité
+		g.setColor(couleur);
+		this.dessineInterieurHexagone(g, x/2, y);
 	}
 	
-	public List<Monstre> getListeMonstres(){
-		return listeMonstres;
+	public void dessineCase(Graphics g, Color couleur, Position pos) {
+		int x = pos.getX(),
+			y = pos.getY();
+		int offset_x = 0;
+		x = x/2;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
+		
+		if (getVisibilite(pos) == 1) {
+			g.setColor(couleur);
+		} else {
+			g.setColor(COULEUR_INCONNU);
+			//g.setColor(couleur); //VISIBILITE DECOMMENTER POUR TESTS
+		}
+		this.dessineInterieurHexagone(g, x, y);
+		g.setColor(Color.BLACK);
+		this.dessineContourHexagone(g, x, y);
+		
+		// Ajout des numeros 
+		Soldat soldat = getSoldat(pos);
+		g.setColor(Color.WHITE);
+		if(soldat instanceof Monstre && getVisibilite(pos) == 1) {
+			g.drawString("" + soldat.getNum(), x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
+		}else if(soldat instanceof Heros) {
+			char lettre = (char)('A' + soldat.getNum());
+			g.drawString("" + lettre, x*NB_PIX_CASE + offset_x + NB_PIX_CASE/4, y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4);
+		}
 	}
+	
+	private void dessineContourHexagone(Graphics g, int x, int y) {
+		int offset_x = 0;
+		if (y % 2 == 1) {
+			offset_x = OFFSET_X;
+		}
+		int [] liste_x = {x*NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + offset_x};
+		int [] liste_y = {y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+				  		  y*NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
+		g.drawPolygon(liste_x, liste_y, 6);
+	}
+	
+	private void dessineInterieurHexagone(Graphics g, int x, int y) {
+		int offset_x = 0;
+		if (y % 2 == 1) {
+			offset_x = NB_PIX_CASE / 2;
+		}
+		int [] liste_x = {x*NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE + offset_x,
+				  		  x*NB_PIX_CASE + NB_PIX_CASE/2 + offset_x,
+				  		  x*NB_PIX_CASE + offset_x};
+		int [] liste_y = {y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+				  		  y*NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE,
+						  y*NB_PIX_CASE*3/4 + NB_PIX_CASE*3/4};
+		g.fillPolygon(liste_x, liste_y, 6);
+	}
+	
+	private void dessineBrouillard(Graphics g, Position pos) {
+		int x = pos.getX(),
+			y = pos.getY();
+		x = x/2;
+		Color couleur_base = g.getColor();
+		g.setColor(COULEUR_INCONNU);
+		dessineInterieurHexagone(g, x, y);
+		g.setColor(couleur_base); // juste pour remettre la couleur qu'on avait avant l'appel
+	}
+	
+	public void dessineInfosBas(Graphics g, int indiceHerosSurvole) {
+		int i = 0, j = 0;
+		// heros
+		for (int k = 0 ; k < this.nbHeros ; k++) {
+			Heros heros = listeHeros[k];
+			if (!heros.estMort()) {				
+				double pv_max = heros.getPoints();
+				double pv_act = heros.getPointsActuels();
+				double ratio = (pv_act / pv_max) * 100;
+				double taille = (pv_act / pv_max) * 50 + 1;
+				
+				if (k == indiceHerosSurvole) {
+					g.setColor(Color.RED);
+					g.fillRect(5+i, 5+j, 110, 35);
+				}
+				
+				if (ratio >= 50) {
+					g.setColor(Color.GREEN);
+				} else if (ratio < 15) {
+					g.setColor(Color.RED);
+				} else {
+					g.setColor(Color.ORANGE);
+				}
+				g.fillRect(51+i, 16+j, (int) taille, 12);
+				g.drawString("" + heros.getNum(), 35+i, 25+j);
+								
+				Image im_heros = new ImageIcon(heros.trouverImg()).getImage();
+				Image im_barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				g.drawImage(im_heros, 10+i, 10+j, 20, 20, null);
+				g.drawImage(im_barre, 45+i, 10+j, 62, 24, null);
+				
+				i += 110; // décalage vers la droite
+				if (k == 7) { // on peut avoir 8 persos par ligne, donc on va à la ligne en-dessous (si on change le nb de heros...)
+					// /!\ ça gère pas si on a au moins 17 heros
+					i = 0;
+					j = 50;
+				}
+			}
+		}
+		// monstre (pas fonctionnel à 100%, il faudrait une scrollbar
+		
+		i = 0;
+		System.out.println("NB MONSTRE = " + this.nbMonstre);
+		for (int j = 0 ; j < this.nbMonstre ; j++) {
+			Monstre monstre = listeMonstres[j];
+			if (!monstre.estMort()) {
+				Image soldat = new ImageIcon("./images/elfe_1.png").getImage();
+				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				g.drawImage(soldat, 10+i, 60, 20, 20, null);
+				g.drawImage(barre, 35+i, 60, 54, 20, null);
+				
+				double pv_max = monstre.getPoints();
+				double pv_act = monstre.getPointsActuels();
+				double ratio = (pv_act / pv_max) * 100;
+				double taille = (pv_act / pv_max) * 46;
+				
+				if (ratio >= 50) {
+					g.setColor(Color.GREEN);
+				} else if (ratio < 15) {
+					g.setColor(Color.RED);
+				} else {
+					g.setColor(Color.ORANGE);
+				}
+				g.fillRect(39+i, 64, (int) taille, 12);
+				g.drawString("" + monstre.getNum(), 100+i, 60);
+				i += 100;
+			}
+		}
+		
+	}
+	*/
+	// DESSIN
 	
 }
 	

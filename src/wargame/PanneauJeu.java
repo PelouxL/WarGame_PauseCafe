@@ -6,7 +6,11 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+
+import wargame.ISoldat.TypesH;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -44,6 +48,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	// information du panneauInfo
 	private String infoTexte ="";
 	private String infoTexte2 ="";
+	private int indiceHerosSurvole = -1;
 	
 	// different sections
 	private JPanel panneauCarte;
@@ -184,6 +189,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    		*/
 	    		
 	    		RenduCarte.dessineInfosBas(g, c);
+	    		//carte.dessineInfosBas(g, indiceHerosSurvole);
 	    	}
 	    	
 	    };
@@ -299,8 +305,12 @@ public class PanneauJeu extends JPanel implements IConfig {
 						Soldat soldat = carte.getSoldat(caseSurvolee);
 						if(soldat instanceof Soldat) {
 							infoTexte = soldat.toString();
+							if (soldat instanceof Heros) {
+								indiceHerosSurvole = carte.getIndiceHeros((Heros) soldat);
+							}
 						}else {
 							infoTexte ="";
+							indiceHerosSurvole = -1;
 						}
 
 					}else {
@@ -546,6 +556,61 @@ public class PanneauJeu extends JPanel implements IConfig {
 		}
 	}
 	
+	
+	// Barres de vie en bas
+	// j'abandonne ff (j'ai effacé des trucs mais ça marchait pas mieux)
+	/*
+	private void mettreAJourPanneauInfos(Graphics g) {
+		int i = 0, j = 0;
+		// heros
+		//nettoyerPanneauInfos();
+		int nbHeros = carte.getNbHeros();
+		Heros [] listeHeros = carte.getListeHeros();
+		for (int k = 0 ; k < nbHeros ; k++) {
+			Heros heros = listeHeros[k];
+			if (!heros.estMort()) {
+				panneauInfos.add(creeBoutonHeros(heros, g, i, j));
+				i += 110; // décalage vers la droite
+				if (k == 7) { // on peut avoir 8 persos par ligne, donc on va à la ligne en-dessous (si on change le nb de heros...)
+					// /!\ ça gère pas si on a au moins 17 heros
+					i = 0;
+					j = 50;
+				}
+			}
+		}
+	}
+	
+	private JButton creeBoutonHeros(Heros heros, Graphics g, int i, int j) {
+		JButton boutonHeros = new JButton("" + heros.getNum());
+			
+		//ImageIcon icon = new ImageIcon(heros.trouverImg()); 
+		//boutonHeros.setIcon(icon); 
+		boutonHeros.setBackground(new Color(0,0,0,0));
+		boutonHeros.setForeground(new Color(0,0,0,0));
+		//boutonHeros.setIconTextGap(0);
+		boutonHeros.setBounds(10+i, 9+j, 100, 26);
+		boutonHeros.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		boutonHeros.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {	
+	    		
+	    		panneauCarte.repaint();
+	    		panneauInfos.repaint();
+	    	}
+	    });
+			
+		return boutonHeros;
+	}
+	
+	private void nettoyerPanneauInfos() {
+		panneauInfos.removeAll();
+		panneauInfos.revalidate();
+		panneauInfos.repaint();
+	}
+	*/
+	
+	
+	// FIN DU JEU
 	public void verifFinJeu() {
 		int fin = carte.verifierFinJeu();
 		if (fin != 0) {
