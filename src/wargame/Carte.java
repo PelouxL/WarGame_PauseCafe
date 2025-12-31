@@ -185,11 +185,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// ELEMENTS
 	
 	public int getNbHeros() {
-		return this.nbHeros;
+		return listeHeros.size();
 	}
 	
 	public int getNbMonstre() {
-		return this.nbMonstre;
+		return listeMonstres.size();
 	}
 
 	public List<Heros> getListeHeros(){
@@ -201,8 +201,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	
 	public int getIndiceHeros(Heros heros) {
+		int nbHeros = getNbHeros();
 		for (int i = 0 ; i < nbHeros ; i++) {
-			if (listeHeros[i].getNum() == heros.getNum()) {
+			if (listeHeros.get(i).getNum() == heros.getNum()) {
 				return i;
 			}
 		}
@@ -210,24 +211,13 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	
 	public int getIndiceMonstre(Monstre monstre) {
+		int nbMonstre = getNbMonstre();
 		for (int i = 0 ; i < nbMonstre ; i++) {
-			if (listeMonstres[i].getNum() == monstre.getNum()) {
+			if (listeMonstres.get(i).getNum() == monstre.getNum()) {
 				return i;
 			}
 		}
 		return -1; // erreur
-	}
-	
-	// FIN DU JEU
-	public int verifierFinJeu() {
-		if (this.nbHeros == 0) { // IA a gagné
-			return -1;
-		} else {
-			if (this.nbMonstre == 0) { // joueur a gagné
-				return 1;
-			}
-		}
-		return 0; // pas fini
 	}
 	
 	// VISIBILITE
@@ -240,6 +230,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	}
 	
 	public void setVisibilite() {
+		int nbHeros = getNbHeros();
 		for (int i = 0 ; i < LARGEUR_CARTE*2 ; i++) {
 			for (int j = 0 ; j < HAUTEUR_CARTE ; j++) {
 				if (i+j % 2 == 1) {
@@ -249,7 +240,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 			}
 		}
 		for (int i = 0 ; i < nbHeros ; i++) {
-			this.visibilite = listeHeros[i].setCasesVisibles(this.visibilite);
+			this.visibilite = listeHeros.get(i).setCasesVisibles(this.visibilite);
 		}
 	}
 	// VISIBILITE
@@ -314,19 +305,22 @@ public class Carte implements IConfig, ICarte, Serializable {
 		// tour des heros vient de finir
 		this.nbTours++;
 		this.tourActuel = TOUR_MONSTRE;
+
+		int nbMonstre = getNbMonstre();
 		
 		// j'ai changé le for pour que ça marche (au lieu de Monstre monstre : this.listeMonstres)				
-		for (int i = 0 ; i < this.nbMonstre ; i++) {
+		for (int i = 0 ; i < nbMonstre ; i++) {
 			// On recupere le chemin le plus court vers le heros 0
 			if (listeHeros.isEmpty()) return;
 			Heros heros = listeHeros.get(0);
 			Monstre monstre = listeMonstres.get(i);
 			EnsemblePosition chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
 			int distanceHeros = chemin.getNbPos() - 1;
+			int nbHeros = getNbHeros();
 			System.out.println(" -> Debut du tour");
 			
 			// Le monstre cherche le heros le plus proche
-			for (int j=0; j < this.nbHeros; j++) {
+			for (int j=0; j < nbHeros; j++) {
 				Heros test = listeHeros.get(j);
 				chemin = this.plusCourtChemin(monstre.getPos(), test.getPos());
 				int distanceTest = chemin.getNbPos() - 1;
