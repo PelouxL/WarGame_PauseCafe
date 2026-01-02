@@ -52,14 +52,12 @@ public class FenetreCarte extends JFrame {
 		menuBar.add(menuFichier);
 		
 		JMenuItem menuCharger = new JMenuItem("Charger");
-		JMenuItem menuSauvegarder = new JMenuItem("sauvegarder");
-		JMenuItem menuExporter = new JMenuItem("Exporter");
-		JMenuItem menuImporter = new JMenuItem("Importer");
+		JMenuItem menuSauvegarder = new JMenuItem("Sauvegarder");
+		JMenuItem menuRedemarer = new JMenuItem("Redémarer");
 		JMenuItem menuQuitter = new JMenuItem("Quitter");
 		menuFichier.add(menuCharger);
 		menuFichier.add(menuSauvegarder);
-		menuFichier.add(menuExporter);
-		menuFichier.add(menuImporter);
+		menuFichier.add(menuRedemarer);
 		menuFichier.add(menuQuitter);
 		
 		// ------------- Creation PanneauJeu ----------- //
@@ -72,6 +70,13 @@ public class FenetreCarte extends JFrame {
 		menuSauvegarder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new FenetreMenuSauvegarde(FenetreCarte.this);
+			}
+		});
+		
+		menuRedemarer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FenetreCarte.this.dispose();
+				new FenetreCarte(new Carte());
 			}
 		});
 		
@@ -88,21 +93,12 @@ public class FenetreCarte extends JFrame {
 		pack();
 		setVisible(true);
 	}
-	
-	/**
-	 * Retourne la carte actuellement affichée.
-	 *
-	 * @return carte active
-	 */
+
 	public Carte getCarte() {
 	    return carteActive[0];
 	}
 
-	/**
-	 * Retourne le panneau de jeu associé à la fenêtre.
-	 *
-	 * @return panneau de jeu
-	 */
+
 	public PanneauJeu getPanneau() {
 	    return panneauCarte;
 	}

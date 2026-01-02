@@ -26,6 +26,7 @@ public class FenetreMenuChargement extends JFrame{
      * Constructeur de la fenêtre du menu des chargements.
      * <p>
      * Initialise les boutons, leur disposition et les actions associées.
+     * @param permet l'accès a la fenetre dans les boutons d'action
      */
 	public FenetreMenuChargement(FenetreCarte fenetre) {
 		super("Menu des sauvegardes");		

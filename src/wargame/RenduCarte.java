@@ -190,7 +190,15 @@ public class RenduCarte implements IConfig {
         dessinerInterieurHexagone(g, pos.getX() / 2, pos.getY(), null);
     }
 
-    
+    /**
+     * Dessine  sur la carte l'ensemble des position d'une competence.
+     * 
+     * @param g l'objet Graphics utilisé pour dessiner
+     * @param carte reccupere l'état du jeu
+     * @param competence la competence a dessiner
+     * @param lanceur le soldat qui lance le sort
+     * @param caseSurvolee l'emplacement de la souris actuelle
+     */
     public static void dessinerPorteeCompetence(Graphics g, Carte carte, Competence competence, Soldat lanceur, Position caseSurvolee) {
 
         if (caseSurvolee == null) return;

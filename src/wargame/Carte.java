@@ -95,6 +95,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 	 */
 	public void addCombatMessage(String msg) { combatLog.add(nbLog + " - " + msg); nbLog++; }
 	public List<String> getCombatLog(){ return combatLog; }
+	
+	/**
+	 * permet de nettoyer les logs en supprimant le contenue 
+	 */
 	public void clearCombatLog() { combatLog.clear(); }
 	// LOG DES COMBATS
 	 
@@ -519,7 +523,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	// FIN DU JEU
 	/**
 	 * Verifie si un camp ou l'autres a gagné
-	 * @return
+	 * @return renvoie -1 si perdu, 1 si gagné et 0 si ce n'est pas fini
 	 */
 	public int verifierFinJeu() {
 		if (this.listeHeros.isEmpty()) return -1; // Perdu
