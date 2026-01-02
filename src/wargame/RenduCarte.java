@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import wargame.Terrain.TypeTerrain;
+import wargame.ISoldat.TypesH;
+import wargame.ISoldat.TypesM;
 
 public class RenduCarte implements IConfig {
 
@@ -206,6 +208,7 @@ public class RenduCarte implements IConfig {
 	        }
         }
     }
+    
     // Méthode pour dessiner une case survolée ou zone d'effet
     private static void dessinerCaseSurvolee(Graphics g, Position pos, Color couleur) {
         g.setColor(couleur);
@@ -215,6 +218,26 @@ public class RenduCarte implements IConfig {
         dessinerInterieurHexagone(g, x, y, null); // null = remplissage avec la couleur définie
     }
 
+    public static Image imageHeros(TypesH type) {
+        switch (type) {
+            case HUMAIN: return imgPersoMapHumain;
+            case NAIN:   return imgPersoMapNain;
+            case ELF:    return imgPersoMapElf;
+            case HOBBIT: return imgPersoMapHobbit;
+            case ANGE: 	 return imgPersoMapAnge;
+            default:     return null;
+        }
+    }
+    
+    public static Image imageMonstre(TypesM type) {
+        switch (type) {
+            case TROLL: return imgPersoMapTroll;
+            case ORC:   return imgPersoMapOrc;
+            case GOBELIN:    return imgPersoMapGobelin;
+            case DEMON: return imgPersoMapDemon;
+            default:     return null;
+        }
+    }
     
 	public static void dessineInfosBas(Graphics g, Carte c, int indiceHerosSurvole) {
 		int i = 0, j = 0;
@@ -243,7 +266,7 @@ public class RenduCarte implements IConfig {
 				g.fillRect(51+i, 16+j, (int) taille, 12);
 				g.drawString("" + heros.getNum(), 35+i, 25+j);
 								
-				Image im_heros = new ImageIcon(heros.trouverImg()).getImage();
+				Image im_heros = imageHeros(heros.getType());
 				Image im_barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
 				g.drawImage(im_heros, 10+i, 10+j, 20, 20, null);
 				g.drawImage(im_barre, 45+i, 10+j, 62, 24, null);
