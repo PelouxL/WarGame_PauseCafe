@@ -2,28 +2,30 @@ package wargame;
 
 import java.awt.Graphics;
 
+import wargame.ISoldat.TypesH;
+
+/**
+ * Représente les monstres contrôlés par l'ordinateur.
+ * <p>
+ * Chaque monstre possède un nom et un type (défini par {@link TypesM}), ainsi que ses caractéristiques héritées de {@link Soldat}.
+ */
 public class Monstre extends Soldat {
 	private final TypesM TYPE;
 	private final String NOM;
 
+	/**
+	 * Crée un nouveau monstre avec son type, son nom et sa position sur la carte.
+	 *
+	 * @param carte la carte sur laquelle le monstre est placé
+	 * @param type le type du monstre, définissant ses caractéristiques
+	 * @param nom le nom du monstre
+	 * @param pos la position initiale du monstre sur la carte
+	 */
 	public Monstre(Carte carte, TypesM type, String nom, Position pos) {
 		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), pos);
 		NOM = nom;
 		TYPE = type;
 	}
-	/*
-	public void dessinSoldat(Graphics g, Carte c) {
-		int x = super.getPos().getX();
-		int y = super.getPos().getY();
-		int offset_x = 0;
-		x = x/2;
-		if (y % 2 == 1) {
-			offset_x = OFFSET_X;
-		}
-		
-		g.drawImage(imgSpritePersoMonstre, x*NB_PIX_CASE + offset_x, y*NB_PIX_CASE*3/4 - NB_PIX_CASE*1/4, 20, 20, null);
-	}
-	*/
 	
 	public TypesM getType() {
 		return this.TYPE;

@@ -3,14 +3,38 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.io.Serializable;
 
+/**
+ * Représente une case de terrain de la carte du jeu.
+ * <p>
+ * Un terrain possède un type, une couleur, une accessibilité,
+ * un éventuel effet appliqué au soldat présent, et peut être occupé
+ * par un {@link Soldat}.
+ * </p>
+ */
 public class Terrain implements IConfig, Serializable {
 	
+	/**
+	 * Définit le moment auquel un effet de terrain est appliqué.
+	 */
 	public enum TypeMoment {
 		FIN_TOUR,
 		DEBUT_TOUR,
 		TANT_QUE_DESSUS;
 	}
 	
+	/**
+	 * Enumération des différents types de terrain existants dans le jeu.
+	 * <p>
+	 * Chaque type définit :
+	 * <ul>
+	 *   <li>une couleur</li>
+	 *   <li>son accessibilité</li>
+	 *   <li>un effet éventuel</li>
+	 *   <li>le moment d'application de cet effet</li>
+	 *   <li>un coût de déplacement</li>
+	 * </ul>
+	 */
+
 	public enum TypeTerrain {
 		/*
 		 * HERBE : aucun effet (peut prendre feu?)
@@ -41,6 +65,15 @@ public class Terrain implements IConfig, Serializable {
 		private final TypeMoment moment; // Moment d'application de l'effet
 		private final int COUT;
 
+		/**
+		 * Construit un type de terrain.
+		 *
+		 * @param couleur couleur d'affichage
+		 * @param accessible indique si le terrain est franchissable
+		 * @param effet effet appliqué par le terrain
+		 * @param moment moment d'application de l'effet
+		 * @param cout coût de déplacement
+		 */
 		TypeTerrain(Color couleur, boolean accessible, Effet.TypeEffet effet, TypeMoment moment, int cout) { 
 			this.COULEUR = couleur;
 			this.ACCESSIBLE = accessible;
@@ -48,17 +81,25 @@ public class Terrain implements IConfig, Serializable {
 			this.moment = moment;
 			this.COUT = cout;
 		}
-		
+		/** @return la couleur du terrain */
 		public Color getCouleur() { return this.COULEUR; }
+		/** @return vrai si le terrain est accessible */
 		public boolean getAccessible() { return this.ACCESSIBLE; }
+		/** @return l'effet associé au terrain */
 		public Effet.TypeEffet getEffet() { return this.effet; }
+		/** @return le moment d'application de l'effet */
 		public TypeMoment getMoment() { return this.moment; }
 
-		
+		/** @return le coût de déplacement */
 		public int getCout() {
 			return this.COUT;
 		}
 		
+		/**
+		 * Retourne un type de terrain aléatoire (hors herbe et pont).
+		 *
+		 * @return type de terrain aléatoire
+		 */
 		public static TypeTerrain getTerrainAlea() {
 			TypeTerrain type;
 			do {
@@ -73,16 +114,30 @@ public class Terrain implements IConfig, Serializable {
 	private Soldat occupant = null;
 	
 	// Constructeur
+	
+	/**
+	 * Construit un terrain avec un type donné.
+	 *
+	 * @param type type de terrain
+	 */
 	public Terrain(TypeTerrain type) { 
 		TYPE = type;
 	}
 	
 	// Methodes
+	/** @return le type du terrain */
 	public TypeTerrain getType() { return this.TYPE; }
+	/** @return le soldat occupant la case */
 	public Soldat getOccupant() { return this.occupant; }
+	/** @return vrai si la case est libre et accessible */
 	public boolean estLibre() { return (occupant == null) && (this.TYPE.ACCESSIBLE); }
 	
 	// GESTION OCCUPANT
+	/**
+	 * Place un soldat sur la case et applique l'effet du terrain si nécessaire.
+	 *
+	 * @param soldat soldat à placer
+	 */
 	public void occuper(Soldat soldat) { 
 		this.occupant = soldat;
 		
@@ -91,6 +146,9 @@ public class Terrain implements IConfig, Serializable {
 		}
 	}
 	
+	/**
+	 * Libère la case et retire l'effet du terrain si nécessaire.
+	 */
 	public void liberer() {
 		
 		// Avant de retirer l'occupant on enleve le bonus/malus associe a la case
@@ -105,8 +163,17 @@ public class Terrain implements IConfig, Serializable {
 	
 	
 	// EFFET DES TERRAINS
+	
+	/**
+	 * Crée un effet correspondant au terrain.
+	 *
+	 * @return effet du terrain
+	 */
 	public Effet effetTerrain() { return new Effet (this.TYPE.getEffet()); }
 	
+	/**
+	 * Applique l'effet du terrain au soldat occupant.
+	 */
 	public void appliquerEffetTerrain() {
 		if (this.occupant != null && this.TYPE.getEffet() != null) {
 			ListeEffets listeEffetsOccupant = this.occupant.getListeEffets();
@@ -124,7 +191,11 @@ public class Terrain implements IConfig, Serializable {
 	
 	// EFFET DES TERRAINS
 	
-	
+	/**
+	 * Représentation textuelle du terrain.
+	 *
+	 * @return description du terrain
+	 */
 	public String toString() {
 		String s = TYPE+" : ";
 		

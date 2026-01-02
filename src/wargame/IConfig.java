@@ -1,9 +1,18 @@
 package wargame;
+
 import java.awt.Color;
-import java.awt.Image;
 
-import javax.swing.ImageIcon;
-
+/**
+ * Interface de configuration du jeu.
+ * <p>
+ * Contient toutes les constantes de configuration pour le jeu, y compris :
+ * - dimensions de la carte et des panneaux,
+ * - nombre de héros, monstres et obstacles,
+ * - couleurs utilisées pour les terrains et les unités,
+ * - positions et tailles des fenêtres et panneaux,
+ * 
+ * <p>Cette interface sert de référence globale pour toutes les classes du jeu.
+ */
 public interface IConfig {
 	// CONFIGS JEU
 	int LARGEUR_CARTE = 35; int HAUTEUR_CARTE = 35; // nb de cases
@@ -35,7 +44,7 @@ public interface IConfig {
 	int LARGEUR_PANNEAU_HAUT = LARGEUR_FENETRE;
 
 	// Positions
-	int POSITION_X = 10; int POSITION_Y = 10; // Position de la fen�tre
+	int POSITION_X = 10; int POSITION_Y = 10; // Position de la fenêtre
 	int POSITION_LOG_X = 0; int POSITION_LOG_Y = HAUTEUR_PANNEAU_CARTE - HAUTEUR_PANNEAU_LOG;
 	
 	// Couleurs
@@ -54,14 +63,14 @@ public interface IConfig {
 	Color COULEUR_MONSTRES = Color.black;
 	
 	// TERRAINS
-	int NB_RIVIERE = (int) (Math.random()*2 + 1); // 1 ou 2 riviere
+	int NB_RIVIERE = (int) (Math.random()*2 + 1); // 1 ou 2 rivières
 	int NB_FORET = 10;
 	int NB_SABLE = 5;
 	int NB_FEU = 1;
 	
 	Color COULEUR_HERBE = Color.decode("#69C24C"); // vert clair
 	Color COULEUR_EAU = Color.BLUE;                // bleu
-	Color COULEUR_FORET = Color.decode("#0A5C36"); // vert fonce 
+	Color COULEUR_FORET = Color.decode("#0A5C36"); // vert foncé 
 	Color COULEUR_ROCHER = Color.GRAY;             // gris
 	Color COULEUR_PONT  = Color.decode("#8B4513"); // marron
 	Color COULEUR_FEU = Color.ORANGE;              // orange
@@ -69,24 +78,4 @@ public interface IConfig {
 	Color COULEUR_VILLAGE = Color.YELLOW;          // jaune
 	Color COULEUR_SABLE = Color.decode("#E0CDA9"); // beige
 	
-	// IMAGES
-	
-	// image terrain
-/*	Image imgTerrainEau = new ImageIcon("./images/terrain/img_terrain_eau.png").getImage();
-	Image imgTerrainHerbe = new ImageIcon("./images/terrain/img_terrain_herbe.png").getImage();
-	Image imgTerrainForet = new ImageIcon("./images/terrain/img_terrain_foret.png").getImage();
-	Image imgTerrainRocher = new ImageIcon("./images/terrain/img_terrain_rocher.png").getImage();
-	Image imgTerrainVillage = new ImageIcon("./images/terrain/img_terrain_village.png").getImage();
-	Image imgTerrainFeu = new ImageIcon("./images/terrain/img_terrain_feu.png").getImage();
-	Image imgTerrainAcide = new ImageIcon("./images/terrain/img_terrain_acide.png").getImage();
-	Image imgTerrainSable = new ImageIcon("./images/terrain/img_terrain_sable.png").getImage();
-	Image imgTerrainPont = new ImageIcon("./images/terrain/img_terrain_pont.png").getImage();
-	Image imgTerrainDeplacement = new ImageIcon("./images/terrain/img_terrain_deplacement.png").getImage();
-
-	// image personnage
-	Image  imgSpritePersoMage = new ImageIcon("./images/sprite_perso/img_sprite_perso_mage.png").getImage();
-	Image imgSpritePersoMonstre = new ImageIcon("./images/sprite_perso/img_sprite_perso_monstre.png").getImage();
-*/
-	
-
 }

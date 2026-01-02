@@ -1,5 +1,10 @@
 package wargame;
 
+/**
+ * Interface représentant les compétences des personnages.
+ * <p>
+ * Elle définit les types de compétences et leurs constantes de classe (ATTAQUE, DEBUFF, SOINS, BUFF).
+ */
 public interface ICompetence{
 	
 	public final int ATTAQUE = 0;
@@ -7,6 +12,12 @@ public interface ICompetence{
 	public final int SOINS = 2;
 	public final int BUFF = 3;
 	
+	/**
+	 * Enum représentant les différents types de compétences.
+	 * <p>
+	 * Chaque compétence possède un nom, une classe (attaque, soins, etc.), un coût en action, des dégâts, 
+	 * une zone de lancer, une distance, et d'autres attributs définissant son fonctionnement.
+	 */
 	public enum TypeCompetence {
 		BOULE_DE_FEU("boule de feu", ATTAQUE, 2, 30, "ligne", 5 ,true, 3, 2),
 		SOIN("soin", SOINS, 1, 15, "libre", 3, false, 0, 1),

@@ -3,18 +3,24 @@ package wargame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.JButton;import javax.swing.JFrame;
 
+
+/**
+ * Fenêtre de la sauvegarde de l'état du jeu.
+ * <p>
+ * Cette classe affiche le menu des sauvegardes disponible
+ * et permet d'enregistrer sa partie.
+ */
 public class FenetreMenuSauvegarde extends JFrame{
 	private Carte carte;
 	
+	/**
+	 * Constructeur de la fenêtre du menu des chargements.
+	 * <p>
+	 * Initialise les boutons, leur disposition et les actions associées.
+	 */
 	public FenetreMenuSauvegarde(FenetreCarte fenetre) {
 		super("Menu des sauvegardes");		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

@@ -29,6 +29,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.List;
 
+/**
+ * Représente le panneau principal de jeu.
+ * <p>
+ * Ce panneau contient la carte, les informations sur les soldats,
+ * le journal de combat, et gère les interactions utilisateur 
+ * comme les déplacements, actions et utilisation de compétences.
+ */
 public class PanneauJeu extends JPanel implements IConfig {
 	private Carte carte;
 	private Position caseSurvolee;
@@ -69,7 +76,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private int finJeu = 0;
 	private String messageFinJeu = "";
 	
-	
+	  /**
+     * Crée un panneau de jeu pour une carte donnée.
+     * 
+     * @param c la carte à afficher et gérer
+     */
 	public PanneauJeu(Carte c) {
 		this.carte = c;
 		setLayout( new BorderLayout());
@@ -464,6 +475,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 
 	
 	// -------------------COMPETENCE------------------
+
 	private void mettreAJourPanneauDroit() {
 		panneauDroit.removeAll();
 		if(caseCliquee != null) {
@@ -556,61 +568,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 		}
 	}
 	
-	
-	// Barres de vie en bas
-	// j'abandonne ff (j'ai effacé des trucs mais ça marchait pas mieux)
-	/*
-	private void mettreAJourPanneauInfos(Graphics g) {
-		int i = 0, j = 0;
-		// heros
-		//nettoyerPanneauInfos();
-		int nbHeros = carte.getNbHeros();
-		Heros [] listeHeros = carte.getListeHeros();
-		for (int k = 0 ; k < nbHeros ; k++) {
-			Heros heros = listeHeros[k];
-			if (!heros.estMort()) {
-				panneauInfos.add(creeBoutonHeros(heros, g, i, j));
-				i += 110; // décalage vers la droite
-				if (k == 7) { // on peut avoir 8 persos par ligne, donc on va à la ligne en-dessous (si on change le nb de heros...)
-					// /!\ ça gère pas si on a au moins 17 heros
-					i = 0;
-					j = 50;
-				}
-			}
-		}
-	}
-	
-	private JButton creeBoutonHeros(Heros heros, Graphics g, int i, int j) {
-		JButton boutonHeros = new JButton("" + heros.getNum());
-			
-		//ImageIcon icon = new ImageIcon(heros.trouverImg()); 
-		//boutonHeros.setIcon(icon); 
-		boutonHeros.setBackground(new Color(0,0,0,0));
-		boutonHeros.setForeground(new Color(0,0,0,0));
-		//boutonHeros.setIconTextGap(0);
-		boutonHeros.setBounds(10+i, 9+j, 100, 26);
-		boutonHeros.setHorizontalAlignment(SwingConstants.RIGHT);
-		
-		boutonHeros.addActionListener(new ActionListener() {
-	    	public void actionPerformed(ActionEvent e) {	
-	    		
-	    		panneauCarte.repaint();
-	    		panneauInfos.repaint();
-	    	}
-	    });
-			
-		return boutonHeros;
-	}
-	
-	private void nettoyerPanneauInfos() {
-		panneauInfos.removeAll();
-		panneauInfos.revalidate();
-		panneauInfos.repaint();
-	}
-	*/
-	
-	
-	// FIN DU JEU
+	 /**
+     * Vérifie si le jeu est terminé et met à jour le journal en conséquence.
+     */
 	public void verifFinJeu() {
 		int fin = carte.verifierFinJeu();
 		if (fin != 0) {
@@ -625,7 +585,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 		finJeu = fin;
 	}
 	
-	
+	   /**
+     * Affiche un écran de fin de jeu semi-transparent.
+     * 
+     * @param g contexte graphique
+     */
 	public void afficherFinJeu(Graphics g) {
 		int x, y;
 		x = LARGEUR_PANNEAU_CARTE / 2;
