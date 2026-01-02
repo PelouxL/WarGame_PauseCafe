@@ -183,7 +183,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    		}
 	    		*/
 	    		
-	    		RenduCarte.dessineInfosBas(g, c);
+	    		RenduCarte.dessineInfosBas(g, c, caseCliquee);
 	    	}
 	    	
 	    };
@@ -460,7 +460,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 			Soldat soldat = carte.getSoldat(caseCliquee);
 			if(soldat instanceof Heros) {
 				for(Competence c : soldat.getCompetences()) {							
-					JButton boutonCompetence = creeBoutonCompetence(c);
+					JButton boutonCompetence = creerBoutonCompetence(c);
 					//boutonCompetence.setBorderPainted(false);
 					panneauDroit.add(boutonCompetence);
 				}
@@ -471,7 +471,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauDroit.repaint();
 	}
 	
-	private JButton creeBoutonCompetence(Competence competence) {
+	private JButton creerBoutonCompetence(Competence competence) {
 		String s = competence.getType().getNom();
 		JButton boutonCompetence = new JButton(s);
 		ImageIcon icon = new ImageIcon(competence.trouverImg());

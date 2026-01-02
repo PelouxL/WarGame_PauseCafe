@@ -124,30 +124,9 @@ public class Position implements IConfig, Serializable {
 		int [] resultat = {col, ligne};
 		return resultat;
 	}
-	
-	
-	/* ANCIENNE VERSION
-	public int[] cube() {
-		int x, y, z;
-		int col = this.getX() / 2;
-		x = col - (this.getY() - (this.getY() % 2)) / 2;
-		z = this.getY();
-		y = -x - z;
-		int [] resultat = {x, y, z};
-		return resultat;
-	}
-	
-	public int[] coord(int x, int y, int z) {
-		int ligne = z;
-		int col = x + (ligne - (ligne % 2)) / 2;
-		int offset_x = ligne % 2;
-		col = col * 2 + offset_x;
-		int [] resultat = {ligne, col};
-		return resultat;
-	}
-	*/
-	
 	// DISTANCE
+	
+	
 	public boolean equals(Position pos) {
 		return (this.x == pos.x && this.y == pos.y);
 	}
