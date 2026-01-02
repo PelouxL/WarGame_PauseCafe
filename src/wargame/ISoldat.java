@@ -2,11 +2,11 @@ package wargame;
 
 public interface ISoldat {
     static enum TypesH {
-      	HUMAIN (50, 7, 20, 5, 3),
-      	NAIN (150, 7, 30, 0, 2),
-      	ELF (30, 10, 5, 10, 3),
-      	HOBBIT (30, 8, 10, 5, 4),
-      	ANGE (80, 5, 30, 15, 2);
+      	HUMAIN (90, 6, 20,  5, 3),
+      	NAIN  (120, 3, 30,  0, 1),
+      	ELF    (50, 8, 10, 10, 2),
+      	HOBBIT (30, 7, 10,  2, 5),
+      	ANGE   (80, 5, 10,  6, 2);
 
       	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
 
@@ -30,10 +30,10 @@ public interface ISoldat {
    	}
 
    	public static enum TypesM {
-      	TROLL (150, 3, 50, 0, 2),
-      	ORC (40, 2, 10, 3, 3),
-      	GOBELIN (30, 5, 10, 5, 5),
-      	DEMON (50, 4, 30, 15, 4);
+      	TROLL  (150, 2, 40, 0, 2),
+      	ORC     (80, 3, 15, 3, 3),
+      	GOBELIN (30, 6, 10, 6, 5),
+      	DEMON   (50, 4, 30, 5, 4);
 
       	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
       	
