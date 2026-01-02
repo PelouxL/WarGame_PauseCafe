@@ -170,6 +170,9 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return null;
 	}
 	
+	public ArrayList<Heros> getListeHeros() { return listeHeros; }
+	public ArrayList<Monstre> getListeMonstres(){ return listeMonstres; }
+	
 	public Soldat getSoldat(Position pos) {	
 		Terrain t = this.getCase(pos);
 	    if (t == null) {
@@ -623,14 +626,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 		return Math.abs( ( x1 * (y2-y3)
 				 		 + x2 * (y3-y1)
 				 		 + x3 * (y1-y2)) / 2.0 );
-	}
-	
-	public List<Heros> getListeHeros(){
-		return listeHeros;
-	}
-	
-	public List<Monstre> getListeMonstres(){
-		return listeMonstres;
 	}
 	
 }

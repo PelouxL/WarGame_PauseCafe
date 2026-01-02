@@ -249,7 +249,7 @@ public class RenduCarte implements IConfig {
 				g.drawImage(icone_heros, 10+i, 10, 20, 20, null); // à changer pour verif quel soldat c'est (et adapter l'image)
 				g.drawImage(barre, 45+i, 10, 62, 24, null);
 				
-				// Encadrer le heros choisi
+				// Encadrement du heros choisi
 				if (caseCliquee != null && heros.getPos().equals(caseCliquee)) {
 					g.setColor(Color.RED);
 					g.drawRect(5+i, 5, DECALAGE, 30);
