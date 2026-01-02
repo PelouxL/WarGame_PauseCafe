@@ -21,12 +21,6 @@ public final class RenduSoldat implements IConfig {
         int x = pos.getX();
         int y = pos.getY();
         int offsetX = (y % 2 == 1) ? OFFSET_X : 0;
-
-        /*
-        Image img = (s instanceof Heros)
-            ? imgSpritePersoMage
-            : imgSpritePersoMonstre;
-        */
         
         Image img;
         if (s instanceof Heros) {
