@@ -6,8 +6,7 @@ public interface ISoldat {
       	NAIN (150, 7, 30, 0, 2),
       	ELF (30, 10, 5, 10, 3),
       	HOBBIT (30, 8, 10, 5, 4),
-      	ANGE (80, 5, 30, 15, 2),
-      	POUBELLEMALICIEUSE (1, 3, 100, 0, 5);
+      	ANGE (80, 5, 30, 15, 2);
 
       	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
 
@@ -34,8 +33,7 @@ public interface ISoldat {
       	TROLL (150, 3, 50, 0, 2),
       	ORC (40, 2, 10, 3, 3),
       	GOBELIN (30, 5, 10, 5, 5),
-      	DEMON (50, 4, 30, 15, 4),
-      	MAITREDUCAFE (300, 1, 100, 0, 2);
+      	DEMON (50, 4, 30, 15, 4);
 
       	private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
       	
