@@ -305,22 +305,19 @@ public class Carte implements IConfig, ICarte, Serializable {
 		// tour des heros vient de finir
 		this.nbTours++;
 		this.tourActuel = TOUR_MONSTRE;
-
-		int nbMonstre = getNbMonstre();
 		
 		// j'ai changé le for pour que ça marche (au lieu de Monstre monstre : this.listeMonstres)				
-		for (int i = 0 ; i < nbMonstre ; i++) {
+		for (int i = 0 ; i < listeMonstres.size() ; i++) {
 			// On recupere le chemin le plus court vers le heros 0
 			if (listeHeros.isEmpty()) return;
 			Heros heros = listeHeros.get(0);
 			Monstre monstre = listeMonstres.get(i);
 			EnsemblePosition chemin = this.plusCourtChemin(monstre.getPos(), heros.getPos());
 			int distanceHeros = chemin.getNbPos() - 1;
-			int nbHeros = getNbHeros();
 			System.out.println(" -> Debut du tour");
 			
 			// Le monstre cherche le heros le plus proche
-			for (int j=0; j < nbHeros; j++) {
+			for (int j=0; j < listeHeros.size() ; j++) {
 				Heros test = listeHeros.get(j);
 				chemin = this.plusCourtChemin(monstre.getPos(), test.getPos());
 				int distanceTest = chemin.getNbPos() - 1;
@@ -330,7 +327,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 				}
 			}
 			
-			System.out.println(monstre.getNom()+" veut attaquer "+heros.getNom());
+			System.out.println(monstre.getNom()+" "+monstre.getType()+" veut attaquer "+heros.getNom()+" "+heros.getType());
 			
 			// Tant qu'il reste des actions au monstre il regarde s'il peut attaquer, sinon il avance
 			while(monstre.getAction() > 0 && !monstre.estMort()) {
@@ -365,15 +362,15 @@ public class Carte implements IConfig, ICarte, Serializable {
 				} 
 				
 				if (!peutAttaquer || heros.estMort()){ // 2eme cas : le monstre doit se rapprocher de sa cible
-					System.out.println("Je me rapproche");
+					//System.out.println("Je me rapproche");
 					
 					// si on ne vient pas de tuer le heros courant, et si on a bien trouvé un heros (si non alors distanceHeros = -1)
 					if (!heros.estMort() && distanceHeros > 0) {
 						Position newPos;
 						if (distanceHeros > monstre.getDeplacement()) {
-							newPos = newChemin.getPosition(monstre.getDeplacement() - 1);
+							newPos = newChemin.getPosition(monstre.getDeplacement());
 						} else {
-							newPos = newChemin.getPosition(newChemin.getNbPos() - 2);
+							newPos = newChemin.getPosition(newChemin.getNbPos() - 2); // -2 car avec -1 il peut se positionner SUR le héros
 						}
 						this.deplaceSoldat(newPos, monstre);
 						monstre.seDeplace(newPos);

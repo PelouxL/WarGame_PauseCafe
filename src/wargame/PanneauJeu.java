@@ -522,6 +522,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 		return boutonCompetence;
 	}
 	
+	private void afficherBulleInfos(Soldat soldat) {
+		
+	}
+	
 	private void nettoyerPanneauDroit() {
 		panneauDroit.removeAll();
 		setCursor(Cursor.getDefaultCursor());
