@@ -7,7 +7,7 @@ public class Monstre extends Soldat {
 	private final String NOM;
 
 	public Monstre(Carte carte, TypesM type, String nom, Position pos) {
-		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), pos);
+		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), type.getDeplacement(), pos);
 		NOM = nom;
 		TYPE = type;
 	}
