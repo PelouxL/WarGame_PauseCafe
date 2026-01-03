@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializable{
 
-	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT = 3, NB_ACTION_MAX;
+	private final int POINT_DE_VIE, PUISSANCE, TIR, PORTEE_VISUELLE, DEPLACEMENT, NB_ACTION_MAX;
 
 	private int pointsDeVie;
 	private Position pos;
@@ -23,11 +23,12 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	
 	private List<Competence> Competences = new ArrayList<>();
 	
-	public Soldat(Carte carte, int pts, int portee, int puiss, int tir, Position pos) {
+	public Soldat(Carte carte, int pts, int portee, int puiss, int tir, int dep, Position pos) {
 		POINT_DE_VIE = pointsDeVie = pts;
 		PORTEE_VISUELLE = portee;
 		PUISSANCE = puiss;
 		TIR = tir;
+		DEPLACEMENT = dep;
 		NB_ACTION_MAX = action;
 		listeEffets = new ListeEffets();
 		this.carte = carte;
@@ -247,11 +248,20 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	// DEPLACEMENT
 	public int getDeplacement() { return this.DEPLACEMENT + listeEffets.sommeEffets(Effet.TCarAff.DEPLACEMENT); }
 	
+	// Fonction auxiliaire pour calculer le nombre de cases max d'une zone de déplacement
+	private int sommeDeplacement(int dep) {
+		int somme = 0;
+		for (int i = 1 ; i <= dep ; i++) {
+			somme += i;
+		}
+		return somme;
+	}
+	
 	public EnsemblePosition zoneDeplacement() {
-		int nbPosMax = (int) Math.pow(6, this.DEPLACEMENT); // TEMPORAIRE FAIRE VRAI CALCUL
+		int nbPosMax = (int) 6 * (sommeDeplacement(getDeplacement()));
 		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
 		
-		this.zoneDeplacementAux(this.pos, this.pos, this.DEPLACEMENT, ePos);
+		this.zoneDeplacementAux(this.pos, this.pos, this.getDeplacement(), ePos);
 		
 		return ePos;
 	}
