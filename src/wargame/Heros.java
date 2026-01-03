@@ -21,7 +21,39 @@ public class Heros extends Soldat{
 		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), pos);
 		NOM = nom;
 		TYPE = type;
+		
+		initialiserCompetence();
 
+	}
+	
+	public void initialiserCompetence() {
+		switch(TYPE) {
+		case HOBBIT:
+			ajouterCompetence(new Competence(TypeCompetence.LANCE_PIERRE));
+			ajouterCompetence(new Competence(TypeCompetence.COUP_DE_BATON));
+			break;
+		case ELF:
+			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
+			break;
+		case HUMAIN:
+			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
+			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
+			break;
+		case ANGE:
+			ajouterCompetence(new Competence(TypeCompetence.SOIN));
+			ajouterCompetence(new Competence(TypeCompetence.SOIN_DE_ZONE));
+			break;
+		case NAIN:
+			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
+			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
+			break;
+		case MAGICIEN:
+			ajouterCompetence(new Competence(TypeCompetence.BOULE_DE_FEU));
+			ajouterCompetence(new Competence(TypeCompetence.LANCE_PIERRE));
+		default:
+			break;
+		}
+	
 	}
 	
 	public TypesH getType() {
@@ -50,8 +82,8 @@ public class Heros extends Soldat{
 		   case ANGE:
 			   path += "ange";
 			   break;
-		   case POUBELLEMALICIEUSE:
-			   path += "humain"; // placeholder
+		   case MAGICIEN:
+			   path += "ange"; // a changer
 			   break;
 		}
 	    path += "_map.png";

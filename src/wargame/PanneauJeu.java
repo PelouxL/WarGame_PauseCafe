@@ -189,15 +189,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    panneauInfos = new JPanel() {
 	    	protected void paintComponent(Graphics g) {
 	    		super.paintComponent(g);
-	    		/*
-	    		g.setColor(Color.WHITE);
-	    		if(infoTexte2 != "" && !(infoTexte2.equals(infoTexte))) {
-	    			g.drawString(infoTexte2,10, 15);
-	    			g.drawString(infoTexte,10, 30);
-	    		}else {
-	    			g.drawString(infoTexte,10, 15);
-	    		}
-	    		*/
 	    		
 	    		RenduCarte.dessineInfosBas(g, c, indiceHerosSurvole);
 	    		//carte.dessineInfosBas(g, indiceHerosSurvole);
@@ -245,9 +236,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 
 		// ---------- Creation des boutons de la carte ---------- //
 		boutonFin = new JButton("Fin de tour");
-		boutonRetour = new JButton("Retour arrière");
 		boutonRevenirMenu = new JButton("Revenir au menu");
-		panneauHaut.add(boutonRetour);
 		panneauHaut.add(boutonFin);
 		panneauHaut.add(boutonRevenirMenu);
 		
@@ -266,14 +255,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 			}
 		});
 		
-		boutonRetour.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (finJeu == 0) {
-					// Ajouter des vrai méthodes 
-					System.out.println("Retourne moi !");
-				}
-			}
-		});
 		
 		boutonRevenirMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -284,7 +265,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 		});
 		
 		boutonFin.setVisible(true);
-		boutonRetour.setVisible(true);
 		boutonRevenirMenu.setVisible(false);
 		
 		

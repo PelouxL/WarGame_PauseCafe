@@ -2,6 +2,7 @@ package wargame;
 
 import java.awt.Graphics;
 
+import wargame.ICompetence.TypeCompetence;
 import wargame.ISoldat.TypesH;
 
 /**
@@ -25,6 +26,8 @@ public class Monstre extends Soldat {
 		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), pos);
 		NOM = nom;
 		TYPE = type;
+		
+		initialiserCompetence();
 	}
 	
 	public TypesM getType() {
@@ -33,6 +36,11 @@ public class Monstre extends Soldat {
 	
 	public String getNom() {
 		return this.NOM;
+	}
+	
+	public void initialiserCompetence() {
+		ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
+
 	}
 	
 	public String trouverImg() {
@@ -49,9 +57,6 @@ public class Monstre extends Soldat {
 			   break;
 		   case DEMON:
 			   path += "demon";
-			   break;
-		   case MAITREDUCAFE:
-			   path += "demon"; // placeholder
 			   break;
 		}
 	    path += "_map.png";

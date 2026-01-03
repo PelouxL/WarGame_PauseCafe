@@ -23,8 +23,11 @@ public interface ICompetence{
 		SOIN("soin", SOINS, 1, 15, "libre", 3, false, 0, 1),
 		SOIN_DE_ZONE("soin de zone", SOINS,  2, 20, "ligne", 4, false, 2, 3),
 		COUP_EPEE("coup d'épée", ATTAQUE, 1, 10, "libre", 1, false, 0, 1),
-		TIR_A_PORTER("tir a porter", ATTAQUE, 1, 10, "ligne", 19, false, 0, 1);
-		
+		TIR_A_PORTER("tir a porter", ATTAQUE, 1, 10, "ligne", 12, false, 0, 1),
+		LANCE_PIERRE("lance pierre", DEBUFF, 1, 5, "ligne", 5, false, 0, 0),
+		COUP_DE_BATON("coup de baton", DEBUFF, 1, 5, "ligne", 1, false, 0, 0);
+
+	
 		private final String nom;
 		private final int classeCompetence;
 		private final int coutAction;
@@ -34,7 +37,7 @@ public interface ICompetence{
 		private final boolean donneVisu;
 		private final int degatsZone;
 		private final int tempsRechargement; 
-		
+	
 		TypeCompetence(String nom, int classeCompetence, int coutAction, int degats, String zoneLancer, int distance, boolean donneVisu, int degatZone, int tempsRechargement) {
 			this.nom = nom;
 			this.classeCompetence = classeCompetence;

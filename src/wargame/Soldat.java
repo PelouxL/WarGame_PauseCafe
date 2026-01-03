@@ -58,9 +58,11 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 			NUM = -1;
 		}
 		
-		initialiserCompetence();
+		
 	}
 	
+	// Polymorphisme des competences
+	protected abstract void initialiserCompetence(); 
 	// 
 	
 	// POINTS DE VIE
@@ -134,11 +136,6 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	
 	
 	// NUM
-	/**
-	 * Retourne le numéro unique du soldat.
-	 *
-	 * @return numéro du soldat
-	 */
 	public int getNum() { return this.NUM; }
 	// NUM
 	
@@ -260,17 +257,22 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	/**
 	 * Initialise les compétences du soldat selon son type.
 	 */
+	/*
 	public void initialiserCompetence() {
 		if(this instanceof Heros) {
+			switch()
 			ajouterCompetence(new Competence(TypeCompetence.BOULE_DE_FEU));
 			ajouterCompetence(new Competence(TypeCompetence.SOIN));
 			ajouterCompetence(new Competence(TypeCompetence.SOIN_DE_ZONE));
 			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
 			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
+			ajouterCompetence(new Competence(TypeCompetence.LANCE_PIERRE));
+			ajouterCompetence(new Competence(TypeCompetence.COUP_DE_BATON));
+
 		}else if(this instanceof Monstre){
 			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
 		}
-	}
+	} */
 	
 	/**
 	 * Ajoute une compétence au soldat.

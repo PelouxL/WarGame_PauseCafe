@@ -3,16 +3,9 @@ package wargame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  * Fenêtre du chargement des sauvegardes.
@@ -26,7 +19,8 @@ public class FenetreMenuChargement extends JFrame{
      * Constructeur de la fenêtre du menu des chargements.
      * <p>
      * Initialise les boutons, leur disposition et les actions associées.
-     * @param permet l'accès a la fenetre dans les boutons d'action
+     * @param fenetre permet l'accès a la fenetre dans les boutons d'action
+     * 
      */
 	public FenetreMenuChargement(FenetreCarte fenetre) {
 		super("Menu des sauvegardes");		

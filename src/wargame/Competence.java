@@ -150,8 +150,8 @@ public class Competence implements ICompetence, Serializable {
 			if(soldat != null) {	
 				receveurs += "---- ";
 				receveurs += soldat.recupIdentite();
-				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégats !";
-				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
+				receveurs +=  " a reçu " + this.type.getDegats() + caster.getTir() + " points de dégats !";
+				soldat.retirerPv(type.getDegats() + caster.getTir());
 				if(soldat.estMort()) {
 					carte.mort(soldat);
 					receveurs += "Il a succombé !";
@@ -160,7 +160,41 @@ public class Competence implements ICompetence, Serializable {
 		    	receveurs += "Vous avez réussi a transpercer le sol ! Bravo.";
 		    }
 			break;
+		case LANCE_PIERRE:
+			atq += caster.recupIdentite() + "Tir un coup de fronde !\n";
+			if(soldat != null) {	
+				receveurs += "---- ";
+				receveurs += soldat.recupIdentite();
+				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégats !";
+				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
+				receveurs +=  " il a reçu une pierre sur la tête ! il est affaiblit !";
+				soldat.setAction(soldat.getAction()-1);
+				if(soldat.estMort()) {
+					carte.mort(soldat);
+					receveurs += "Il a succombé !";
+				}
+		    }else{
+		    	receveurs += "La pierre ricoche sur le sol ! Bravo.";
+		    }
+		case COUP_DE_BATON:
+			atq += caster.recupIdentite() + "met un coup de baton dans les jambes !\n";
+			if(soldat != null) {	
+				receveurs += "---- ";
+				receveurs += soldat.recupIdentite();
+				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégats !";
+				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
+				receveurs +=  " il est paralysé !";
+				soldat.setAction(soldat.getAction()-2);
+				if(soldat.estMort()) {
+					carte.mort(soldat);
+					receveurs += "Il a succombé !";
+				}
+		    }else{
+		    	receveurs += "Le vent tremble devant votre baton !.";
+		    }
+			break;
 		}
+		
 		
 		log += atq + receveurs;
 		carte.addCombatMessage(log);
@@ -293,6 +327,7 @@ public class Competence implements ICompetence, Serializable {
 	 */
 	public String trouverImg() {
 		String path = "./images/comp/icon_comp_";
+	
 		switch(type.getNom()) {
 		case "boule de feu":
 			path +="boule_de_feu";
@@ -309,10 +344,17 @@ public class Competence implements ICompetence, Serializable {
 		case "tir a porter":
 			path += "tir_a_porter";
 			break;
+		case "lance pierre":
+			path += "lance_pierre";
+			break;
+		case "coup de baton":
+			path += "coup_de_baton";
+			break;
 		case "default":
 			path += "default";
 			break;
 		}
+	
 		path += ".png";
 		return path;
 	}

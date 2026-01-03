@@ -26,7 +26,7 @@ public class FenetreMenu extends JFrame implements IConfig{
      * Initialise les boutons, leur disposition et les actions associées.
      */
 		public FenetreMenu () {
-			super("Wargame 2: l'avenement du cafe, le retour");
+			super("Wargame : Les monstres attaquent !");
 
 			
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
