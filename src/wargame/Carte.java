@@ -56,7 +56,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 		// OBSTACLES
-		riviere(NB_RIVIERE);
 		zoneBiome(NB_SABLE, Terrain.TypeTerrain.SABLE, 2, 2);
 		zoneBiome(NB_FORET, Terrain.TypeTerrain.FORET, 2, 4);
 		zoneBiome(NB_FEU, Terrain.TypeTerrain.FEU, 2, 2);
@@ -205,6 +204,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	 * @param pos position de notre case
 	 * @return renvoie le soldat a la position pos si il existe
 	 */
+	
 	public Soldat getSoldat(Position pos) {	
 		Terrain t = this.getCase(pos);
 	    if (t == null) {
@@ -213,21 +213,11 @@ public class Carte implements IConfig, ICarte, Serializable {
 	    return t.getOccupant();
 	}
 	
-	public int getNbHeros() {
-		return listeHeros.size();
-	}
-	
-	public int getNbMonstre() {
-		return listeMonstres.size();
-	}
+	public int getNbHeros() { return listeHeros.size(); }
+	public int getNbMonstre() { return listeMonstres.size(); }
 
-	public List<Heros> getListeHeros(){
-		return listeHeros;
-	}
-	
-	public List<Monstre> getListeMonstres(){
-		return listeMonstres;
-	}
+	public ArrayList<Heros> getListeHeros(){ return listeHeros; }
+	public ArrayList<Monstre> getListeMonstres(){ return listeMonstres; }
 	
 	public int getIndiceHeros(Heros heros) {
 		int nbHeros = getNbHeros();
@@ -741,7 +731,6 @@ public class Carte implements IConfig, ICarte, Serializable {
 				 		 + x3 * (y1-y2)) / 2.0 );
 	}
 }
-	
 	
 
 

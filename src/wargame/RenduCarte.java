@@ -13,8 +13,8 @@ import wargame.Terrain.TypeTerrain;
  * ainsi que les zones de déplacement et de portée des compétences.
  */
 public class RenduCarte implements IConfig {
-
-
+	
+	private static final int DECALAGE = 110;
 	// IMAGES
 	
 	// terrains
@@ -41,7 +41,7 @@ public class RenduCarte implements IConfig {
     private static final Image imgPersoMapGobelin = new ImageIcon("./images/persos/gobelin_map.png").getImage();
     private static final Image imgPersoMapDemon   = new ImageIcon("./images/persos/demon_map.png").getImage();
     
-    // autre
+    // autres
     private static final Image imgBarreDeVie = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
     
     /**
@@ -92,9 +92,7 @@ public class RenduCarte implements IConfig {
             }
         }
     }
-
     
-    // DESSIN
     /**
      * Dessine une case hexagonale.
      * 
@@ -175,9 +173,10 @@ public class RenduCarte implements IConfig {
                 y * NB_PIX_CASE * 3 / 4 + NB_PIX_CASE * 3 / 4
         };
     }
-
-    // ZONE ET COMPETENECES
-
+    // HEXAGONE
+   
+    
+    // ZONE ET COMPETENCES
     private static void dessinerZoneDeplacement(Graphics g, Carte carte, Soldat soldat) {
         EnsemblePosition zone = soldat.zoneDeplacement();
         for (int i = 0; i < zone.getNbPos(); i++) {
@@ -252,6 +251,7 @@ public class RenduCarte implements IConfig {
         dessinerInterieurHexagone(g, x, y, null); // null = remplissage avec la couleur définie
     }
 
+    
     /**
      * Dessine les informations des héros en bas de l'écran.
      * 
@@ -264,6 +264,7 @@ public class RenduCarte implements IConfig {
         int nbHeros = c.getNbHeros();
 		for (int k = 0 ; k < nbHeros ; k++) {
 			Heros heros = c.getListeHeros().get(k);
+
 			if (!heros.estMort()) {				
 				double pv_max = heros.getPoints();
 				double pv_act = heros.getPointsActuels();
@@ -296,6 +297,7 @@ public class RenduCarte implements IConfig {
 					i = 0;
 					j = 50;
 				}
+
 			}
 		}
 		// monstre (pas fonctionnel à 100%, il faudrait une scrollbar
@@ -328,4 +330,5 @@ public class RenduCarte implements IConfig {
 			}
 		}*/
 	}
+	// BARRE D'INFOS
 }
