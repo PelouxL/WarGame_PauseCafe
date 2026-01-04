@@ -205,6 +205,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				g.setColor(COULEUR_FORET);
 				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
+				RenduCarte.dessineInfobulle(g, c, indiceHerosSurvole);
 			}
 		};
 		panneauDroit.setLayout(new BoxLayout(panneauDroit, BoxLayout.Y_AXIS));
@@ -318,10 +319,12 @@ public class PanneauJeu extends JPanel implements IConfig {
 					}
 					panneauInfos.repaint();
 					panneauCarte.repaint();
+					panneauDroit.repaint();
 				}
 					
 				panneauInfos.repaint();
 				panneauCarte.repaint();
+				panneauDroit.repaint();
 			}
 			
 			// creation de l'evenement du dragg 

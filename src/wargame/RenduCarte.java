@@ -38,7 +38,8 @@ public class RenduCarte implements IConfig {
     private static final Image imgPersoMapDemon   = new ImageIcon("./images/persos/demon_map.png").getImage();
     
     // autre
-    private static final Image imgBarreDeVie = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+    private static final Image imgBarreDeVie      = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+    private static final Image imgInfobulle       = new ImageIcon("./images/infobulle_6.png").getImage();
     
     public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie) {
 
@@ -308,5 +309,15 @@ public class RenduCarte implements IConfig {
 				i += 100;
 			}
 		}*/
+	}
+	
+	public static void dessineInfobulle(Graphics g, Carte c, int indiceHerosSurvole) {
+		Image infobulle = imgInfobulle;
+		g.drawImage(infobulle, 0, 0, 200, 120, null);
+		if (indiceHerosSurvole != -1) {
+			Heros heros = c.getListeHeros().get(indiceHerosSurvole);
+			Image im_heros = imageHeros(heros.getType());
+			g.drawImage(im_heros, 4, 4, 80, 80, null);
+		}
 	}
 }
