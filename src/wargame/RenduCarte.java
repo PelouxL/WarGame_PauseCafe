@@ -256,11 +256,11 @@ public class RenduCarte implements IConfig {
 				}
 				
 				if (ratio >= 50) {
-					g.setColor(Color.GREEN);
+					g.setColor(COULEUR_PV_HAUT);
 				} else if (ratio < 15) {
-					g.setColor(Color.RED);
+					g.setColor(COULEUR_PV_MOYEN);
 				} else {
-					g.setColor(Color.ORANGE);
+					g.setColor(COULEUR_PV_BAS);
 				}
 				g.fillRect(51+i, 16+j, (int) taille, 12);
 				g.drawString("" + heros.getNum(), 35+i, 25+j);
@@ -310,12 +310,43 @@ public class RenduCarte implements IConfig {
 	}
 	
 	public static void dessineInfobulle(Graphics g, Carte c, int indiceHerosSurvole) {
-		Image infobulle = imgInfobulle;
-		g.drawImage(infobulle, 0, 0, 200, 120, null);
-		if (indiceHerosSurvole != -1) {
+		if (indiceHerosSurvole != -1) { // si un Héros est survolé actuellement
 			Heros heros = c.getListeHeros().get(indiceHerosSurvole);
+			
+			// Image du Héros
 			Image im_heros = imageHeros(heros.getType());
-			g.drawImage(im_heros, 4, 4, 80, 80, null);
+			g.drawImage(im_heros, 8, 8, 60, 60, null);
+			
+			// Barre de vie
+			double pv_max = heros.getPoints();
+			double pv_act = heros.getPointsActuels();
+			double ratio = (pv_act / pv_max) * 100;
+			if (ratio >= 50) {
+				g.setColor(COULEUR_PV_HAUT);
+			} else if (ratio < 15) {
+				g.setColor(COULEUR_PV_MOYEN);
+			} else {
+				g.setColor(COULEUR_PV_BAS);
+			}
+			g.fillRect(8, 98, (int) ratio, 15);
+			
+			// Statistiques
+			int puissance = heros.getPuissance() / 5;
+			int portee_visuelle = heros.getPortee();
+			int deplacement = heros.getDeplacement();
+			int portee_de_tir = heros.getTir();
+			g.setColor(COULEUR_STAT_PUISSANCE);
+			g.fillRect(80, 15, 10*puissance, 10);
+			g.setColor(COULEUR_STAT_PORTEE_VISUELLE);
+			g.fillRect(80, 15+22, 10*portee_visuelle, 10);
+			g.setColor(COULEUR_STAT_DEPLACEMENT);
+			g.fillRect(80, 15+22*2, 10*deplacement, 10);
+			g.setColor(COULEUR_STAT_PORTEE_DE_TIR);
+			g.fillRect(80, 15+22*3, 10*portee_de_tir, 10);
+			
+			// Infobulle
+			Image infobulle = imgInfobulle;
+			g.drawImage(infobulle, 0, 0, 200, 120, null);
 		}
 	}
 }

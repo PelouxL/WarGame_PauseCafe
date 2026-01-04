@@ -73,10 +73,10 @@ public interface IConfig {
 	Color COULEUR_PV_HAUT = Color.GREEN;
 	Color COULEUR_PV_MOYEN = Color.ORANGE;
 	Color COULEUR_PV_BAS = Color.RED;
-	Color COULEUR_PUISSANCE = Color.decode("FF0000FF");
-	Color COULEUR_PORTEE_VISUELLE = Color.decode("0080FFFF");
-	Color COULEUR_DEPLACEMENT = Color.decode("FFEE00FF");
-	Color COULEUR_PORTEE_DE_TIR = Color.decode("BB00FFFF");
+	Color COULEUR_STAT_PUISSANCE = Color.decode("#FF0000");
+	Color COULEUR_STAT_PORTEE_VISUELLE = Color.decode("#0080FF");
+	Color COULEUR_STAT_DEPLACEMENT = Color.decode("#FFEE00");
+	Color COULEUR_STAT_PORTEE_DE_TIR = Color.decode("#BB00FF");
 	
 	// IMAGES
 	
