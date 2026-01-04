@@ -87,7 +87,6 @@ public class RenduCarte implements IConfig {
 
         int x = pos.getX() / 2;
         int y = pos.getY();
-        int offsetX = (y % 2 == 1) ? OFFSET_X : 0;
 
         if (carte.getVisibilite(pos) == 0) {
             g.setColor(COULEUR_INCONNU);
@@ -215,7 +214,6 @@ public class RenduCarte implements IConfig {
         g.setColor(couleur);
         int x = pos.getX() / 2;
         int y = pos.getY();
-        int offsetX = (y % 2 == 1) ? OFFSET_X : 0;
         dessinerInterieurHexagone(g, x, y, null); // null = remplissage avec la couleur définie
     }
 
