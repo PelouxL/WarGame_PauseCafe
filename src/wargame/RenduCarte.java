@@ -268,7 +268,7 @@ public class RenduCarte implements IConfig {
 				g.drawString("" + heros.getNum(), 35+i, 25+j);
 								
 				Image im_heros = imageHeros(heros.getType());
-				Image im_barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
+				Image im_barre = imgBarreDeVie;
 				g.drawImage(im_heros, 10+i, 10+j, 20, 20, null);
 				g.drawImage(im_barre, 45+i, 10+j, 62, 24, null);
 				
