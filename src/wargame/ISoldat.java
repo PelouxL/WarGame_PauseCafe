@@ -3,7 +3,7 @@ package wargame;
 public interface ISoldat {
     static enum TypesH {
       	HUMAIN (90, 6, 20,  5, 3),
-      	NAIN  (120, 3, 30,  0, 1),
+      	NAIN  (120, 3, 30,  0, 2),
       	ELF    (50, 8, 10, 10, 2),
       	HOBBIT (30, 7, 10,  2, 5),
       	ANGE   (80, 5, 10,  6, 2);

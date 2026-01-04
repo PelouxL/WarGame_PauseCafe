@@ -24,18 +24,31 @@ public class RenduCarte implements IConfig {
     private static final Image imgTerrainSable    = new ImageIcon("./images/terrain/img_terrain_sable.png").getImage();
     private static final Image imgTerrainPont     = new ImageIcon("./images/terrain/img_terrain_pont.png").getImage();
     
-    // héros
+    // têtes héros
     private static final Image imgPersoMapElf     = new ImageIcon("./images/persos/elfe_map.png").getImage();
     private static final Image imgPersoMapHumain  = new ImageIcon("./images/persos/humain_map.png").getImage();
     private static final Image imgPersoMapNain    = new ImageIcon("./images/persos/nain_map.png").getImage();
     private static final Image imgPersoMapHobbit  = new ImageIcon("./images/persos/hobbit_map.png").getImage();
     private static final Image imgPersoMapAnge    = new ImageIcon("./images/persos/ange_map.png").getImage();
     
-    // monstres
+    // têtes monstres
     private static final Image imgPersoMapTroll   = new ImageIcon("./images/persos/troll_map.png").getImage();
     private static final Image imgPersoMapOrc     = new ImageIcon("./images/persos/orc_map.png").getImage();
     private static final Image imgPersoMapGobelin = new ImageIcon("./images/persos/gobelin_map.png").getImage();
     private static final Image imgPersoMapDemon   = new ImageIcon("./images/persos/demon_map.png").getImage();
+    
+    // noms héros
+    private static final Image imgNomElf		  = new ImageIcon("./images/nom_perso/nom_elf.png").getImage();
+    private static final Image imgNomHumain		  = new ImageIcon("./images/nom_perso/nom_humain.png").getImage();
+    private static final Image imgNomNain		  = new ImageIcon("./images/nom_perso/nom_nain.png").getImage();
+    private static final Image imgNomHobbit		  = new ImageIcon("./images/nom_perso/nom_hobbit.png").getImage();
+    private static final Image imgNomAnge		  = new ImageIcon("./images/nom_perso/nom_ange.png").getImage();
+    
+    // noms monstres
+    private static final Image imgNomTroll		  = new ImageIcon("./images/nom_perso/nom_troll.png").getImage();
+    private static final Image imgNomOrc		  = new ImageIcon("./images/nom_perso/nom_orc.png").getImage();
+    private static final Image imgNomGobelin	  = new ImageIcon("./images/nom_perso/nom_gobelin.png").getImage();
+    private static final Image imgNomDemon		  = new ImageIcon("./images/nom_perso/nom_demon.png").getImage();
     
     // autre
     private static final Image imgBarreDeVie      = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
@@ -230,11 +243,32 @@ public class RenduCarte implements IConfig {
     
     public static Image imageMonstre(TypesM type) {
         switch (type) {
-            case TROLL: return imgPersoMapTroll;
-            case ORC:   return imgPersoMapOrc;
-            case GOBELIN:    return imgPersoMapGobelin;
-            case DEMON: return imgPersoMapDemon;
+            case TROLL:   return imgPersoMapTroll;
+            case ORC:     return imgPersoMapOrc;
+            case GOBELIN: return imgPersoMapGobelin;
+            case DEMON:   return imgPersoMapDemon;
+            default:      return null;
+        }
+    }
+    
+    public static Image imageNomHeros(TypesH type) {
+        switch (type) {
+            case HUMAIN: return imgNomHumain;
+            case NAIN:   return imgNomNain;
+            case ELF:    return imgNomElf;
+            case HOBBIT: return imgNomHobbit;
+            case ANGE: 	 return imgNomAnge;
             default:     return null;
+        }
+    }
+    
+    public static Image imageNomMonstre(TypesM type) {
+        switch (type) {
+            case TROLL:   return imgNomTroll;
+            case ORC:     return imgNomOrc;
+            case GOBELIN: return imgNomGobelin;
+            case DEMON:   return imgNomDemon;
+            default:      return null;
         }
     }
     
@@ -347,6 +381,10 @@ public class RenduCarte implements IConfig {
 			// Infobulle
 			Image infobulle = imgInfobulle;
 			g.drawImage(infobulle, 0, 0, 200, 120, null);
+			
+			// Nom
+			Image nom = imageNomHeros(heros.getType());
+			g.drawImage(nom, 6, 72, 64, 22, null);
 		}
 	}
 }
