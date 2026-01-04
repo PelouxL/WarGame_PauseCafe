@@ -69,6 +69,15 @@ public interface IConfig {
 	Color COULEUR_VILLAGE = Color.YELLOW;          // jaune
 	Color COULEUR_SABLE = Color.decode("#E0CDA9"); // beige
 	
+	// INFORMATIONS
+	Color COULEUR_PV_HAUT = Color.GREEN;
+	Color COULEUR_PV_MOYEN = Color.ORANGE;
+	Color COULEUR_PV_BAS = Color.RED;
+	Color COULEUR_PUISSANCE = Color.decode("FF0000FF");
+	Color COULEUR_PORTEE_VISUELLE = Color.decode("0080FFFF");
+	Color COULEUR_DEPLACEMENT = Color.decode("FFEE00FF");
+	Color COULEUR_PORTEE_DE_TIR = Color.decode("BB00FFFF");
+	
 	// IMAGES
 	
 	// image terrain
