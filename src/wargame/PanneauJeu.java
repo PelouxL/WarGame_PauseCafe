@@ -25,6 +25,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.InputMap;
+import javax.swing.ActionMap;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import javax.swing.AbstractAction;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -43,7 +48,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private boolean dragPerso = false;
 	private boolean afficheLog = false;
 	private Competence choisiComp = null;
-	private Heros herosChoisi = null;
 	
 	// infos panneauInfo
 	private String infoTexte ="";
@@ -376,10 +380,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 					} else {
 						caseCliquee = carte.coorToPos(x, y);
 						
-						if (soldat instanceof Heros) {
-							herosChoisi = (Heros) soldat;
-						}
-						
 						// Preparation au deplacement
 						if (caseCliquee.estValide() && soldat instanceof Heros && dragPerso == false && choisiComp == null) {
 							
@@ -443,36 +443,76 @@ public class PanneauJeu extends JPanel implements IConfig {
 			
 		});	
 		
+		// Raccourcis clavier
+		setRaccourcisClavier();
 		
-		// ATTENTION GET NUM FAUX, IL FAUT L'index reel
-		panneauCarte.addKeyListener( new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {
-				ArrayList<Heros> listeHeros = carte.getListeHeros();
-				
-				
-				if (finJeu == 0) {
-					switch (e.getKeyCode()) {
-					
-					// Selection de heros
-					case KeyEvent.VK_LEFT :
-						System.out.println("touche gauche");
-						if (herosChoisi == null) herosChoisi =  listeHeros.get(listeHeros.size() -1);
-						else herosChoisi = listeHeros.get((herosChoisi.getNum()-1) % listeHeros.size());
-						break;
-					case KeyEvent.VK_RIGHT :
-						if (herosChoisi == null) herosChoisi =  listeHeros.get(0);
-						else herosChoisi = listeHeros.get((herosChoisi.getNum()+1) % listeHeros.size());
-						break;
-					default :
-						System.out.println("Touche non-attribuée");
-					}
-				}
-			}
+	}
+	
+	// ------------------- Raccourcis clavier ------------------ //
+	private void setRaccourcisClavier() {
+		ActionMap actionMap;        
+		InputMap  inputMap;
+
+		actionMap = panneauCarte.getActionMap();
+		inputMap  = panneauCarte.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		
+		// Raccourci fleche gauche
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "gauche");
+		actionMap.put("gauche", new AbstractAction() {
+		    public void actionPerformed(ActionEvent e) {
+		        if (finJeu != 0) return;
+		        
+		        System.out.println("gauche");
+	
+		        ArrayList<Heros> listeHeros = carte.getListeHeros();
+		        Heros heros;
+
+		        if (caseCliquee == null || carte.getCase(caseCliquee).getOccupant() == null) {
+		        	heros = listeHeros.get(listeHeros.size() - 1);
+		        } else {
+		        	heros = listeHeros.get((listeHeros.indexOf(carte.getSoldat(caseCliquee)) - 1 + listeHeros.size()) % listeHeros.size());
+		        }
+		        
+		        
+		        caseCliquee = heros.getPos();
+	        	deplacePerso = true;
+				infoTexte2 = heros.toString();
+
+		        panneauCarte.repaint();
+		        panneauInfos.repaint();
+		        mettreAJourPanneauDroit();
+		    }
+		});
+		
+		// Raccourci fleche droite
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "droite");
+		actionMap.put("droite", new AbstractAction() {
+		    public void actionPerformed(ActionEvent e) {
+		        if (finJeu != 0) return;
+		        System.out.println("droite");
+		        
+		        ArrayList<Heros> listeHeros = carte.getListeHeros();
+		        Heros heros;
+
+		        if (caseCliquee == null || carte.getCase(caseCliquee).getOccupant() == null) {
+		        	heros = listeHeros.get(0);
+		        } else {
+		        	heros = listeHeros.get((listeHeros.indexOf(carte.getSoldat(caseCliquee)) + 1) % listeHeros.size());
+		        }
+		        
+		        caseCliquee = heros.getPos();
+	        	deplacePerso = true;
+				infoTexte2 = heros.toString();
+
+		        panneauCarte.repaint();
+		        panneauInfos.repaint();
+		        panneauDroit.repaint();
+		    }
 		});
 	}
 
 	
-	// -------------------COMPETENCE------------------ //
+	// ----------------------- Competences---------------------- //
 	private void mettreAJourPanneauDroit() {
 		panneauDroit.removeAll();
 		if(caseCliquee != null) {
