@@ -48,7 +48,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 	// information du panneauInfo
 	private String infoTexte ="";
 	private String infoTexte2 ="";
-	private int indiceHerosSurvole = -1;
 	
 	// different sections
 	private JPanel panneauCarte;
@@ -64,6 +63,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private JButton boutonRetour;
 	private JButton boutonAffiche;
 	private JButton boutonRevenirMenu;
+	
+	// infobulle et panneauInfo
+	private int indiceHerosSurvole = -1;
+	private int indiceMonstreSurvole = -1;
 	
 	// fin de jeu
 	private int finJeu = 0;
@@ -205,7 +208,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				g.setColor(COULEUR_FORET);
 				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
-				RenduCarte.dessineInfobulle(g, c, indiceHerosSurvole);
+				RenduCarte.dessineInfobulle(g, c, indiceHerosSurvole, indiceMonstreSurvole);
 			}
 		};
 		panneauDroit.setLayout(new BoxLayout(panneauDroit, BoxLayout.Y_AXIS));
@@ -307,11 +310,16 @@ public class PanneauJeu extends JPanel implements IConfig {
 						if(soldat instanceof Soldat) {
 							infoTexte = soldat.toString();
 							if (soldat instanceof Heros) {
+								indiceMonstreSurvole = -1;
 								indiceHerosSurvole = carte.getIndiceHeros((Heros) soldat);
+							} else {
+								indiceHerosSurvole = -1;
+								indiceMonstreSurvole = carte.getIndiceMonstre((Monstre) soldat);
 							}
 						}else {
 							infoTexte ="";
 							indiceHerosSurvole = -1;
+							indiceMonstreSurvole = -1;
 						}
 
 					}else {
@@ -523,10 +531,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    });
 			
 		return boutonCompetence;
-	}
-	
-	private void afficherBulleInfos(Soldat soldat) {
-		
 	}
 	
 	private void nettoyerPanneauDroit() {
