@@ -75,7 +75,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 
 	// Boutons
 	private JButton boutonFin;
-	private JButton boutonRetour;
 	private JButton boutonAffiche;
 	private JButton boutonRevenirMenu;
 	
@@ -234,7 +233,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 				verifFinJeu();
 				if (finJeu != 0) {
 					boutonFin.setVisible(false);
-					boutonRetour.setVisible(false);
 					boutonRevenirMenu.setVisible(true);
 				}
 			}
