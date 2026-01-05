@@ -1,9 +1,6 @@
 package wargame;
 
-import java.awt.Graphics;
-
 import wargame.ICompetence.TypeCompetence;
-import wargame.ISoldat.TypesH;
 
 /**
  * Représente les monstres contrôlés par l'ordinateur.
@@ -23,7 +20,7 @@ public class Monstre extends Soldat {
 	 * @param pos la position initiale du monstre sur la carte
 	 */
 	public Monstre(Carte carte, TypesM type, String nom, Position pos) {
-		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), pos);
+		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), type.getDeplacement(), pos);
 		NOM = nom;
 		TYPE = type;
 		

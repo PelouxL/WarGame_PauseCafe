@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
+import wargame.RenduCarte;
 
 /**
  * Classe utilitaire responsable du rendu graphique des soldats sur la carte.
@@ -40,11 +41,16 @@ public final class RenduSoldat implements IConfig {
         int x = pos.getX();
         int y = pos.getY();
         int offsetX = (y % 2 == 1) ? OFFSET_X : 0;
+        
+        Image img;
+        if (s instanceof Heros) {
+        	Heros h = (Heros) s;
+        	img = RenduCarte.imageHeros(h.getType());
+        } else {
+        	Monstre m = (Monstre) s;
+        	img = RenduCarte.imageMonstre(m.getType());
+        }
 
-        Image img = (s instanceof Heros)
-            ? imgSpritePersoMage
-            : imgSpritePersoMonstre;
-
-        g.drawImage(img, (x / 2) * NB_PIX_CASE + offsetX, y * NB_PIX_CASE * 3 / 4 - NB_PIX_CASE / 4, 20, 20, null);
+        g.drawImage(img, (x/2) * NB_PIX_CASE + offsetX, y * NB_PIX_CASE * 3/4, 20, 20, null);
     }
 }

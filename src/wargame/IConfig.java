@@ -78,4 +78,48 @@ public interface IConfig {
 	Color COULEUR_VILLAGE = Color.YELLOW;          // jaune
 	Color COULEUR_SABLE = Color.decode("#E0CDA9"); // beige
 	
+	// INFOBULLE
+
+	int LARGEUR_INFOBULLE = 200;
+	int HAUTEUR_INFOBULLE = 120;
+	int X_INFOBULLE = 0;
+	int Y_INFOBULLE = HAUTEUR_PANNEAU_L - HAUTEUR_INFOBULLE;
+	
+	// image du soldat
+	int LARGEUR_IMAGE_SOLDAT = 60;
+	int HAUTEUR_IMAGE_SOLDAT = 60;
+	int X_IMAGE_SOLDAT = X_INFOBULLE + 8;
+	int Y_IMAGE_SOLDAT = Y_INFOBULLE + 8;
+	
+	// barre de vie (seulement rectangle vert/orange/rouge)
+	int HAUTEUR_BARRE_DE_VIE = 15;
+	int X_BARRE_DE_VIE = X_INFOBULLE + 8;
+	int Y_BARRE_DE_VIE = Y_INFOBULLE + 98;
+	
+	// points de vie (en chiffres)
+	int X_PV = X_INFOBULLE + 120;
+	int Y_PV = Y_INFOBULLE + 109;
+	int PV_DECALAGE_X = -5;
+	
+	// statistiques (rectangles colorés)
+	int LARGEUR_CRAN = 10;
+	int HAUTEUR_CRAN = 10;
+	int X_STAT = X_INFOBULLE + 80;
+	int Y_STAT = Y_INFOBULLE + 15;
+	int STAT_DECALAGE_Y = 22;
+	
+	// nom du perso
+	int LARGEUR_NOM = 64;
+	int HAUTEUR_NOM = 22;
+	int X_NOM = X_INFOBULLE + 6;
+	int Y_NOM = Y_INFOBULLE + 72;
+	
+	// couleurs
+	Color COULEUR_PV_HAUT = Color.GREEN;
+	Color COULEUR_PV_MOYEN = Color.ORANGE;
+	Color COULEUR_PV_BAS = Color.RED;
+	Color COULEUR_STAT_PUISSANCE = Color.decode("#FF0000");
+	Color COULEUR_STAT_PORTEE_VISUELLE = Color.decode("#0080FF");
+	Color COULEUR_STAT_DEPLACEMENT = Color.decode("#FFEE00");
+	Color COULEUR_STAT_PORTEE_DE_TIR = Color.decode("#BB00FF");
 }

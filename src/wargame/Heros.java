@@ -18,7 +18,7 @@ public class Heros extends Soldat{
 	 * @param pos la position initiale du héros sur la carte
 	 */
 	public Heros(Carte carte, TypesH type, String nom, Position pos) {
-		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), pos);
+		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), type.getDeplacement(), pos);
 		NOM = nom;
 		TYPE = type;
 		

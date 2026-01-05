@@ -17,13 +17,12 @@ public interface ISoldat {
      * Chaque type définit ses points de vie, portée visuelle, puissance, tir et déplacement.
      */
     static enum TypesH {
-        HUMAIN (50, 7, 20, 5, 3),
-        NAIN (150, 7, 30, 0, 2),
-        ELF (50, 10, 5, 20, 5),
-        HOBBIT (50, 8, 10, 5, 4),
-        ANGE (80, 5, 10, 5, 2),
-      //  POUBELLEMALICIEUSE (1, 3, 100, 0, 5),
-    	MAGICIEN(50, 6, 0, 0, 5);
+      	HUMAIN  (90, 6, 20,  5, 3),
+      	NAIN   (120, 3, 30,  0, 2),
+      	ELF     (50, 8, 10, 10, 2),
+      	HOBBIT  (30, 7, 10,  2, 5),
+      	ANGE    (80, 5, 10,  6, 2),
+        MAGICIEN(50, 6,  0,  0, 5);
 
         private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
 
@@ -50,16 +49,12 @@ public interface ISoldat {
         }
     }
 
-    /**
-     * Enumération des types de monstres disponibles.
-     * Chaque type définit ses points de vie, portée visuelle, puissance, tir et déplacement.
-     */
-    public static enum TypesM {
-        TROLL (150, 3, 50, 0, 2),
-        ORC (40, 2, 10, 3, 3),
-        GOBELIN (30, 5, 10, 5, 5),
-        DEMON (50, 4, 30, 15, 4);
-    	
+   	public static enum TypesM {
+      	TROLL  (150, 2, 40, 0, 2),
+      	ORC     (80, 3, 15, 3, 3),
+      	GOBELIN (30, 6, 10, 6, 5),
+      	DEMON   (50, 4, 30, 5, 4);
+
         private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
 
         TypesM(int points, int portee, int puissance, int tir, int deplacement) {

@@ -63,7 +63,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 	// infos panneauInfo
 	private String infoTexte ="";
 	private String infoTexte2 ="";
-	private int indiceHerosSurvole = -1;
 	
 	// Panneaux
 	private JPanel panneauCarte;
@@ -80,7 +79,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private JButton boutonAffiche;
 	private JButton boutonRevenirMenu;
 	
-	// Gestion din du jeu
+	// infobulle et panneauInfo
+	private int indiceHerosSurvole = -1;
+	private int indiceMonstreSurvole = -1;
+	
+	// fin de jeu
 	private int finJeu = 0;
 	private String messageFinJeu = "";
 	
@@ -214,6 +217,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				g.setColor(COULEUR_FORET);
 				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
+				RenduCarte.dessineInfobulle(g, c, indiceHerosSurvole, indiceMonstreSurvole);
 			}
 		};
 		panneauDroit.setLayout(new BoxLayout(panneauDroit, BoxLayout.Y_AXIS));
@@ -302,16 +306,29 @@ public class PanneauJeu extends JPanel implements IConfig {
 						Soldat soldat = carte.getSoldat(caseSurvolee);
 						if(soldat instanceof Soldat) {
 							infoTexte = soldat.toString();
-							if (soldat instanceof Heros) indiceHerosSurvole = carte.getIndiceHeros((Heros) soldat);
-						} else {
+							if (soldat instanceof Heros) {
+								indiceMonstreSurvole = -1;
+								indiceHerosSurvole = carte.getIndiceHeros((Heros) soldat);
+							} else {
+								indiceHerosSurvole = -1;
+								indiceMonstreSurvole = carte.getIndiceMonstre((Monstre) soldat);
+							}
+						}else {
 							infoTexte ="";
 							indiceHerosSurvole = -1;
+							indiceMonstreSurvole = -1;
 						}
 
-					}else infoTexte ="";
+					}else {
+						infoTexte ="";
+					}
+					panneauInfos.repaint();
+					panneauCarte.repaint();
+					panneauDroit.repaint();
 				}
 				panneauInfos.repaint();
 				panneauCarte.repaint();
+				panneauDroit.repaint();
 			}
 			
 			// Mouvement en gardant le bouton enfonce
