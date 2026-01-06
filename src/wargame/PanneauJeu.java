@@ -579,7 +579,6 @@ import javax.swing.JLayeredPane;
 	
 			iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10)); // Espace entre image et texte
 			textLabel.setVerticalAlignment(SwingConstants.CENTER);
-			textLabel.setForeground(Color.WHITE); // Met texte en blanc
 						
 			// Changement de couleur quand on passe dessus (pas ouf en fait)
 			/*
@@ -601,8 +600,13 @@ import javax.swing.JLayeredPane;
 			    }
 			});*/
 		 
-		    if(!competence.peutUtiliser()) boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
-		    else boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+		    if (!competence.peutUtiliser()) {
+		    	boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
+		    	textLabel.setForeground(Color.BLACK); // Met texte en noir
+		    } else { 
+		    	boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+		    	textLabel.setForeground(Color.WHITE); // Met texte en blanc
+		    }
 		    
 		    // Action
 		    boutonCompetence.addActionListener(new ActionListener() {
