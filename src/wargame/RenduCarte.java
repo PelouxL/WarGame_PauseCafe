@@ -50,6 +50,7 @@ public class RenduCarte implements IConfig {
     private static final Image imgNomNain		  = new ImageIcon("./images/nom_perso/nom_nain.png").getImage();
     private static final Image imgNomHobbit		  = new ImageIcon("./images/nom_perso/nom_hobbit.png").getImage();
     private static final Image imgNomAnge		  = new ImageIcon("./images/nom_perso/nom_ange.png").getImage();
+    private static final Image imgNomMage		  = new ImageIcon("./images/nom_perso/nom_mage.png").getImage();
   
     
     // noms monstres
@@ -275,7 +276,7 @@ public class RenduCarte implements IConfig {
             case ELF:    return imgPersoMapElf;
             case HOBBIT: return imgPersoMapHobbit;
             case ANGE: 	 return imgPersoMapAnge;
-            case MAGE : return imgPersoMapMage;
+            case MAGE:   return imgPersoMapMage;
             default:     return null;
         }
     }
@@ -297,6 +298,7 @@ public class RenduCarte implements IConfig {
             case ELF:    return imgNomElf;
             case HOBBIT: return imgNomHobbit;
             case ANGE: 	 return imgNomAnge;
+            case MAGE:   return imgNomMage;
             default:     return null;
         }
     }
