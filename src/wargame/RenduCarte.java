@@ -393,7 +393,7 @@ public class RenduCarte implements IConfig {
 	}
 	
 	public static void dessineInfobulle(Graphics g, Carte c, int indiceHerosSurvole, int indiceMonstreSurvole) {
-		if (indiceHerosSurvole != -1) { // si un Héros est survolé actuellement
+		if (indiceHerosSurvole != -1 && c.getListeHeros().size() > 0) { // si un Héros est survolé actuellement
 			Heros heros = c.getListeHeros().get(indiceHerosSurvole);
 			
 			// Image du Héros
@@ -445,7 +445,7 @@ public class RenduCarte implements IConfig {
 				g.drawString(PV, X_PV, Y_PV);
 			}
 		}
-		if (indiceMonstreSurvole != -1) { // si un Monstre est survolé actuellement
+		if (indiceMonstreSurvole != -1 && c.getListeMonstres().size() > 0) { // si un Monstre est survolé actuellement
 			Monstre monstre = c.getListeMonstres().get(indiceMonstreSurvole);
 			
 			// Image du Monstre

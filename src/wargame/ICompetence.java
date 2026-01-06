@@ -19,13 +19,13 @@ public interface ICompetence{
 	 * une zone de lancer, une distance, et d'autres attributs définissant son fonctionnement.
 	 */
 	public enum TypeCompetence {
-		BOULE_DE_FEU("boule de feu", ATTAQUE, 2, 30, "ligne", 5 ,true, 3, 2),
-		SOIN("soin", SOINS, 1, 15, "libre", 3, false, 0, 1),
-		SOIN_DE_ZONE("soin de zone", SOINS,  2, 20, "ligne", 4, false, 2, 3),
-		COUP_EPEE("coup d'épée", ATTAQUE, 1, 10, "libre", 1, false, 0, 1),
-		TIR_A_PORTER("tir a porter", ATTAQUE, 1, 10, "ligne", 12, false, 0, 1),
-		LANCE_PIERRE("lance pierre", DEBUFF, 1, 5, "ligne", 5, false, 0, 0),
-		COUP_DE_BATON("coup de baton", DEBUFF, 1, 5, "ligne", 1, false, 0, 0);
+		BOULE_DE_FEU("Boule de feu", ATTAQUE, 2, 30, "ligne", 5 ,true, 3, 2),
+		SOIN("Soin", SOINS, 1, 15, "libre", 3, false, 0, 1),
+		SOIN_DE_ZONE("Soin de zone", SOINS,  2, 20, "ligne", 4, false, 2, 3),
+		COUP_EPEE("Coup d'épée", ATTAQUE, 1, 10, "libre", 1, false, 0, 1),
+		TIR_A_PORTER("Tir à portée", ATTAQUE, 1, 10, "ligne", 12, false, 0, 1),
+		LANCE_PIERRE("Lance-pierre", DEBUFF, 1, 5, "ligne", 5, false, 0, 0),
+		COUP_DE_BATON("Coup de baton", DEBUFF, 1, 5, "ligne", 1, false, 0, 0);
 
 	
 		private final String nom;

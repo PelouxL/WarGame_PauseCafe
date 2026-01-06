@@ -1,664 +1,703 @@
-package wargame;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
+	package wargame;
+	
+	import javax.swing.JButton;
+	import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
-import wargame.ISoldat.TypesH;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.Dimension;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.InputMap;
-import javax.swing.ActionMap;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import javax.swing.AbstractAction;
-import java.util.List;
-import java.util.ArrayList;
-
-/**
- * Représente le panneau principal de jeu.
- * <p>
- * Ce panneau contient la carte, les informations sur les soldats,
- * le journal de combat, et gère les interactions utilisateur 
- * comme les déplacements, actions et utilisation de compétences.
- */
-public class PanneauJeu extends JPanel implements IConfig {
-	private Carte carte;
-	private Position caseSurvolee;
-	private Position caseCliquee;
-	private Position caseAction;
+	import javax.swing.JPanel;
+	import javax.swing.JScrollPane;
+	import javax.swing.JTextArea;
+	import javax.swing.SwingConstants;
+	import javax.swing.SwingUtilities;
 	
-	// Drag&drop
-	private Position dragPersoFin = null;
-	private Position dragPersoInit = null;
+	import wargame.ISoldat.TypesH;
 	
-	// Action et boolean
-	private boolean deplacePerso = false;
-	private boolean dragPerso = false;
-	private boolean afficheLog = false;
-	private Competence choisiComp = null;
+	import javax.swing.BorderFactory;
+	import javax.swing.BoxLayout;
+	import javax.swing.ImageIcon;
 	
-	// infos panneauInfo
-	private String infoTexte ="";
-	private String infoTexte2 ="";
+	import java.awt.Graphics;
+	import java.awt.GridLayout;
+	import java.awt.Image;
+	import java.awt.Toolkit;
+	import java.awt.Dimension;
+	import java.awt.BorderLayout;
+	import java.awt.Color;
+	import java.awt.Component;
+	import java.awt.Cursor;
+	import java.awt.event.ActionEvent;
+	import java.awt.event.ActionListener;
+	import java.awt.event.MouseAdapter;
+	import java.awt.event.MouseEvent;
+	import java.awt.event.MouseMotionAdapter;
+	import java.awt.event.KeyAdapter;
+	import java.awt.event.KeyEvent;
+	import javax.swing.InputMap;
+	import javax.swing.ActionMap;
+	import javax.swing.JComponent;
+	import javax.swing.KeyStroke;
+	import javax.swing.AbstractAction;
+	import java.util.List;
+	import java.util.ArrayList;
 	
-	// Panneaux
-	private JPanel panneauCarte;
-	private JPanel panneauInfos;
-	private JPanel panneauLog;
-	private JPanel panneauDroit;
-	private JPanel panneauHaut;
-	private JPanel panneauTrans;
-	private JTextArea logArea;
-
-	// Boutons
-	private JButton boutonFin;
-	private JButton boutonAffiche;
-	private JButton boutonRevenirMenu;
+	/**
+	 * Représente le panneau principal de jeu.
+	 * <p>
+	 * Ce panneau contient la carte, les informations sur les soldats,
+	 * le journal de combat, et gère les interactions utilisateur 
+	 * comme les déplacements, actions et utilisation de compétences.
+	 */
+	public class PanneauJeu extends JPanel implements IConfig {
+		private Carte carte;
+		private Position caseSurvolee;
+		private Position caseCliquee;
+		private Position caseAction;
+		
+		// Drag&drop
+		private Position dragPersoFin = null;
+		private Position dragPersoInit = null;
+		
+		// Action et boolean
+		private boolean deplacePerso = false;
+		private boolean dragPerso = false;
+		private boolean afficheLog = false;
+		private Competence choisiComp = null;
+		
+		// infos panneauInfo
+		private String infoTexte ="";
+		private String infoTexte2 ="";
+		
+		// Panneaux
+		private JPanel panneauCarte;
+		private JPanel panneauInfos;
+		private JPanel panneauLog;
+		private JPanel panneauDroit;
+		private JPanel panneauHaut;
+		private JPanel panneauTrans;
+		private JTextArea logArea;
 	
-	// infobulle et panneauInfo
-	private int indiceHerosSurvole = -1;
-	private int indiceMonstreSurvole = -1;
-	
-	// fin de jeu
-	private int finJeu = 0;
-	private String messageFinJeu = "";
-	
-	  /**
-     * Crée un panneau de jeu pour une carte donnée.
-     * 
-     * @param c la carte à afficher et gérer
-     */
-	public PanneauJeu(Carte c) {
-		this.carte = c;
-		setLayout(new BorderLayout());
+		// Boutons
+		private JButton boutonFin;
+		private JButton boutonAffiche;
+		private JButton boutonRevenirMenu;
 		
-		// ------------------------------- Creation Layer ------------------------------- //		
-		JLayeredPane layers = new JLayeredPane();
-		layers.setPreferredSize(new Dimension(LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE));
-		layers.setLayout(null);
+		// infobulle et panneauInfo
+		private int indiceHerosSurvole = -1;
+		private int indiceMonstreSurvole = -1;
 		
-		// ---------------------------- Creation panneauCarte --------------------------- //		
-		panneauCarte = new JPanel() {
-			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
-				RenduCarte.dessiner(g, carte, caseSurvolee, caseCliquee, choisiComp);
-				if (dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
-					RenduCarte.dessinerCaseCliquee(g, dragPersoFin);
-				}	
-				verifFinJeu();
-				if (finJeu != 0) {
-					afficherFinJeu(g);
-				}
-			}
-		};
-		panneauCarte.setBackground(Color.BLACK);
-		panneauCarte.setBounds(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
-		layers.add(panneauCarte, Integer.valueOf(JLayeredPane.DEFAULT_LAYER));
-
-		// ----------------------------- Creation panneauLog ---------------------------- //
-		// ------------------- TextArea ------------------- //
-		logArea = new JTextArea();
-		logArea.setEditable(false);
-		logArea.setOpaque(false);
-		logArea.setForeground(COULEUR_TEXTE);
+		// fin de jeu
+		private int finJeu = 0;
+		private String messageFinJeu = "";
 		
-		JScrollPane scrollPane = new JScrollPane(logArea);
-		scrollPane.setBorder(BorderFactory.createEmptyBorder());
-		scrollPane.setOpaque(false);
-		scrollPane.getViewport().setOpaque(false);
-		
-		// -------------------- JPanel -------------------- //
-		panneauTrans = new JPanel(new BorderLayout()) {
-			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
-
-					g.setColor(COULEUR_PANNEAU_TRANSPARENT); 
-					g.fillRect(0, 0, LARGEUR_PANNEAU_LOG, HAUTEUR_PANNEAU_LOG);
-					g.setColor(Color.black);
-					g.drawRect(0, 0, LARGEUR_PANNEAU_LOG, HAUTEUR_PANNEAU_LOG);
-				
-			}
-		};
-		
-		// ----------- Bouton affiche/desaffiche ---------- //
-		JPanel panneauBouton = new JPanel(new BorderLayout());
-		JButton boutonAfficheLog = new JButton("");
-		
-		panneauBouton.setOpaque(false);
-		panneauTrans.setVisible(afficheLog);
-		panneauTrans.add(panneauBouton,BorderLayout.NORTH);
-
-		// initialisation si on affiche log au debut ou non
-		if(afficheLog) panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
-		else {
-			layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));
-			boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
-		}
-		
-		// --------- Action affichage/desaffichage -------- //
-		boutonAfficheLog.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				if (finJeu == 0) {
-					
-					afficheLog = !afficheLog;
-					panneauTrans.setVisible(afficheLog);
-				
-					if(afficheLog) {
-						panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
-						
-						panneauTrans.revalidate();
-						updateCombatLog();
-						panneauTrans.repaint();
-					} else {
-						// on cache et supprime les panneaux
-						panneauBouton.remove(boutonAfficheLog);
-						
-						// on replace le bouton en bas a gauche
-						layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));				
-						boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
+		  /**
+	     * Crée un panneau de jeu pour une carte donnée.
+	     * 
+	     * @param c la carte à afficher et gérer
+	     */
+		public PanneauJeu(Carte c) {
+			this.carte = c;
+			setLayout(new BorderLayout());
+			
+			// ------------------------------- Creation Layer ------------------------------- //		
+			JLayeredPane layers = new JLayeredPane();
+			layers.setPreferredSize(new Dimension(LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE));
+			layers.setLayout(null);
+			
+			// ---------------------------- Creation panneauCarte --------------------------- //		
+			panneauCarte = new JPanel() {
+				protected void paintComponent(Graphics g) {
+					super.paintComponent(g);
+					RenduCarte.dessiner(g, carte, caseSurvolee, caseCliquee, choisiComp);
+					if (dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
+						RenduCarte.dessinerCaseCliquee(g, dragPersoFin);
+					}	
+					verifFinJeu();
+					if (finJeu != 0) {
+						afficherFinJeu(g);
 					}
-					
-					// on repaint uniquement notre layer
-					layers.repaint();
 				}
-			}
-		});
-		
-		panneauTrans.setPreferredSize(new Dimension(100, 50));
-		panneauTrans.setOpaque(false);
-		panneauTrans.add(scrollPane, BorderLayout.CENTER);
-		panneauTrans.setBounds(POSITION_LOG_X, POSITION_LOG_Y, LARGEUR_PANNEAU_LOG, HAUTEUR_PANNEAU_LOG);
-		layers.add(panneauTrans, Integer.valueOf(JLayeredPane.PALETTE_LAYER));
-		
-		// ----------------------- Creation panneauInfos (en bas) ----------------------- //
-	    panneauInfos = new JPanel() {
-	    	protected void paintComponent(Graphics g) {
-	    		super.paintComponent(g);
-	    		
-	    		RenduCarte.dessineInfosBas(g, c, indiceHerosSurvole);
-	    		//carte.dessineInfosBas(g, indiceHerosSurvole);
-	    	}
-	    	
-	    };
-			 
-	    panneauInfos.setPreferredSize(new Dimension(LARGEUR_PANNEAU_BAS, HAUTEUR_PANNEAU_BAS));
-		panneauInfos.setBackground(COULEUR_PLATEAU);
-		panneauInfos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+			};
+			panneauCarte.setBackground(Color.BLACK);
+			panneauCarte.setBounds(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
+			layers.add(panneauCarte, Integer.valueOf(JLayeredPane.DEFAULT_LAYER));
 	
-		// ---------------------------- Creation panneauDroit --------------------------- //		
-		// ignorez les trucs dans le paintComponent c'était juste pour tester
-		// des trucs (pour afficher les stats du perso courant)
-		panneauDroit = new JPanel() {
-			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
-				g.setColor(COULEUR_FORET);
-				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
-				RenduCarte.dessineInfobulle(g, c, indiceHerosSurvole, indiceMonstreSurvole);
-			}
-		};
-		panneauDroit.setLayout(new BoxLayout(panneauDroit, BoxLayout.Y_AXIS));
-		panneauDroit.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));	
-		panneauDroit.setBackground(COULEUR_PLATEAU);
-		panneauDroit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-		
-		// ---------------------------- Creation panneauHaut ---------------------------- //
-		JPanel panneauHaut = new JPanel() {
-			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
-				g.setColor(Color.WHITE);
-				g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2);
-				verifFinJeu();
-				if (finJeu != 0) {
-					boutonFin.setVisible(false);
-					boutonRevenirMenu.setVisible(true);
-				}
-			}
-		};
+			// ----------------------------- Creation panneauLog ---------------------------- //
+			// ------------------- TextArea ------------------- //
+			logArea = new JTextArea();
+			logArea.setEditable(false);
+			logArea.setOpaque(false);
+			logArea.setForeground(COULEUR_TEXTE);
 			
-        panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
-		panneauHaut.setBackground(COULEUR_PLATEAU);
-		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-
-		// --------------- Creation boutons --------------- //
-		boutonFin = new JButton("Fin de tour");
-		boutonRevenirMenu = new JButton("Revenir au menu");
-		panneauHaut.add(boutonFin);
-		panneauHaut.add(boutonRevenirMenu);
-		
-		boutonFin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (finJeu == 0) {
-					carte.finTour();
-					//verifFinJeu();
-					//logArea.repaint();
-					panneauCarte.repaint();
-					panneauHaut.repaint();
-					panneauDroit.repaint();
-					panneauInfos.repaint();
-					System.out.println("Termine-moi !");
-				}
-			}
-		});
-		
-		
-		boutonRevenirMenu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFrame fenetre = (JFrame) SwingUtilities.getWindowAncestor(panneauHaut);
-				fenetre.dispose();
-				new FenetreMenu();
-			}
-		});
-		
-		boutonFin.setVisible(true);
-		boutonRevenirMenu.setVisible(false);
-		
-		// -------------------------- Mises en place des layout ------------------------- //
-		add(panneauInfos, BorderLayout.SOUTH);
-		add(panneauDroit, BorderLayout.EAST);
-		add(panneauHaut, BorderLayout.NORTH);
-		add(layers, BorderLayout.CENTER);
-		
-		// ------------------------- Taille du panneau principal ------------------------ //		
-		setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
-        setMinimumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
-        setMaximumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
-        
-		// ------------------------- Ajout des ecouteurs -------------------------- //
-        
-        // -------------------- Souris -------------------- //
-		panneauCarte.addMouseMotionListener(new MouseMotionAdapter() {
+			JScrollPane scrollPane = new JScrollPane(logArea);
+			scrollPane.setBorder(BorderFactory.createEmptyBorder());
+			scrollPane.setOpaque(false);
+			scrollPane.getViewport().setOpaque(false);
 			
-			// Mouvement
-			public void mouseMoved(MouseEvent e) {
-				if (finJeu == 0) {
-					int x = e.getX();
-					int y = e.getY();
-					caseSurvolee = carte.coorToPos(x, y);
+			// -------------------- JPanel -------------------- //
+			panneauTrans = new JPanel(new BorderLayout()) {
+				protected void paintComponent(Graphics g) {
+					super.paintComponent(g);
+	
+						g.setColor(COULEUR_PANNEAU_TRANSPARENT); 
+						g.fillRect(0, 0, LARGEUR_PANNEAU_LOG, HAUTEUR_PANNEAU_LOG);
+						g.setColor(Color.black);
+						g.drawRect(0, 0, LARGEUR_PANNEAU_LOG, HAUTEUR_PANNEAU_LOG);
 					
-					// Affichage des infos des soldats
-					// /!\ ATTENTION code inutile pour le moment
-					if (caseSurvolee.estValide() && carte.getVisibilite(caseSurvolee) == 1) {
-						Soldat soldat = carte.getSoldat(caseSurvolee);
-						if(soldat instanceof Soldat) {
-							infoTexte = soldat.toString();
-							if (soldat instanceof Heros) {
-								indiceMonstreSurvole = -1;
-								indiceHerosSurvole = carte.getIndiceHeros((Heros) soldat);
-							} else {
+				}
+			};
+			
+			// ----------- Bouton affiche/desaffiche ---------- //
+			JPanel panneauBouton = new JPanel(new BorderLayout());
+			JButton boutonAfficheLog = new JButton("");
+			
+			panneauBouton.setOpaque(false);
+			panneauTrans.setVisible(afficheLog);
+			panneauTrans.add(panneauBouton,BorderLayout.NORTH);
+	
+			// initialisation si on affiche log au debut ou non
+			if(afficheLog) panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
+			else {
+				layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));
+				boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
+			}
+			
+			// --------- Action affichage/desaffichage -------- //
+			boutonAfficheLog.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					if (finJeu == 0) {
+						
+						afficheLog = !afficheLog;
+						panneauTrans.setVisible(afficheLog);
+					
+						if(afficheLog) {
+							panneauBouton.add(boutonAfficheLog, BorderLayout.EAST);
+							
+							panneauTrans.revalidate();
+							updateCombatLog();
+							panneauTrans.repaint();
+						} else {
+							// on cache et supprime les panneaux
+							panneauBouton.remove(boutonAfficheLog);
+							
+							// on replace le bouton en bas a gauche
+							layers.add(boutonAfficheLog, Integer.valueOf(JLayeredPane.DRAG_LAYER));				
+							boutonAfficheLog.setBounds(0, HAUTEUR_PANNEAU_CARTE - 10, 25, 10);
+						}
+						
+						// on repaint uniquement notre layer
+						layers.repaint();
+					}
+				}
+			});
+			
+			panneauTrans.setPreferredSize(new Dimension(100, 50));
+			panneauTrans.setOpaque(false);
+			panneauTrans.add(scrollPane, BorderLayout.CENTER);
+			panneauTrans.setBounds(POSITION_LOG_X, POSITION_LOG_Y, LARGEUR_PANNEAU_LOG, HAUTEUR_PANNEAU_LOG);
+			layers.add(panneauTrans, Integer.valueOf(JLayeredPane.PALETTE_LAYER));
+			
+			// ----------------------- Creation panneauInfos (en bas) ----------------------- //
+		    panneauInfos = new JPanel() {
+		    	protected void paintComponent(Graphics g) {
+		    		super.paintComponent(g);
+		    		
+		    		RenduCarte.dessineInfosBas(g, c, indiceHerosSurvole);
+		    		//carte.dessineInfosBas(g, indiceHerosSurvole);
+		    	}
+		    	
+		    };
+				 
+		    panneauInfos.setPreferredSize(new Dimension(LARGEUR_PANNEAU_BAS, HAUTEUR_PANNEAU_BAS));
+			panneauInfos.setBackground(COULEUR_PLATEAU);
+			panneauInfos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		
+			// ---------------------------- Creation panneauDroit --------------------------- //		
+			// ignorez les trucs dans le paintComponent c'était juste pour tester
+			// des trucs (pour afficher les stats du perso courant)
+			panneauDroit = new JPanel() {
+				protected void paintComponent(Graphics g) {
+					super.paintComponent(g);
+					g.setColor(COULEUR_FORET);
+					g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
+					RenduCarte.dessineInfobulle(g, c, indiceHerosSurvole, indiceMonstreSurvole);
+				}
+			};
+			//panneauDroit.setLayout(new GridLayout(0, 1, 0, 5));
+			panneauDroit.setLayout(new BoxLayout(panneauDroit, BoxLayout.Y_AXIS));
+			panneauDroit.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_L));	
+			panneauDroit.setBackground(COULEUR_PLATEAU);
+			panneauDroit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+			panneauDroit.setAlignmentX(Component.CENTER_ALIGNMENT);
+			
+			// ---------------------------- Creation panneauHaut ---------------------------- //
+			JPanel panneauHaut = new JPanel() {
+				protected void paintComponent(Graphics g) {
+					super.paintComponent(g);
+					g.setColor(Color.WHITE);
+					g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2);
+					verifFinJeu();
+					if (finJeu != 0) {
+						boutonFin.setVisible(false);
+						boutonRevenirMenu.setVisible(true);
+					}
+				}
+			};
+				
+	        panneauHaut.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_PANNEAU_HAUT));
+			panneauHaut.setBackground(COULEUR_PLATEAU);
+			panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+	
+			// --------------- Creation boutons --------------- //
+			boutonFin = new JButton("Fin de tour");
+			boutonRevenirMenu = new JButton("Revenir au menu");
+			panneauHaut.add(boutonFin);
+			panneauHaut.add(boutonRevenirMenu);
+			
+			boutonFin.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (finJeu == 0) {
+						carte.finTour();
+						//verifFinJeu();
+						//logArea.repaint();
+						panneauCarte.repaint();
+						panneauHaut.repaint();
+						panneauDroit.repaint();
+						panneauInfos.repaint();
+						System.out.println("Termine-moi !");
+					}
+				}
+			});
+			
+			
+			boutonRevenirMenu.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JFrame fenetre = (JFrame) SwingUtilities.getWindowAncestor(panneauHaut);
+					fenetre.dispose();
+					new FenetreMenu();
+				}
+			});
+			
+			boutonFin.setVisible(true);
+			boutonRevenirMenu.setVisible(false);
+			
+			// -------------------------- Mises en place des layout ------------------------- //
+			add(panneauInfos, BorderLayout.SOUTH);
+			add(panneauDroit, BorderLayout.EAST);
+			add(panneauHaut, BorderLayout.NORTH);
+			add(layers, BorderLayout.CENTER);
+			
+			// ------------------------- Taille du panneau principal ------------------------ //		
+			setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
+	        setMinimumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
+	        setMaximumSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE));
+	        
+			// ------------------------- Ajout des ecouteurs -------------------------- //
+	        
+	        // -------------------- Souris -------------------- //
+			panneauCarte.addMouseMotionListener(new MouseMotionAdapter() {
+				
+				// Mouvement
+				public void mouseMoved(MouseEvent e) {
+					if (finJeu == 0) {
+						int x = e.getX();
+						int y = e.getY();
+						caseSurvolee = carte.coorToPos(x, y);
+						
+						// Affichage des infos des soldats
+						// /!\ ATTENTION code inutile pour le moment
+						if (caseSurvolee.estValide() && carte.getVisibilite(caseSurvolee) == 1) {
+							Soldat soldat = carte.getSoldat(caseSurvolee);
+							if(soldat instanceof Soldat) {
+								infoTexte = soldat.toString();
+								if (soldat instanceof Heros) {
+									indiceMonstreSurvole = -1;
+									indiceHerosSurvole = carte.getIndiceHeros((Heros) soldat);
+								} else {
+									indiceHerosSurvole = -1;
+									indiceMonstreSurvole = carte.getIndiceMonstre((Monstre) soldat);
+								}
+							}else {
+								infoTexte ="";
 								indiceHerosSurvole = -1;
-								indiceMonstreSurvole = carte.getIndiceMonstre((Monstre) soldat);
+								indiceMonstreSurvole = -1;
 							}
+	
 						}else {
 							infoTexte ="";
-							indiceHerosSurvole = -1;
-							indiceMonstreSurvole = -1;
 						}
-
-					}else {
-						infoTexte ="";
+						panneauInfos.repaint();
+						panneauCarte.repaint();
+						panneauDroit.repaint();
 					}
 					panneauInfos.repaint();
 					panneauCarte.repaint();
 					panneauDroit.repaint();
 				}
-				panneauInfos.repaint();
-				panneauCarte.repaint();
-				panneauDroit.repaint();
-			}
-			
-			// Mouvement en gardant le bouton enfonce
-			public void mouseDragged(MouseEvent e) {
-				if (finJeu == 0) {
-					if(dragPerso) {
-						int x = e.getX();
-				        int y = e.getY();
-						
-				        Position essaie = carte.coorToPos(x, y);
-				        
-				        Soldat s = carte.getSoldat(dragPersoInit);
-				        
-				        // permet de ne pas sortir des deplacements
-				        if(!s.zoneDeplacement().contient(essaie) && !(essaie.equals(dragPersoInit))) {
-				        	return;
-				        	// gerer exeption
-				        }
-	
-						dragPersoFin.setX(essaie.getX());
-						dragPersoFin.setY(essaie.getY());
-						deplacePerso = false;
-						panneauCarte.repaint();
-					}
-				}
-			}
-		});
-		
-		// Clic
-		panneauCarte.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				int x = e.getX();
-				int y = e.getY();
-				Soldat soldat = carte.getSoldat(carte.coorToPos(x, y));
 				
-				// Clic gauche
-				if(SwingUtilities.isLeftMouseButton(e)) {
-					
-					// Cas 1 - Deplacer un soldat
-					if(deplacePerso && choisiComp == null && caseCliquee != null) {
-						caseAction = carte.coorToPos(x, y);
-						carte.actionHeros(caseCliquee, caseAction);
-						
-						// si on a lancé un combat (Utilite???)
-						if(soldat instanceof Monstre) {
-							updateCombatLog();
-						}
-						
-						// Reinitialisation apres deplacement
-						infoTexte2 ="";
-						deplacePerso = false;
-						caseCliquee = null;
-						caseAction = null;
-						nettoyerPanneauDroit();
-						
-					// Cas 2 - Lancement de competence 
-					} else if(choisiComp != null) {
-					
-						caseAction = carte.coorToPos(x, y);
-						choisiComp.utiliserCompetence(carte.getSoldat(caseCliquee), caseAction, carte);
-						
-						caseCliquee = null;
-						caseAction = null;
-						choisiComp = null;
-						infoTexte2 ="";
-						nettoyerPanneauDroit();
-						panneauCarte.repaint();
-						
-					// Cas 3 - Choix du heros a deplacer
-					} else {
-						caseCliquee = carte.coorToPos(x, y);
-						
-						// Preparation au deplacement
-						if (caseCliquee.estValide() && soldat instanceof Heros && dragPerso == false && choisiComp == null) {
+				// Mouvement en gardant le bouton enfonce
+				public void mouseDragged(MouseEvent e) {
+					if (finJeu == 0) {
+						if(dragPerso) {
+							int x = e.getX();
+					        int y = e.getY();
 							
-							deplacePerso = true;
-							mettreAJourPanneauDroit();
-							infoTexte2 = soldat.toString();
-							
-							dragPerso = true;
-							dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
-							dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
-							
-						// Annulation du deplacement
-						} else {
-							caseCliquee = null;
+					        Position essaie = carte.coorToPos(x, y);
+					        
+					        Soldat s = carte.getSoldat(dragPersoInit);
+					        
+					        // permet de ne pas sortir des deplacements
+					        if(!s.zoneDeplacement().contient(essaie) && !(essaie.equals(dragPersoInit))) {
+					        	return;
+					        	// gerer exeption
+					        }
+		
+							dragPersoFin.setX(essaie.getX());
+							dragPersoFin.setY(essaie.getY());
 							deplacePerso = false;
-							infoTexte2 ="";
-							// OCTODAMS (remettre ?) caseAction = null;
-							choisiComp = null;
-							nettoyerPanneauDroit();			
+							panneauCarte.repaint();
 						}
 					}
-				}else {
-					// Annulation deplacement
-					caseCliquee = null;
-					caseAction = null;
-					deplacePerso = false;
-					// Annulation drag
-					dragPerso = false;
-					dragPersoInit = null;
-					dragPersoFin = null;
-					infoTexte2="";
-					choisiComp = null;
-					nettoyerPanneauDroit();
+				}
+			});
+			
+			// Clic
+			panneauCarte.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+					int x = e.getX();
+					int y = e.getY();
+					Soldat soldat = carte.getSoldat(carte.coorToPos(x, y));
+					
+					// Clic gauche
+					if(SwingUtilities.isLeftMouseButton(e)) {
+						
+						// Cas 1 - Deplacer un soldat
+						if(deplacePerso && choisiComp == null && caseCliquee != null) {
+							caseAction = carte.coorToPos(x, y);
+							carte.actionHeros(caseCliquee, caseAction);
+							
+							// si on a lancé un combat (Utilite???)
+							if(soldat instanceof Monstre) {
+								updateCombatLog();
+							}
+							
+							// Reinitialisation apres deplacement
+							infoTexte2 ="";
+							deplacePerso = false;
+							caseCliquee = null;
+							caseAction = null;
+							nettoyerPanneauDroit();
+							
+						// Cas 2 - Lancement de competence 
+						} else if(choisiComp != null) {
+						
+							caseAction = carte.coorToPos(x, y);
+							choisiComp.utiliserCompetence(carte.getSoldat(caseCliquee), caseAction, carte);
+							
+							caseCliquee = null;
+							caseAction = null;
+							choisiComp = null;
+							infoTexte2 ="";
+							nettoyerPanneauDroit();
+							panneauCarte.repaint();
+							
+						// Cas 3 - Choix du heros a deplacer
+						} else {
+							caseCliquee = carte.coorToPos(x, y);
+							
+							// Preparation au deplacement
+							if (caseCliquee.estValide() && soldat instanceof Heros && dragPerso == false && choisiComp == null) {
+								
+								deplacePerso = true;
+								mettreAJourPanneauDroit();
+								infoTexte2 = soldat.toString();
+								
+								dragPerso = true;
+								dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
+								dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
+								
+							// Annulation du deplacement
+							} else {
+								caseCliquee = null;
+								deplacePerso = false;
+								infoTexte2 ="";
+								// OCTODAMS (remettre ?) caseAction = null;
+								choisiComp = null;
+								nettoyerPanneauDroit();			
+							}
+						}
+					}else {
+						// Annulation deplacement
+						caseCliquee = null;
+						caseAction = null;
+						deplacePerso = false;
+						// Annulation drag
+						dragPerso = false;
+						dragPersoInit = null;
+						dragPersoFin = null;
+						infoTexte2="";
+						choisiComp = null;
+						nettoyerPanneauDroit();
+					}
+					
+					// OCTODAMS (enlever ?)
+					panneauInfos.repaint();
+					panneauCarte.repaint();
+					panneauDroit.repaint();
 				}
 				
-				// OCTODAMS (enlever ?)
-				panneauInfos.repaint();
-				panneauCarte.repaint();
-				panneauDroit.repaint();
-			}
+				// Relachement du bouton
+				public void mouseReleased(MouseEvent e) {
+					if (finJeu == 0) {
+						// si on est entrain de dragg une unité
+						if(dragPerso && dragPersoFin != null) {
+							if(!(dragPersoFin.estValide())){
+								dragPerso = false;
+								return;
+								// surement gerer l'exeptionnelle 
+							}
+							// on pose
+							carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getSoldat(dragPersoInit)));	
+							
+							infoTexte="";
+						}		
+						dragPerso = false;
+						repaint();
+					}
+				}
+				
+			});	
 			
-			// Relachement du bouton
-			public void mouseReleased(MouseEvent e) {
-				if (finJeu == 0) {
-					// si on est entrain de dragg une unité
-					if(dragPerso && dragPersoFin != null) {
-						if(!(dragPersoFin.estValide())){
-							dragPerso = false;
-							return;
-							// surement gerer l'exeptionnelle 
-						}
-						// on pose
-						carte.deplaceSoldat(dragPersoFin, ((Soldat)carte.getSoldat(dragPersoInit)));	
+			// Raccourcis clavier
+			setRaccourcisClavier();
+			
+		}
+		
+		// ------------------- Raccourcis clavier ------------------ //
+		private void setRaccourcisClavier() {
+			ActionMap actionMap;        
+			InputMap  inputMap;
+	
+			actionMap = panneauCarte.getActionMap();
+			inputMap  = panneauCarte.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+			
+			// Raccourci fleche gauche
+			inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "gauche");
+			actionMap.put("gauche", new AbstractAction() {
+			    public void actionPerformed(ActionEvent e) {
+			        if (finJeu != 0) return;
+			        
+			        System.out.println("gauche");
+		
+			        ArrayList<Heros> listeHeros = carte.getListeHeros();
+			        Heros heros;
+	
+			        if (caseCliquee == null || carte.getCase(caseCliquee).getOccupant() == null) {
+			        	heros = listeHeros.get(listeHeros.size() - 1);
+			        } else {
+			        	heros = listeHeros.get((listeHeros.indexOf(carte.getSoldat(caseCliquee)) - 1 + listeHeros.size()) % listeHeros.size());
+			        }
+			        
+			        
+			        caseCliquee = heros.getPos();
+		        	deplacePerso = true;
+					infoTexte2 = heros.toString();
+	
+			        panneauCarte.repaint();
+			        panneauInfos.repaint();
+			        mettreAJourPanneauDroit();
+			    }
+			});
+			
+			// Raccourci fleche droite
+			inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "droite");
+			actionMap.put("droite", new AbstractAction() {
+			    public void actionPerformed(ActionEvent e) {
+			        if (finJeu != 0) return;
+			        System.out.println("droite");
+			        
+			        ArrayList<Heros> listeHeros = carte.getListeHeros();
+			        Heros heros;
+	
+			        if (caseCliquee == null || carte.getCase(caseCliquee).getOccupant() == null) {
+			        	heros = listeHeros.get(0);
+			        } else {
+			        	heros = listeHeros.get((listeHeros.indexOf(carte.getSoldat(caseCliquee)) + 1) % listeHeros.size());
+			        }
+			        
+			        caseCliquee = heros.getPos();
+		        	deplacePerso = true;
+					infoTexte2 = heros.toString();
+	
+			        panneauCarte.repaint();
+			        panneauInfos.repaint();
+			        panneauDroit.repaint();
+			    }
+			});
+		}
+	
+	
+		// ----------------------- Competences---------------------- //
+		private void mettreAJourPanneauDroit() {
+			panneauDroit.removeAll();
+			if(caseCliquee != null) {
+				Soldat soldat = carte.getSoldat(caseCliquee);
+				if(soldat instanceof Heros) {
+					for(Competence c : soldat.getCompetences()) {							
+						JButton boutonCompetence = creerBoutonCompetence(c);
+						//boutonCompetence.setBorderPainted(false);
+						panneauDroit.add(boutonCompetence);
+					}
+				}
+			}
+		
+			panneauDroit.revalidate();
+			panneauDroit.repaint();
+		}
+		
+		private JButton creerBoutonCompetence(Competence competence) {
+			String s = competence.getType().getNom();
+			JButton boutonCompetence = new JButton();
+			ImageIcon icon = new ImageIcon(competence.trouverImg());
+			
+			// Afficher le temps restant
+			if(!competence.peutUtiliser()) s += "<br/><small>" + "  " + competence.getTempsRestant()+ " tour(s) restant</small>";
+			
+			// Initialisation du bouton
+			boutonCompetence.setLayout(new BorderLayout());
+			
+			boutonCompetence.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, 50));
+			boutonCompetence.setMaximumSize(new Dimension(LARGEUR_PANNEAU_L, 50));
+			boutonCompetence.setMinimumSize(new Dimension(LARGEUR_PANNEAU_L, 50));
+			boutonCompetence.setAlignmentX(Component.CENTER_ALIGNMENT);
+			
+			boutonCompetence.setForeground(Color.white);
+			
+			JLabel iconLabel = new JLabel(icon);
+			JLabel textLabel = new JLabel("<html>" + s + "</html>");
+			boutonCompetence.add(iconLabel, BorderLayout.WEST);
+			boutonCompetence.add(textLabel, BorderLayout.CENTER);
+	
+			iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10)); // Espace entre image et texte
+			textLabel.setVerticalAlignment(SwingConstants.CENTER);
+			textLabel.setForeground(Color.WHITE); // Met texte en blanc
 						
-						infoTexte="";
-					}		
-					dragPerso = false;
-					repaint();
-				}
-			}
+			// Changement de couleur quand on passe dessus (pas ouf en fait)
+			/*
+			boutonCompetence.addMouseListener(new MouseAdapter() {
+			    public void mouseEntered(MouseEvent e) {
+			    	if (boutonCompetence.getBackground().equals(COULEUR_BOUTON_COMP)) {
+			    		boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
+			    	} else {
+			    		boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+			    	}
+			    }
+			    
+			    public void mouseExited(MouseEvent e) {
+			    	if (boutonCompetence.getBackground().equals(COULEUR_BOUTON_COMP)) {
+			    		boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
+			    	} else {
+			    		boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+			    	}
+			    }
+			});*/
+		 
+		    if(!competence.peutUtiliser()) boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
+		    else boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
+		    
+		    // Action
+		    boutonCompetence.addActionListener(new ActionListener() {
+		    	public void actionPerformed(ActionEvent e) {	
+		    		if(choisiComp == null) {	
+		    			choisiComp = competence;
+		    			
+		    			if(choisiComp.peutUtiliser()) {
+		    				changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
+		    			}else if(carte.getSoldat(caseCliquee).getAction() < choisiComp.getType().getCoutAction()){
+		    				System.out.println("Vous n'aveez pas les point d'action necessaire ! ");
+		    			}else {
+		    				System.out.println("La competence n'est pas encore disponible !!! ");
+		    				choisiComp = null;
+		    			}
+		    		}else {
+		    			choisiComp = null;
+		    		}
+		    		panneauCarte.repaint();
+		    	}
+		    });
+				
+			return boutonCompetence;
+		}
+		
+		private void nettoyerPanneauDroit() {
+			panneauDroit.removeAll();
+			setCursor(Cursor.getDefaultCursor());
 			
-		});	
+			panneauDroit.revalidate();
+			panneauDroit.repaint();
+		}
 		
-		// Raccourcis clavier
-		setRaccourcisClavier();
+		private void changeCurseur(String chemin, int x, int y, String nom) {
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			Image image = tk.getImage(chemin);
+			Cursor c = tk.createCustomCursor(image, new java.awt.Point(x,y), nom);
+			setCursor(c);
+		}
 		
-	}
+		// Accesseur
+		public Position getCaseSurvolee() {
+			return this.caseSurvolee;
+		}	
 	
-	// ------------------- Raccourcis clavier ------------------ //
-	private void setRaccourcisClavier() {
-		ActionMap actionMap;        
-		InputMap  inputMap;
-
-		actionMap = panneauCarte.getActionMap();
-		inputMap  = panneauCarte.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		public void setCarte(Carte c) {
+		    this.carte = c;
+		    repaint();
+		}
 		
-		// Raccourci fleche gauche
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "gauche");
-		actionMap.put("gauche", new AbstractAction() {
-		    public void actionPerformed(ActionEvent e) {
-		        if (finJeu != 0) return;
-		        
-		        System.out.println("gauche");
-	
-		        ArrayList<Heros> listeHeros = carte.getListeHeros();
-		        Heros heros;
-
-		        if (caseCliquee == null || carte.getCase(caseCliquee).getOccupant() == null) {
-		        	heros = listeHeros.get(listeHeros.size() - 1);
-		        } else {
-		        	heros = listeHeros.get((listeHeros.indexOf(carte.getSoldat(caseCliquee)) - 1 + listeHeros.size()) % listeHeros.size());
-		        }
-		        
-		        
-		        caseCliquee = heros.getPos();
-	        	deplacePerso = true;
-				infoTexte2 = heros.toString();
-
-		        panneauCarte.repaint();
-		        panneauInfos.repaint();
-		        mettreAJourPanneauDroit();
-		    }
-		});
-		
-		// Raccourci fleche droite
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "droite");
-		actionMap.put("droite", new AbstractAction() {
-		    public void actionPerformed(ActionEvent e) {
-		        if (finJeu != 0) return;
-		        System.out.println("droite");
-		        
-		        ArrayList<Heros> listeHeros = carte.getListeHeros();
-		        Heros heros;
-
-		        if (caseCliquee == null || carte.getCase(caseCliquee).getOccupant() == null) {
-		        	heros = listeHeros.get(0);
-		        } else {
-		        	heros = listeHeros.get((listeHeros.indexOf(carte.getSoldat(caseCliquee)) + 1) % listeHeros.size());
-		        }
-		        
-		        caseCliquee = heros.getPos();
-	        	deplacePerso = true;
-				infoTexte2 = heros.toString();
-
-		        panneauCarte.repaint();
-		        panneauInfos.repaint();
-		        panneauDroit.repaint();
-		    }
-		});
-	}
-
-
-	// ----------------------- Competences---------------------- //
-	private void mettreAJourPanneauDroit() {
-		panneauDroit.removeAll();
-		if(caseCliquee != null) {
-			Soldat soldat = carte.getSoldat(caseCliquee);
-			if(soldat instanceof Heros) {
-				for(Competence c : soldat.getCompetences()) {							
-					JButton boutonCompetence = creerBoutonCompetence(c);
-					//boutonCompetence.setBorderPainted(false);
-					panneauDroit.add(boutonCompetence);
-				}
+		// tiens le journal a jour
+		private void updateCombatLog() {
+			List<String> log = carte.getCombatLog();
+			logArea.setText("");
+			for(String s : log) {
+				logArea.append(s + "\n");
 			}
 		}
-	
-		panneauDroit.revalidate();
-		panneauDroit.repaint();
-	}
-	
-	private JButton creerBoutonCompetence(Competence competence) {
-		String s = competence.getType().getNom();
-		JButton boutonCompetence = new JButton(s);
-		ImageIcon icon = new ImageIcon(competence.trouverImg());
 		
-		// Afficher le temps restant
-		if(!competence.peutUtiliser()) s +=  "\n "+competence.getTempsRestant()+ " tour(s) restant";
-		
-		// Initialisation du bouton
-		boutonCompetence.setPreferredSize(new Dimension(LARGEUR_PANNEAU_L, 50)); // pas pris en compte?
-	    boutonCompetence.setIcon(icon); 
-	    boutonCompetence.setForeground(Color.white);
-	 
-	    if(!competence.peutUtiliser()) boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
-	    else boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
-	    
-	    // Action
-	    boutonCompetence.addActionListener(new ActionListener() {
-	    	public void actionPerformed(ActionEvent e) {	
-	    		if(choisiComp == null) {	
-	    			choisiComp = competence;
-	    			
-	    			if(choisiComp.peutUtiliser()) {
-	    				changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
-	    			}else if(carte.getSoldat(caseCliquee).getAction() < choisiComp.getType().getCoutAction()){
-	    				System.out.println("Vous n'aveez pas les point d'action necessaire ! ");
-	    			}else {
-	    				System.out.println("La competence n'est pas encore disponible !!! ");
-	    				choisiComp = null;
-	    			}
-	    		}else {
-	    			choisiComp = null;
-	    		}
-	    		panneauCarte.repaint();
-	    	}
-	    });
-			
-		return boutonCompetence;
-	}
-	
-	private void nettoyerPanneauDroit() {
-		panneauDroit.removeAll();
-		setCursor(Cursor.getDefaultCursor());
-		
-		panneauDroit.revalidate();
-		panneauDroit.repaint();
-	}
-	
-	private void changeCurseur(String chemin, int x, int y, String nom) {
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		Image image = tk.getImage(chemin);
-		Cursor c = tk.createCustomCursor(image, new java.awt.Point(x,y), nom);
-		setCursor(c);
-	}
-	
-	// Accesseur
-	public Position getCaseSurvolee() {
-		return this.caseSurvolee;
-	}	
-
-	public void setCarte(Carte c) {
-	    this.carte = c;
-	    repaint();
-	}
-	
-	// tiens le journal a jour
-	private void updateCombatLog() {
-		List<String> log = carte.getCombatLog();
-		logArea.setText("");
-		for(String s : log) {
-			logArea.append(s + "\n");
-		}
-	}
-	
-	 /**
-     * Vérifie si le jeu est terminé et met à jour le journal en conséquence.
-     */
-	public void verifFinJeu() {
-		int fin = carte.verifierFinJeu();
-		if (fin != 0) {
-			if (fin == -1) {
-				logArea.setText("L'IA a gagné... Fin du jeu");
-			} else {
-				if (fin == 1) {
-					logArea.setText("Vous avez gagné ! Fin du jeu");
+		 /**
+	     * Vérifie si le jeu est terminé et met à jour le journal en conséquence.
+	     */
+		public void verifFinJeu() {
+			int fin = carte.verifierFinJeu();
+			if (fin != 0) {
+				if (fin == -1) {
+					logArea.setText("L'IA a gagné... Fin du jeu");
+				} else {
+					if (fin == 1) {
+						logArea.setText("Vous avez gagné ! Fin du jeu");
+					}
 				}
 			}
+			finJeu = fin;
 		}
-		finJeu = fin;
-	}
+		
+		   /**
+	     * Affiche un écran de fin de jeu semi-transparent.
+	     * 
+	     * @param g contexte graphique
+	     */
+		public void afficherFinJeu(Graphics g) {
+			int x, y;
+			x = LARGEUR_PANNEAU_CARTE / 2;
+			y = HAUTEUR_PANNEAU_CARTE / 2;
+			g.setColor(new Color(0, 0, 0, 200));
+			g.fillRect(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
+			g.setColor(Color.WHITE);
+			if (finJeu == 1) {
+				g.drawString("Vous avez gagné !", x, y);
+			}
+			if (finJeu == -1) {
+				g.drawString("Vous avez perdu...", x, y);
+			}
+		}
+		
 	
-	   /**
-     * Affiche un écran de fin de jeu semi-transparent.
-     * 
-     * @param g contexte graphique
-     */
-	public void afficherFinJeu(Graphics g) {
-		int x, y;
-		x = LARGEUR_PANNEAU_CARTE / 2;
-		y = HAUTEUR_PANNEAU_CARTE / 2;
-		g.setColor(new Color(0, 0, 0, 200));
-		g.fillRect(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
-		g.setColor(Color.WHITE);
-		if (finJeu == 1) {
-			g.drawString("Vous avez gagné !", x, y);
-		}
-		if (finJeu == -1) {
-			g.drawString("Vous avez perdu...", x, y);
-		}
-	}
-	
-
-}    
+	}    
