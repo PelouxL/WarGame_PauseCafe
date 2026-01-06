@@ -47,7 +47,7 @@ public class Heros extends Soldat{
 			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
 			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
 			break;
-		case MAGICIEN:
+		case MAGE:
 			ajouterCompetence(new Competence(TypeCompetence.BOULE_DE_FEU));
 			ajouterCompetence(new Competence(TypeCompetence.LANCE_PIERRE));
 		default:
@@ -82,8 +82,8 @@ public class Heros extends Soldat{
 		   case ANGE:
 			   path += "ange";
 			   break;
-		   case MAGICIEN:
-			   path += "ange"; // a changer
+		   case MAGE:
+			   path += "mage"; // a changer
 			   break;
 		}
 	    path += "_map.png";
