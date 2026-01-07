@@ -167,7 +167,10 @@ public class RenduCarte implements IConfig {
 
     private static void dessinerContourHexagone(Graphics g, int x, int y) {
         int offsetX = (y % 2 == 1) ? OFFSET_X : 0;
+        Color couleur_actuelle = g.getColor();
+        g.setColor(new Color(0, 0, 0, 100)); // changer 4ème valeur pour l'opacité du contour
         g.drawPolygon(hexX(x, y, offsetX), hexY(y), 6);
+        g.setColor(couleur_actuelle); // remet la couleur à celle qu'on avait avant l'appel de fonction
     }
 
     private static int[] hexX(int x, int y, int offset) {

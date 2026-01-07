@@ -17,9 +17,11 @@ import javax.swing.JLayeredPane;
 	import javax.swing.ImageIcon;
 	
 	import java.awt.Graphics;
-	import java.awt.GridLayout;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
 	import java.awt.Image;
-	import java.awt.Toolkit;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 	import java.awt.Dimension;
 	import java.awt.BorderLayout;
 	import java.awt.Color;
@@ -107,7 +109,13 @@ import javax.swing.JLayeredPane;
 			panneauCarte = new JPanel() {
 				protected void paintComponent(Graphics g) {
 					super.paintComponent(g);
-					RenduCarte.dessiner(g, carte, caseSurvolee, caseCliquee, choisiComp);
+					// Graphics2D permet d'avoir nos contours plus nets
+					Graphics2D g2d = (Graphics2D) g;
+					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+					g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+					RenduCarte.dessiner(g2d, carte, caseSurvolee, caseCliquee, choisiComp);
+					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+					g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
 					if (dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
 						RenduCarte.dessinerCaseCliquee(g, dragPersoFin);
 					}	
