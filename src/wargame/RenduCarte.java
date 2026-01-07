@@ -227,8 +227,8 @@ public class RenduCarte implements IConfig {
 
         if (caseSurvolee == null) return;
 
-        // Zone de portée "croix" autour du lanceur
-        EnsemblePosition ePos = lanceur.getPos().voisinesCroix(competence.getType().getDistance());
+        // Zone de portée du sort
+        EnsemblePosition ePos = competence.zoneAttaque(lanceur.getPos(), carte);
 
         // Zone d'effet autour de la case survolée
         EnsemblePosition zoneAtt = caseSurvolee.voisines(competence.getType().getDegatsZone(), true);

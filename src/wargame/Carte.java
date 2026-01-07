@@ -56,9 +56,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 		}
 		
 		// OBSTACLES
-		zoneBiome(NB_SABLE, Terrain.TypeTerrain.SABLE, 2, 2);
+		zoneBiome(NB_SABLE, Terrain.TypeTerrain.SABLE, 1, 2);
 		zoneBiome(NB_FORET, Terrain.TypeTerrain.FORET, 2, 4);
-		zoneBiome(NB_FEU, Terrain.TypeTerrain.FEU, 2, 2);
+		zoneBiome(NB_FEU, Terrain.TypeTerrain.FEU, 1, 2);
+		zoneBiome(NB_ROCHER, Terrain.TypeTerrain.ROCHER, 2, 3);
 		
 		// Placement des terrains aléatoires
 		for(int i = 0; i < NB_OBSTACLES; i++) {

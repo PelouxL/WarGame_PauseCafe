@@ -58,7 +58,7 @@ public class Competence implements ICompetence, Serializable {
 			System.out.println("La competence" + type.getNom() + " n'est pas encore disponible !");
 		}else {
 			if(lanceur.getPos().distance(receveur) <= type.getDistance()
-			   && this.zoneAttaque(lanceur.getPos()).contient(receveur) ){
+			   && this.zoneAttaque(lanceur.getPos(), carte).contient(receveur)){
 				
 				this.appliquerCompetence(lanceur.getPos(), receveur, carte);
 				lanceur.setAction(lanceur.getAction() - type.getCoutAction());
@@ -283,14 +283,27 @@ public class Competence implements ICompetence, Serializable {
 	 * @param pos position du lanceur
 	 * @return ensemble des positions ciblables
 	 */
-	public EnsemblePosition zoneAttaque(Position pos) {
+	public EnsemblePosition zoneAttaque(Position pos, Carte carte) {
 		EnsemblePosition ePos;
 		switch(type.getZoneLancer()) {
 		case "ligne":
-			ePos = pos.voisinesCroix(type.getDistance());
+			ePos = new EnsemblePosition(6*type.getDistance());
+			
+			int[] x = {-2, -1, -1, 1, 1, 2};
+			int[] y = {0, 1, -1, 1, -1, 0};
+			
+			for (int i = 0; i < x.length; i++) { // pour chaque direction
+				for (int j = 1; j <= type.getDistance(); j++) { // ligne a tester
+					Position posTest = new Position(x[i]*j + pos.getX(), y[i]*j + pos.getY());
+					// si un rocher est recontrer arret de la boucle sinon on ajoute et on continu
+					if (posTest.estValide() && carte.getCase(posTest).getType() != Terrain.TypeTerrain.ROCHER) {
+						ePos.ajouterPos(posTest);
+					} else break;
+				}
+			}
 			break;
 		case "libre":
-			ePos = pos.voisines(type.getDistance(), true);
+			ePos = pos.voisines(type.getDistance(), true);	
 			break;
 		default:
 			ePos = null;
