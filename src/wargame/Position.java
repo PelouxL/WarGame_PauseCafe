@@ -7,6 +7,7 @@ import java.io.Serializable;
  * <p>
  * Une position possède des coordonnées (x, y) et permet
  * de calculer ses voisines, distances et valider sa validité.
+ * </p>
  */
 public class Position implements IConfig, Serializable {
 	private int x, y;
@@ -22,12 +23,6 @@ public class Position implements IConfig, Serializable {
 		this.y = y;
 	}
 	
-	// Accesseurs/Mutateurs
-	public int getX() {	return x; }
-	public int getY() { return y; }
-	public void setX(int x) { this.x = x; }
-	public void setY(int y) { this.y = y; }
-	
 	// Methodes
 	/**
     * Vérifie si la position est valide sur la carte.
@@ -42,7 +37,6 @@ public class Position implements IConfig, Serializable {
 		}
 	}
 	
-	// POSITIONS VOISINES
 	/**
      * Retourne les positions voisines immédiates (rayon 1).
      * 
@@ -98,14 +92,6 @@ public class Position implements IConfig, Serializable {
 		
 	}
 	
-	private int getFactoriel(int val) {
-		int resultat = 1;
-		for (int i=2; i <= val; i++) {
-			resultat *= i;
-		}
-		return resultat;
-	}
-	
 	public EnsemblePosition voisinesCroix(int rayon) {
 		EnsemblePosition voisines = new EnsemblePosition(6*rayon);
 		
@@ -131,11 +117,8 @@ public class Position implements IConfig, Serializable {
 	public boolean estVoisine(Position pos) {
 		return this.voisines().contient(pos);
 	}
-	// POSITIONS VOISINES
-	
-	
-	// DISTANCE
-	  /**
+
+	/**
      * Calcule la distance entre cette position et une autre.
      * 
      * @param p autre position
@@ -149,14 +132,6 @@ public class Position implements IConfig, Serializable {
 				Math.abs(cube1[2] - cube2[2])) / 2;
 	}
 	
-	private int[] cube() {
-		int q = (this.getX() - this.getY()) / 2;
-		int r = this.getY();
-		int [] resultat = {q, r, -q-r};
-		return resultat;
-	}
-	
-	// pas utilisée, sauf si j'arrive à faire mes clics sur hexagone
 	public int[] coord(int q, int r, int s) {
 		int col = 2 * q + r;
 		int ligne = r;
@@ -170,16 +145,32 @@ public class Position implements IConfig, Serializable {
      * @param pos position à comparer
      * @return true si les coordonnées sont identiques, false sinon
      */
-	public boolean equals(Position pos) {
-		return (this.x == pos.x && this.y == pos.y);
-	}
+	public boolean equals(Position pos) { return (this.x == pos.x && this.y == pos.y); }
 	
 	  /**
      * Représentation textuelle de la position.
      * 
      * @return chaîne sous la forme "(x,y)"
      */
-	public String toString() {
-		return "("+x+","+y+")";
+	public String toString() { return "("+x+","+y+")"; }
+	
+	public int getX() {	return x; }
+	public int getY() { return y; }
+	public void setX(int x) { this.x = x; }
+	public void setY(int y) { this.y = y; }
+	
+	private int[] cube() {
+		int q = (this.getX() - this.getY()) / 2;
+		int r = this.getY();
+		int [] resultat = {q, r, -q-r};
+		return resultat;
+	}
+	
+	private int getFactoriel(int val) {
+		int resultat = 1;
+		for (int i=2; i <= val; i++) {
+			resultat *= i;
+		}
+		return resultat;
 	}
 }

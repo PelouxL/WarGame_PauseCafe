@@ -4,6 +4,7 @@ package wargame;
  * Représente les héros contrôlés par le joueur.
  * <p>
  * Chaque héros possède un nom et un type (défini par {@link TypesH}), ainsi que ses caractéristiques héritées de {@link Soldat}.
+ * </p>
  */
 public class Heros extends Soldat{
 	private final TypesH TYPE;
@@ -20,12 +21,13 @@ public class Heros extends Soldat{
 	public Heros(Carte carte, TypesH type, String nom, Position pos) {
 		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), type.getDeplacement(), pos);
 		NOM = nom;
-		TYPE = type;
-		
+		TYPE = type;	
 		initialiserCompetence();
-
 	}
 	
+	/**
+	 * Initialise les competences du heros selon son type (HOBBIT, ELF...).
+	 */
 	public void initialiserCompetence() {
 		switch(TYPE) {
 		case HOBBIT:
@@ -56,37 +58,21 @@ public class Heros extends Soldat{
 	
 	}
 	
-	public TypesH getType() {
-		return this.TYPE;
-	}
-	
-	public String getNom() {
-		return this.NOM;
-	}
-	
+	/** @return le chemin vers l'image associee au heros */
 	public String trouverImg() {
 		String path = "./images/persos/";
 		switch(this.getType()) {
-		   case HUMAIN:
-			   path += "humain";
-			   break;
-		   case NAIN:
-			   path += "nain";
-			   break;
-		   case ELF:
-			   path += "elfe";
-			   break;
-		   case HOBBIT:
-			   path += "hobbit";
-			   break;
-		   case ANGE:
-			   path += "ange";
-			   break;
-		   case MAGICIEN:
-			   path += "ange"; // a changer
-			   break;
+		   case HUMAIN: path += "humain"; break;
+		   case NAIN: path += "nain"; break;
+		   case ELF: path += "elfe"; break;
+		   case HOBBIT: path += "hobbit"; break;
+		   case ANGE: path += "ange"; break;
+		   case MAGICIEN: path += "ange"; break;
 		}
 	    path += "_map.png";
 	    return path;
 	}
+	
+	public TypesH getType() { return this.TYPE; }
+	public String getNom() { return this.NOM; }
 }

@@ -82,16 +82,9 @@ public interface ISoldat {
 
     // Méthodes que tout soldat doit implémenter
 
-    int getPoints(); 
-    int getTour(); 
+    int getPoints();
     int getPortee(); 
     int getDeplacement(); // vraiment utile? elles sont définies dans les enum
-
-    /**
-     * Joue le tour du soldat.
-     * @param tour numéro du tour en cours
-     */
-    void joueTour(int tour);
 
     /**
      * Effectue un combat contre un autre soldat.

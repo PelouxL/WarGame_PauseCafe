@@ -207,43 +207,6 @@ public class Competence implements ICompetence, Serializable {
 	}
 	
 	/**
-	 * Calcule la portée maximale de la compétence.
-	 *
-	 * @param lanceur soldat lançant la compétence
-	 * @return ensemble des positions atteignables
-	 */
-	/* FONCTION JAMAIS UTILISEE, meme utilité que zoneAttaque()? 
-	public EnsemblePosition porteeCompetence(Soldat lanceur) {
-		int nbPosMax = (int) Math.pow(6, type.getDistance()+1);
-		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
-		
-		porteeCompetenceAux(lanceur, lanceur.getPos(), type.getDistance(), ePos);
-		
-		return ePos;
-	}
-	
-	private void porteeCompetenceAux(Soldat lanceur, Position pos, int portee, EnsemblePosition ePos) {
-		if (!(pos.estValide())
-			|| portee <= -1 
-			|| lanceur.getCarte().getCase(pos).getType().getAccessible() == false) {
-			return;
-		}
-
-		if (!(ePos.contient(pos))) { ePos.ajouterPos(pos); }
-		
-		int x = pos.getX();
-		int y = pos.getY();
-		
-		this.porteeCompetenceAux(lanceur, new Position(x+2, y), portee-1, ePos);
-		this.porteeCompetenceAux(lanceur, new Position(x-2, y), portee-1, ePos);
-		this.porteeCompetenceAux(lanceur, new Position(x-1, y+1), portee-1, ePos);
-		this.porteeCompetenceAux(lanceur, new Position(x+1, y+1), portee-1, ePos);
-		this.porteeCompetenceAux(lanceur, new Position(x-1, y-1), portee-1, ePos);
-		this.porteeCompetenceAux(lanceur, new Position(x+1, y-1), portee-1, ePos);
-	}
-	*/
-	
-	/**
 	 * Décrémente le temps de rechargement de la compétence.
 	 */
 	public void decrementerTempsRestant() { if(!peutUtiliser()) tempsRestantCompetence--; }
@@ -300,9 +263,26 @@ public class Competence implements ICompetence, Serializable {
 				}
 			}
 			break;
+			
 		case "cercle": // lancé sur les cases autour du lancer dans un certain rayon, les obstacles genent
-			ePos = pos.voisines(type.getDistance(), true);	
+			ePos = pos.voisines(type.getDistance(), false);
+			
+			// Test de chaque position
+			for (int i = 0; i < ePos.getNbPos(); i++) {
+				// Position posTest = ePos.getPosition(i);
+				
+				// On trace une ligne imaginaire de la pos initial jusqu'a la position de test
+				
+				// On regarde par quelle cases passe la ligne
+				
+				// On verifie chaque position, si l'une d'entre elles est consideree comme un obstacle alors
+				// on la supprime de ePos
+				
+			}
+			
+			
 			break;
+			
 		case "libre": // pas de restriction de lancé
 			ePos = pos.voisines(type.getDistance(), false);	
 			break;

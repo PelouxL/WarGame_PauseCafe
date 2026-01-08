@@ -6,6 +6,7 @@ import wargame.ICompetence.TypeCompetence;
  * Représente les monstres contrôlés par l'ordinateur.
  * <p>
  * Chaque monstre possède un nom et un type (défini par {@link TypesM}), ainsi que ses caractéristiques héritées de {@link Soldat}.
+ * </p>
  */
 public class Monstre extends Soldat {
 	private final TypesM TYPE;
@@ -23,40 +24,29 @@ public class Monstre extends Soldat {
 		super(carte, type.getPoints(), type.getPortee(), type.getPuissance(), type.getTir(), type.getDeplacement(), pos);
 		NOM = nom;
 		TYPE = type;
-		
 		initialiserCompetence();
 	}
 	
-	public TypesM getType() {
-		return this.TYPE;
-	}
-	
-	public String getNom() {
-		return this.NOM;
-	}
-	
+	/**
+	 * Initialise les competences du monstre selon son type (TROLL, ORC...).
+	 */
 	public void initialiserCompetence() {
 		ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
-
 	}
 	
+	/** @return le chemin vers l'image associee au heros */
 	public String trouverImg() {
 		String path = "./images/persos/";
 		switch(this.getType()) {
-		   case TROLL:
-			   path += "troll";
-			   break;
-		   case ORC:
-			   path += "orc";
-			   break;
-		   case GOBELIN:
-			   path += "gobelin";
-			   break;
-		   case DEMON:
-			   path += "demon";
-			   break;
+		   case TROLL: path += "troll"; break;
+		   case ORC: path += "orc"; break;
+		   case GOBELIN: path += "gobelin"; break;
+		   case DEMON: path += "demon"; break;
 		}
 	    path += "_map.png";
 	    return path;
 	}
+	
+	public TypesM getType() { return this.TYPE; }
+	public String getNom() { return this.NOM; }
 }

@@ -13,8 +13,6 @@ public class EnsemblePosition {
 	private final int TAILLE_MAX; 
 	private int nbPos = 0;
 	
-	// Constructeur
-	
 	/**
 	 * Construit un ensemble de positions avec une taille maximale donnée.
 	 *
@@ -25,31 +23,12 @@ public class EnsemblePosition {
 		this.TAILLE_MAX = n;
 	}
 	
-	// Accesseurs/Mutateurs
-	
-	public Position[] getEPos() {
-		return ePos;
-	}
-	
-	public int getTailleMax() {
-		return this.TAILLE_MAX;
-	}
-	
-	public int getNbPos() {
-		return this.nbPos;
-	}
-	
-	// Methodes
-	
 	/**
 	 * Ajoute une position à l'ensemble.
 	 *
 	 * @param pos position à ajouter
 	 */
-	public void ajouterPos(Position pos) {
-		//System.out.println("NBPOS " + nbPos);
-		this.ePos[nbPos++] = pos;
-	}
+	public void ajouterPos(Position pos) { this.ePos[nbPos++] = pos; }
 	
 	/**
 	 * Retire la première position de l'ensemble.
@@ -114,8 +93,6 @@ public class EnsemblePosition {
 	    return false;
 	}
 	
-	// renvoie l'indice de la première position égale à pos, sinon -1
-	
 	/**
 	 * Renvoie l'indice de la première position égale à celle donnée.
 	 *
@@ -132,21 +109,14 @@ public class EnsemblePosition {
 	}
 	
 	/**
-	 * Retourne la position située à l'indice donné.
-	 *
-	 * @param i indice de la position
-	 * @return position correspondante
-	 */
-	public Position getPosition(int i) {
-		return this.ePos[i];
-	}
-	
-	/**
 	 * Indique si l'ensemble est vide.
 	 *
 	 * @return true si aucune position n'est stockée, false sinon
 	 */
-	public boolean estVide() {
-		return nbPos == 0;
-	}
+	public boolean estVide() { return nbPos == 0; }
+	
+	public Position[] getEPos() { return ePos; }	
+	public int getTailleMax() { return this.TAILLE_MAX; }
+	public int getNbPos() { return this.nbPos; }
+	public Position getPosition(int i) { return this.ePos[i]; }
 }
