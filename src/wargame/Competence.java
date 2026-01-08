@@ -341,7 +341,23 @@ public class Competence implements ICompetence, Serializable {
 	 *
 	 * @return chemin du fichier image
 	 */
-	public String trouverImg() { return "./images/comp/icon_comp_"+type.getNom()+".png"; }
+	public String trouverImg() {
+		String path = "./images/comp/icon_comp_";
+	
+		switch(type.getNom()) {
+		case "boule de feu": path +="boule_de_feu"; break;
+		case "soin": path += "soin"; break;
+		case "soin de zone": path += "soin_de_zone"; break;
+		case "coup d'épée": path += "coup_epee"; break;
+		case "tir a porter": path += "tir_a_porter"; break;
+		case "lance pierre": path += "lance_pierre"; break;
+		case "coup de baton": path += "coup_de_baton"; break;
+		case "default": path += "default"; break;
+		}
+	
+		path += ".png";
+		return path;
+	}
 	
 	public TypeCompetence getType() { return type; }
 	public int getTempsRestant() { return tempsRestantCompetence; }
