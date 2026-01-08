@@ -362,6 +362,7 @@ import java.awt.Toolkit;
 							dragPersoFin.setX(essaie.getX());
 							dragPersoFin.setY(essaie.getY());
 							deplacePerso = false;
+							nettoyerPanneauDroit();
 							panneauCarte.repaint();
 						}
 					}
@@ -469,6 +470,7 @@ import java.awt.Toolkit;
 							infoTexte="";
 						}		
 						dragPerso = false;
+						
 						repaint();
 					}
 				}

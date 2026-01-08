@@ -5,6 +5,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,14 +38,14 @@ public class FenetreMenu extends JFrame implements IConfig{
 			/* --------------- fenetre de gestion des boutons ----------- */
 			JPanel panneauPrincipal = new JPanel();
 			panneauPrincipal.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE ));
-			panneauPrincipal.setBackground(Color.GRAY);
+			panneauPrincipal.setBackground(COULEUR_PLATEAU);
 			
 			panneauPrincipal.setLayout(new BoxLayout(panneauPrincipal, BoxLayout.Y_AXIS));
 			panneauPrincipal.setAlignmentX(CENTER_ALIGNMENT);
 			
-			JButton bouttonJouer = new JButton("Lancez une partie");
-			JButton bouttonCharger = new JButton("Charger une partie");
-			JButton bouttonQuitter = new JButton("Quitter");
+			JButton bouttonJouer = creerBoutonMenu("Lancez une partie");
+			JButton bouttonCharger = creerBoutonMenu("Charger une partie");
+			JButton bouttonQuitter = creerBoutonMenu("Quitter");
 			
 			
 			/* ------ creation des boutons et de leur disposition --------*/
@@ -85,5 +87,31 @@ public class FenetreMenu extends JFrame implements IConfig{
 			pack();
 		}
 	
+		private JButton creerBoutonMenu(String texte) {
+		    JButton bouton = new JButton(texte);
+
+		    bouton.setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 20));
+		    bouton.setPreferredSize(new Dimension(280, 60));
+		    bouton.setMaximumSize(new Dimension(280, 60));
+
+		    bouton.setForeground(Color.WHITE);
+		    bouton.setBackground(new Color(80, 30, 30)); // rouge sombre
+		    bouton.setFocusPainted(false);
+		    bouton.setBorderPainted(false);
+		    bouton.setOpaque(true);
+
+		    // Effet hover
+		    bouton.addMouseListener(new MouseAdapter() {
+		        public void mouseEntered(MouseEvent e) {
+		            bouton.setBackground(new Color(120, 50, 50));
+		        }
+		        public void mouseExited(MouseEvent e) {
+		            bouton.setBackground(new Color(80, 30, 30));
+		        }
+		    });
+
+		    return bouton;
+		}
+		
 	
 }

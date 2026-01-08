@@ -39,6 +39,11 @@ public class FenetreMenuChargement extends JFrame{
     					
     					fenetreJ.chargerSlot(slot);
     					dispose();
+    				}else {
+    					FenetreCarte fenetreJ = new FenetreCarte(new Carte());
+    					fenetreJ.chargerSlot(slot);
+    					dispose();
+    					fenetre.dispose();
     				}
         		}
         	});

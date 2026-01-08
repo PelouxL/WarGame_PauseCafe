@@ -102,8 +102,8 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	 * @param soin nombre de points ajoutés
 	 */
 	public void ajouterPv(int soin) {
-		this.pointsDeVie += soin; 
-		if (this.pointsDeVie > this.POINT_DE_VIE) this.pointsDeVie = this.POINT_DE_VIE;
+		pointsDeVie += soin; 
+		if (pointsDeVie > POINT_DE_VIE) pointsDeVie = POINT_DE_VIE;
 	}
 	
 	/**
