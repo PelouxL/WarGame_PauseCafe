@@ -8,11 +8,16 @@ import java.io.Serializable;
 import javax.swing.ImageIcon;
 
 /**
- * Représente une compétence utilisable par un personnage du wargame.
+ * Représente les compétences utilisables par les Soldats.
  * <p>
  * Une compétence peut infliger des dégâts, soigner ou appliquer des effets
- * selon son type. Chaque compétence possède une portée, une zone d'effet
- * et un temps de rechargement.
+ * selon son type. Chaque compétence possède :
+ * <ul>
+ * 		<li>une portée</li>
+ * 		<li>une zone d'effet</li>
+ * 		<li>un temps de rechargement</li>
+ * </ul>
+ * </p>
  */
 public class Competence implements ICompetence, Serializable {
 
@@ -32,18 +37,12 @@ public class Competence implements ICompetence, Serializable {
 		this.imageCompetence = new ImageIcon(trouverImg()).getImage();
 	}
 	
-	public TypeCompetence getType() {
-		return type;
-	}
-	
 	/**
 	 * Indique si la compétence peut être utilisée.
 	 *
 	 * @return true si la compétence est disponible, false sinon
 	 */
-	public boolean peutUtiliser() {
-		return (tempsRestantCompetence == 0);
-	}
+	public boolean peutUtiliser() { return (tempsRestantCompetence == 0); }
 	
 	/**
 	 * Tente d'utiliser la compétence sur une position donnée.
@@ -55,8 +54,8 @@ public class Competence implements ICompetence, Serializable {
 	 */
 	public void utiliserCompetence(Soldat lanceur, Position receveur, Carte carte) {
 		if(!peutUtiliser()) {
-			System.out.println("La competence" + type.getNom() + " n'est pas encore disponible !");
-		}else {
+			System.out.println("La competence " + type.getNom() + " n'est pas encore disponible !");
+		} else {
 			if(lanceur.getPos().distance(receveur) <= type.getDistance()
 			   && this.zoneAttaque(lanceur.getPos(), carte).contient(receveur)){
 				
@@ -117,7 +116,8 @@ public class Competence implements ICompetence, Serializable {
 				}
 			}else {
 				receveurs += "Wooaw ! le Vent tremble devant votre puissance !";
-			}	
+			}
+			receveurs += "\n";
 			break;
 
 		case SOIN:
@@ -129,6 +129,7 @@ public class Competence implements ICompetence, Serializable {
 			}else {
 				receveurs += "Le vent vous remercie pour votre generosité.";
 			}
+			receveurs += "\n";
 			break;
 
 		case SOIN_DE_ZONE:
@@ -139,7 +140,7 @@ public class Competence implements ICompetence, Serializable {
 				if(soldats != null) {
 					receveurs += "---- ";
 					receveurs += soldats.recupIdentite();
-					receveurs +=  " a reçu " + this.type.getDegats() + " points de vie !"; 
+					receveurs +=  " a reçu " + this.type.getDegats() + " points de vie !\n"; 
 					soldats.ajouterPv(type.getDegats());
 				}
 			}
@@ -159,7 +160,9 @@ public class Competence implements ICompetence, Serializable {
 		    }else{
 		    	receveurs += "Vous avez réussi a transpercer le sol ! Bravo.";
 		    }
+			receveurs += "\n";
 			break;
+			
 		case LANCE_PIERRE:
 			atq += caster.recupIdentite() + "Tir un coup de fronde !\n";
 			if(soldat != null) {	
@@ -173,25 +176,28 @@ public class Competence implements ICompetence, Serializable {
 					carte.mort(soldat);
 					receveurs += "Il a succombé !";
 				}
+				receveurs += "\n";
 		    }else{
 		    	receveurs += "La pierre ricoche sur le sol ! Bravo.";
 		    }
+			
 		case COUP_DE_BATON:
-			atq += caster.recupIdentite() + "met un coup de baton dans les jambes !\n";
+			atq += caster.recupIdentite() + "Met un coup de baton dans les jambes !\n";
 			if(soldat != null) {	
 				receveurs += "---- ";
 				receveurs += soldat.recupIdentite();
 				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégats !";
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
-				receveurs +=  " il est paralysé !";
+				receveurs +=  " Il est paralysé !";
 				soldat.setAction(soldat.getAction()-2);
 				if(soldat.estMort()) {
 					carte.mort(soldat);
 					receveurs += "Il a succombé !";
 				}
 		    }else{
-		    	receveurs += "Le vent tremble devant votre baton !.";
+		    	receveurs += "Le vent tremble devant votre baton.";
 		    }
+			receveurs += "\n";
 			break;
 		}
 		
@@ -206,6 +212,7 @@ public class Competence implements ICompetence, Serializable {
 	 * @param lanceur soldat lançant la compétence
 	 * @return ensemble des positions atteignables
 	 */
+	/* FONCTION JAMAIS UTILISEE, meme utilité que zoneAttaque()? 
 	public EnsemblePosition porteeCompetence(Soldat lanceur) {
 		int nbPosMax = (int) Math.pow(6, type.getDistance()+1);
 		EnsemblePosition ePos = new EnsemblePosition(nbPosMax);
@@ -234,23 +241,13 @@ public class Competence implements ICompetence, Serializable {
 		this.porteeCompetenceAux(lanceur, new Position(x-1, y-1), portee-1, ePos);
 		this.porteeCompetenceAux(lanceur, new Position(x+1, y-1), portee-1, ePos);
 	}
+	*/
 	
 	/**
 	 * Décrémente le temps de rechargement de la compétence.
 	 */
-	public void decrementerTempsRestant() {
-		if(!peutUtiliser()) {
-			tempsRestantCompetence--;
-		}
-	}
+	public void decrementerTempsRestant() { if(!peutUtiliser()) tempsRestantCompetence--; }
 	
-	/**
-	 * @return le temps restant avant la prochaine utilisation
-	 */
-	public int getTempsRestant() {
-		return tempsRestantCompetence; 
-	}
-
 	/**
 	 * Dessine la compétence dans l'interface graphique.
 	 *
@@ -278,7 +275,7 @@ public class Competence implements ICompetence, Serializable {
 	}
 	   
 	/**
-	 * Détermine la zone d'attaque de la compétence définit dans le type.
+	 * Détermine les cases où la compétence peut être lancée.
 	 *
 	 * @param pos position du lanceur
 	 * @return ensemble des positions ciblables
@@ -286,7 +283,7 @@ public class Competence implements ICompetence, Serializable {
 	public EnsemblePosition zoneAttaque(Position pos, Carte carte) {
 		EnsemblePosition ePos;
 		switch(type.getZoneLancer()) {
-		case "ligne":
+		case "ligne": // lancé sur les cases alignées au lanceur, les obstacles genent
 			ePos = new EnsemblePosition(6*type.getDistance());
 			
 			int[] x = {-2, -1, -1, 1, 1, 2};
@@ -295,20 +292,31 @@ public class Competence implements ICompetence, Serializable {
 			for (int i = 0; i < x.length; i++) { // pour chaque direction
 				for (int j = 1; j <= type.getDistance(); j++) { // ligne a tester
 					Position posTest = new Position(x[i]*j + pos.getX(), y[i]*j + pos.getY());
-					// si un rocher est recontrer arret de la boucle sinon on ajoute et on continu
+					
+					// si un rocher est recontré arret de la boucle sinon on ajoute et on continu
 					if (posTest.estValide() && carte.getCase(posTest).getType() != Terrain.TypeTerrain.ROCHER) {
 						ePos.ajouterPos(posTest);
 					} else break;
 				}
 			}
 			break;
-		case "libre":
+		case "cercle": // lancé sur les cases autour du lancer dans un certain rayon, les obstacles genent
 			ePos = pos.voisines(type.getDistance(), true);	
 			break;
+		case "libre": // pas de restriction de lancé
+			ePos = pos.voisines(type.getDistance(), false);	
+			break;
 		default:
+			System.out.println("Erreur zoneAttaque() : Zone de lancé de "+type.getNom()+" non définie.");
 			ePos = null;
 			break;
 		}
+		
+		// Si c'est une competence de soin le lanceur peut la lancer sur lui-meme
+		if (type.getClasseCompetence() == ClasseCompetence.SOINS) {
+			ePos.ajouterPos(pos);
+		}
+		
 		return ePos;
 	}
 	
@@ -320,16 +328,11 @@ public class Competence implements ICompetence, Serializable {
 	 */
 	public Color typeCouleurAttaque(Position pos){
 		switch(type.getClasseCompetence()) {
-		case ATTAQUE:
-			return new Color(255,0,0, 180);
-		case SOINS:
-			return new Color(0,255,0, 180);
-		case DEBUFF:
-			return new Color(126, 14, 134, 180);
-		case BUFF:
-			return new Color(255, 235, 56, 180);
-		default:
-			return Color.PINK;
+		case ClasseCompetence.ATTAQUE: return new Color(255,0,0, 180);
+		case ClasseCompetence.SOINS: return new Color(0,255,0, 180);
+		case ClasseCompetence.DEBUFF: return new Color(126, 14, 134, 180);
+		case ClasseCompetence.BUFF: return new Color(255, 235, 56, 180);
+		default: return Color.PINK;
 		}		
 	}
 	   
@@ -338,21 +341,8 @@ public class Competence implements ICompetence, Serializable {
 	 *
 	 * @return chemin du fichier image
 	 */
-	public String trouverImg() {
-		String path = "./images/comp/icon_comp_";
+	public String trouverImg() { return "./images/comp/icon_comp_"+type.getNom()+".png"; }
 	
-		switch(type.getNom()) {
-		case "boule de feu": path +="boule_de_feu"; break;
-		case "soin": path += "soin"; break;
-		case "soin de zone": path += "soin_de_zone"; break;
-		case "coup d'épée": path += "coup_epee"; break;
-		case "tir a porter": path += "tir_a_porter"; break;
-		case "lance pierre": path += "lance_pierre"; break;
-		case "coup de baton": path += "coup_de_baton"; break;
-		case "default": path += "default"; break;
-		}
-	
-		path += ".png";
-		return path;
-	}
+	public TypeCompetence getType() { return type; }
+	public int getTempsRestant() { return tempsRestantCompetence; }
 }

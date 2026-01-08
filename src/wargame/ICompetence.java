@@ -7,10 +7,9 @@ package wargame;
  */
 public interface ICompetence{
 	
-	public final int ATTAQUE = 0;
-	public final int DEBUFF = 1;
-	public final int SOINS = 2;
-	public final int BUFF = 3;
+	public enum ClasseCompetence{
+		ATTAQUE, DEBUFF, SOINS, BUFF;
+	}
 	
 	/**
 	 * Enum représentant les différents types de compétences.
@@ -19,17 +18,17 @@ public interface ICompetence{
 	 * une zone de lancer, une distance, et d'autres attributs définissant son fonctionnement.
 	 */
 	public enum TypeCompetence {
-		BOULE_DE_FEU("boule de feu", ATTAQUE, 2, 30, "ligne", 5 ,true, 3, 2),
-		SOIN("soin", SOINS, 1, 15, "libre", 3, false, 0, 1),
-		SOIN_DE_ZONE("soin de zone", SOINS,  2, 20, "ligne", 4, false, 2, 3),
-		COUP_EPEE("coup d'épée", ATTAQUE, 1, 10, "libre", 1, false, 0, 1),
-		TIR_A_PORTER("tir a porter", ATTAQUE, 1, 10, "ligne", 12, false, 0, 1),
-		LANCE_PIERRE("lance pierre", DEBUFF, 1, 5, "ligne", 5, false, 0, 0),
-		COUP_DE_BATON("coup de baton", DEBUFF, 1, 5, "ligne", 1, false, 0, 0);
+		BOULE_DE_FEU("boule de feu", ClasseCompetence.ATTAQUE, 2, 30, "ligne", 5 ,true, 3, 2),
+		SOIN("soin", ClasseCompetence.SOINS, 1, 15, "libre", 3, false, 0, 1),
+		SOIN_DE_ZONE("soin de zone", ClasseCompetence.SOINS,  2, 20, "ligne", 4, false, 2, 3),
+		COUP_EPEE("coup d'épée", ClasseCompetence.ATTAQUE, 1, 10, "libre", 1, false, 0, 1),
+		TIR_A_PORTER("tir a porter", ClasseCompetence.ATTAQUE, 1, 10, "ligne", 12, false, 0, 1),
+		LANCE_PIERRE("lance pierre", ClasseCompetence.DEBUFF, 1, 5, "ligne", 5, false, 0, 0),
+		COUP_DE_BATON("coup de baton", ClasseCompetence.DEBUFF, 1, 5, "ligne", 1, false, 0, 0);
 
 	
 		private final String nom;
-		private final int classeCompetence;
+		private final ClasseCompetence classe;
 		private final int coutAction;
 		private int degats;
 		private final String zoneLancer;
@@ -38,9 +37,9 @@ public interface ICompetence{
 		private final int degatsZone;
 		private final int tempsRechargement; 
 	
-		TypeCompetence(String nom, int classeCompetence, int coutAction, int degats, String zoneLancer, int distance, boolean donneVisu, int degatZone, int tempsRechargement) {
+		TypeCompetence(String nom, ClasseCompetence classe, int coutAction, int degats, String zoneLancer, int distance, boolean donneVisu, int degatZone, int tempsRechargement) {
 			this.nom = nom;
-			this.classeCompetence = classeCompetence;
+			this.classe = classe;
 			this.coutAction = coutAction;
 			this.degats = degats;
 			this.zoneLancer = zoneLancer;
@@ -51,7 +50,7 @@ public interface ICompetence{
 		}
 		
 	    public String getNom() { return nom; }
-	    public int getClasseCompetence() { return classeCompetence; }
+	    public ClasseCompetence getClasseCompetence() { return classe; }
 	    public int getCoutAction() { return coutAction; }
 	    public int getDegats() { return degats; }
 	    public void setDegats(int degats) { this.degats = degats; }

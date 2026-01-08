@@ -7,6 +7,7 @@ import java.io.Serializable;
  * <p>
  * Un effet modifie temporairement ou définitivement une caractéristique
  * (vie, déplacement, portée, etc.) pendant une certaine durée.
+ * </p>
  */
 public class Effet implements Serializable {
 	
@@ -21,26 +22,25 @@ public class Effet implements Serializable {
 		
 	/**
 	 * Enumération des différents types d'effets disponibles dans le jeu.
-	 * Chaque effet est défini par la caractéristique affectée, la valeur
-	 * de l'effet et sa durée.
+	 * Chaque effet est défini par :
+	 * <ul>
+	 * 		<li>la caractéristique affectée</li>
+	 * 		<li>sa valeur</li>
+	 * 		<li>sa durée</li>
+	 * </ul>
 	 */
-	public enum TypeEffet {
-		// PORTEE
+	public enum TypeEffet {	
 		FORET_DENSE (TCarAff.PORTEE, -3, INFINI),
-		// DEPLACEMENT
 		SABLES_MOUVANTS (TCarAff.DEPLACEMENT, -1, INFINI),
-		// VIE
 		POISON (TCarAff.VIE, -10, 3),
 		MALADIE (TCarAff.VIE, -5, INFINI),
 		SOUTIEN_POPULAIRE (TCarAff.VIE, 10, 1),
 		SOL_BRULANT (TCarAff.VIE, -15, 1),
-		// PUISSANCE
-		// ACTION
 		FATIGUE (TCarAff.ACTION, -1, 1);
 		
-		private TCarAff carAff; // caracteristique affectee par l'effet
-		private int valeur;     // valeur du malus/bonus
-		private int duree;      // duree de l'effet, si -1 : duree infinie
+		private TCarAff carAff;
+		private int valeur;
+		private int duree;
 		
 		/**
 		 * Construit un type d'effet.
@@ -55,19 +55,8 @@ public class Effet implements Serializable {
 			this.duree = duree;
 		}
 		
-		/**
-		 * @return la caractéristique affectée par l'effet
-		 */
 		public TCarAff getCarAff() { return carAff; }
-		
-		/**
-		 * @return la valeur du bonus ou malus
-		 */
 		public int getValeur() { return valeur; }
-		
-		/**
-		 * @return la durée de l'effet
-		 */
 		public int getDuree() { return duree; }
 	}
 	
@@ -86,16 +75,6 @@ public class Effet implements Serializable {
 	}
 	
 	/**
-	 * @return le type de l'effet
-	 */
-	public TypeEffet getType() { return this.TYPE; }
-	
-	/**
-	 * @return la durée restante de l'effet
-	 */
-	public int getDureeRestante() { return this.dureeRestante; }
-	
-	/**
 	 * Modifie la durée restante de l'effet.
 	 *
 	 * @param dureeRestante nouvelle durée
@@ -110,4 +89,7 @@ public class Effet implements Serializable {
 	public String toString() {
 		return this.TYPE.getValeur()+" "+this.TYPE.getCarAff()+" pour "+this.getDureeRestante()+" tours\n";
 	}
+	
+	public TypeEffet getType() { return this.TYPE; }
+	public int getDureeRestante() { return this.dureeRestante; }
 }
