@@ -31,18 +31,18 @@ public class RenduCarte implements IConfig {
     private static final Image imgTerrainPont     = new ImageIcon("./images/terrain/img_terrain_pont.png").getImage();
     
     // têtes héros
-    private static final Image imgPersoMapElf     = new ImageIcon("./images/persos/elfe_map.png").getImage();
-    private static final Image imgPersoMapHumain  = new ImageIcon("./images/persos/humain_map.png").getImage();
-    private static final Image imgPersoMapNain    = new ImageIcon("./images/persos/nain_map.png").getImage();
-    private static final Image imgPersoMapHobbit  = new ImageIcon("./images/persos/hobbit_map.png").getImage();
-    private static final Image imgPersoMapAnge    = new ImageIcon("./images/persos/ange_map.png").getImage();
-    private static final Image imgPersoMapMage    = new ImageIcon("./images/persos/mage_map.png").getImage();
+    private static final Image imgTeteElf     = new ImageIcon("./images/tete_perso/tete_elf.png").getImage();
+    private static final Image imgTeteHumain  = new ImageIcon("./images/tete_perso/tete_humain.png").getImage();
+    private static final Image imgTeteNain    = new ImageIcon("./images/tete_perso/tete_nain.png").getImage();
+    private static final Image imgTeteHobbit  = new ImageIcon("./images/tete_perso/tete_hobbit.png").getImage();
+    private static final Image imgTeteAnge    = new ImageIcon("./images/tete_perso/tete_ange.png").getImage();
+    private static final Image imgTeteMage    = new ImageIcon("./images/tete_perso/tete_mage.png").getImage();
     
     // têtes monstres
-    private static final Image imgPersoMapTroll   = new ImageIcon("./images/persos/troll_map.png").getImage();
-    private static final Image imgPersoMapOrc     = new ImageIcon("./images/persos/orc_map.png").getImage();
-    private static final Image imgPersoMapGobelin = new ImageIcon("./images/persos/gobelin_map.png").getImage();
-    private static final Image imgPersoMapDemon   = new ImageIcon("./images/persos/demon_map.png").getImage();
+    private static final Image imgTeteTroll   = new ImageIcon("./images/tete_perso/tete_troll.png").getImage();
+    private static final Image imgTeteOrc     = new ImageIcon("./images/tete_perso/tete_orc.png").getImage();
+    private static final Image imgTeteGobelin = new ImageIcon("./images/tete_perso/tete_gobelin.png").getImage();
+    private static final Image imgTeteDemon   = new ImageIcon("./images/tete_perso/tete_demon.png").getImage();
     
     // noms héros
     private static final Image imgNomElf		  = new ImageIcon("./images/nom_perso/nom_elf.png").getImage();
@@ -171,7 +171,7 @@ public class RenduCarte implements IConfig {
     private static void dessinerContourHexagone(Graphics g, int x, int y) {
         int offsetX = (y % 2 == 1) ? OFFSET_X : 0;
         Color couleur_actuelle = g.getColor();
-        g.setColor(new Color(0, 0, 0, 100)); // changer 4ème valeur pour l'opacité du contour
+        g.setColor(new Color(0, 0, 0, 50)); // changer 4ème valeur pour l'opacité du contour
         g.drawPolygon(hexX(x, y, offsetX), hexY(y), 6);
         g.setColor(couleur_actuelle); // remet la couleur à celle qu'on avait avant l'appel de fonction
     }
@@ -277,22 +277,22 @@ public class RenduCarte implements IConfig {
 
     public static Image imageHeros(TypesH type) {
         switch (type) {
-            case HUMAIN: return imgPersoMapHumain;
-            case NAIN:   return imgPersoMapNain;
-            case ELF:    return imgPersoMapElf;
-            case HOBBIT: return imgPersoMapHobbit;
-            case ANGE: 	 return imgPersoMapAnge;
-            case MAGE:   return imgPersoMapMage;
+            case HUMAIN: return imgTeteHumain;
+            case NAIN:   return imgTeteNain;
+            case ELF:    return imgTeteElf;
+            case HOBBIT: return imgTeteHobbit;
+            case ANGE: 	 return imgTeteAnge;
+            case MAGE:   return imgTeteMage;
             default:     return null;
         }
     }
     
     public static Image imageMonstre(TypesM type) {
         switch (type) {
-            case TROLL:   return imgPersoMapTroll;
-            case ORC:     return imgPersoMapOrc;
-            case GOBELIN: return imgPersoMapGobelin;
-            case DEMON:   return imgPersoMapDemon;
+            case TROLL:   return imgTeteTroll;
+            case ORC:     return imgTeteOrc;
+            case GOBELIN: return imgTeteGobelin;
+            case DEMON:   return imgTeteDemon;
             default:      return null;
         }
     }
