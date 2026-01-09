@@ -348,10 +348,14 @@ public class RenduCarte implements IConfig {
 				double taille = (pv_act / pv_max) * 50 + 1;
 				
 				if (k == indiceHerosSurvole) {
-					g.setColor(Color.RED);
+					g.setColor(Color.BLACK);
 					g.fillRect(5+i, 5+j, 110, 35);
+					g.setColor(Color.RED);
+					g.fillRect(7+i, 7+j, 106, 31);
 				}
 				
+				g.setColor(COULEUR_PLATEAU);
+				g.fillRect(51+i, 16+j, 51, 12); // permet de cacher le carré rouge à l'intérieur de la barre de vie
 				if (ratio >= 50) {
 					g.setColor(COULEUR_PV_HAUT);
 				} else if (ratio < 15) {
@@ -360,11 +364,11 @@ public class RenduCarte implements IConfig {
 					g.setColor(COULEUR_PV_MOYEN);
 				}
 				g.fillRect(51+i, 16+j, (int) taille, 12);
-				g.drawString("" + heros.getNum(), 35+i, 25+j);
+				//g.drawString("" + heros.getNum(), 35+i, 25+j);
 								
 				Image im_heros = imageHeros(heros.getType());
 				Image im_barre = imgBarreDeVie;
-				g.drawImage(im_heros, 10+i, 10+j, 20, 20, null);
+				g.drawImage(im_heros, 15+i, 10+j, 20, 20, null);
 				g.drawImage(im_barre, 45+i, 10+j, 62, 24, null);
 				
 				i += 110; // décalage vers la droite
@@ -418,7 +422,7 @@ public class RenduCarte implements IConfig {
 			// Barre de vie
 			double pv_max = heros.getPoints();
 			double pv_act = heros.getPointsActuels();
-			double ratio = (pv_act / pv_max) * 100;
+			double ratio = (pv_act / pv_max) * 100; // pourcentage de vie
 			if (ratio >= 50) {
 				g.setColor(COULEUR_PV_HAUT);
 			} else if (ratio < 15) {
@@ -434,13 +438,13 @@ public class RenduCarte implements IConfig {
 			int deplacement = heros.getDeplacement();
 			int portee_de_tir = heros.getTir();
 			g.setColor(COULEUR_STAT_PUISSANCE);
-			g.fillRect(X_STAT, Y_STAT, LARGEUR_CRAN*puissance, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT,                   LARGEUR_CRAN*puissance,       HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_VISUELLE);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y, LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y,   LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_DEPLACEMENT);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement,     HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_DE_TIR);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir,   HAUTEUR_CRAN);
 			
 			// Infobulle
 			Image infobulle = imgInfobulle;
@@ -475,7 +479,7 @@ public class RenduCarte implements IConfig {
 			// Barre de vie
 			double pv_max = monstre.getPoints();
 			double pv_act = monstre.getPointsActuels();
-			double ratio = (pv_act / pv_max) * 100;
+			double ratio = (pv_act / pv_max) * 100; // pourcentage de vie
 			if (ratio >= 50) {
 				g.setColor(COULEUR_PV_HAUT);
 			} else if (ratio < 15) {
@@ -491,13 +495,13 @@ public class RenduCarte implements IConfig {
 			int deplacement = monstre.getDeplacement();
 			int portee_de_tir = monstre.getTir();
 			g.setColor(COULEUR_STAT_PUISSANCE);
-			g.fillRect(X_STAT, Y_STAT, LARGEUR_CRAN*puissance, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT,                   LARGEUR_CRAN*puissance,       HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_VISUELLE);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y, LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y,   LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_DEPLACEMENT);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement,     HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_DE_TIR);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir,   HAUTEUR_CRAN);
 			
 			// Infobulle
 			Image infobulle = imgInfobulle;
