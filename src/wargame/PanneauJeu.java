@@ -208,8 +208,13 @@ import java.awt.Toolkit;
 		    panneauInfos = new JPanel() {
 		    	protected void paintComponent(Graphics g) {
 		    		super.paintComponent(g);
-		    		
-		    		RenduCarte.dessineInfosBas(g, c, indiceHerosSurvole);
+		    		// Graphics2D permet d'avoir nos contours plus nets
+					Graphics2D g2d = (Graphics2D) g;
+					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+					g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+					RenduCarte.dessineInfosBas(g, c, indiceHerosSurvole);
+					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+					g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
 		    		//carte.dessineInfosBas(g, indiceHerosSurvole);
 		    	}
 		    	
