@@ -277,6 +277,8 @@ import java.awt.Toolkit;
 						panneauDroit.repaint();
 						panneauInfos.repaint();
 						System.out.println("Termine-moi !");
+					} else {
+						panneauHaut.repaint();
 					}
 				}
 			});

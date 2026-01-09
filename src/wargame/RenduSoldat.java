@@ -17,11 +17,11 @@ import wargame.ISoldat.TypesM;
  */
 public final class RenduSoldat implements IConfig {
 	// corps héros
-    private static final Image imgCorpsElf     = new ImageIcon("./images/corps_perso/corps_elfe.png").getImage();
+    private static final Image imgCorpsElf     = new ImageIcon("./images/corps_perso/corps_elf.png").getImage();
     private static final Image imgCorpsHumain  = new ImageIcon("./images/corps_perso/corps_humain.png").getImage();
     private static final Image imgCorpsNain    = new ImageIcon("./images/corps_perso/corps_nain.png").getImage();
     private static final Image imgCorpsHobbit  = new ImageIcon("./images/corps_perso/corps_hobbit.png").getImage();
-    private static final Image imgCorpsAnge    = new ImageIcon("./images/corps_perso/corps_ange.png").getImage();
+    private static final Image imgCorpsAnge    = new ImageIcon("./images/corps_perso/corps_ange.gif").getImage();
     private static final Image imgCorpsMage    = new ImageIcon("./images/corps_perso/corps_mage.png").getImage();
     
     // corps monstres
@@ -29,6 +29,20 @@ public final class RenduSoldat implements IConfig {
     private static final Image imgCorpsOrc     = new ImageIcon("./images/corps_perso/corps_orc.png").getImage();
     private static final Image imgCorpsGobelin = new ImageIcon("./images/corps_perso/corps_gobelin.png").getImage();
     private static final Image imgCorpsDemon   = new ImageIcon("./images/corps_perso/corps_demon.png").getImage();
+    
+    // gif corps héros
+    private static final Image gifCorpsElf     = new ImageIcon("./images/gif_perso/gif_elf.png").getImage();
+    private static final Image gifCorpsHumain  = new ImageIcon("./images/gif_perso/gif_humain.png").getImage();
+    private static final Image gifCorpsNain    = new ImageIcon("./images/gif_perso/gif_nain.png").getImage();
+    private static final Image gifCorpsHobbit  = new ImageIcon("./images/gif_perso/gif_hobbit.png").getImage();
+    private static final Image gifCorpsAnge    = new ImageIcon("./images/gif_perso/gif_ange.gif").getImage();
+    private static final Image gifCorpsMage    = new ImageIcon("./images/gif_perso/gif_mage.png").getImage();
+    
+    // gif corps monstres
+    private static final Image gifCorpsTroll   = new ImageIcon("./images/gif_perso/gif_troll.png").getImage();
+    private static final Image gifCorpsOrc     = new ImageIcon("./images/gif_perso/gif_orc.png").getImage();
+    private static final Image gifCorpsGobelin = new ImageIcon("./images/gif_perso/gif_gobelin.png").getImage();
+    private static final Image gifCorpsDemon   = new ImageIcon("./images/gif_perso/gif_demon.png").getImage();
 
 	/**
 	 * Constructeur privé empêchant l'instanciation de la classe.
@@ -54,6 +68,28 @@ public final class RenduSoldat implements IConfig {
             case ORC:     return imgCorpsOrc;
             case GOBELIN: return imgCorpsGobelin;
             case DEMON:   return imgCorpsDemon;
+            default:      return null;
+        }
+    }
+    
+    public static Image gifHeros(TypesH type) {
+        switch (type) {
+            case HUMAIN: return gifCorpsHumain;
+            case NAIN:   return gifCorpsNain;
+            case ELF:    return gifCorpsElf;
+            case HOBBIT: return gifCorpsHobbit;
+            case ANGE: 	 return gifCorpsAnge;
+            case MAGE:   return gifCorpsMage;
+            default:     return null;
+        }
+    }
+    
+    public static Image gifMonstre(TypesM type) {
+        switch (type) {
+            case TROLL:   return gifCorpsTroll;
+            case ORC:     return gifCorpsOrc;
+            case GOBELIN: return gifCorpsGobelin;
+            case DEMON:   return gifCorpsDemon;
             default:      return null;
         }
     }
