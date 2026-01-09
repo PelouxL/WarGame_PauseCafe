@@ -62,6 +62,9 @@ public class RenduCarte implements IConfig {
     // autre
     private static final Image imgBarreDeVie      = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
     private static final Image imgInfobulle       = new ImageIcon("./images/infobulle_6.png").getImage();
+    private static final Image imgActions2		  = new ImageIcon("./images/actions_restantes_2.png").getImage();
+    private static final Image imgActions1		  = new ImageIcon("./images/actions_restantes_1.png").getImage();
+    private static final Image imgActions0		  = new ImageIcon("./images/actions_restantes_0.png").getImage();
     
     /**
      * Dessine toute la carte, y compris les cases, les soldats, et les zones de compétence.
@@ -316,6 +319,15 @@ public class RenduCarte implements IConfig {
         }
     }
     
+    public static Image imageActionsRestantes(int actionsRestantes) {
+    	switch (actionsRestantes) {
+    		case 2:	  return imgActions2;
+    		case 1:	  return imgActions1;
+    		case 0:	  return imgActions0;
+    		default : return null;
+    	}
+    }
+    
     /**
      * Dessine les informations des héros en bas de l'écran.
      * 
@@ -343,9 +355,9 @@ public class RenduCarte implements IConfig {
 				if (ratio >= 50) {
 					g.setColor(COULEUR_PV_HAUT);
 				} else if (ratio < 15) {
-					g.setColor(COULEUR_PV_MOYEN);
-				} else {
 					g.setColor(COULEUR_PV_BAS);
+				} else {
+					g.setColor(COULEUR_PV_MOYEN);
 				}
 				g.fillRect(51+i, 16+j, (int) taille, 12);
 				g.drawString("" + heros.getNum(), 35+i, 25+j);
@@ -410,9 +422,9 @@ public class RenduCarte implements IConfig {
 			if (ratio >= 50) {
 				g.setColor(COULEUR_PV_HAUT);
 			} else if (ratio < 15) {
-				g.setColor(COULEUR_PV_MOYEN);
-			} else {
 				g.setColor(COULEUR_PV_BAS);
+			} else {
+				g.setColor(COULEUR_PV_MOYEN);
 			}
 			g.fillRect(X_BARRE_DE_VIE, Y_BARRE_DE_VIE, (int) ratio, HAUTEUR_BARRE_DE_VIE);
 			
@@ -447,6 +459,11 @@ public class RenduCarte implements IConfig {
 			} else {
 				g.drawString(PV, X_PV, Y_PV);
 			}
+			
+			// Actions restantes
+			int actionsRestantes = heros.getAction();
+			Image actions = imageActionsRestantes(actionsRestantes);
+			g.drawImage(actions, X_ACTIONS, Y_ACTIONS, LARGEUR_ACTIONS, HAUTEUR_ACTIONS, null);
 		}
 		if (indiceMonstreSurvole != -1 && c.getListeMonstres().size() > 0) { // si un Monstre est survolé actuellement
 			Monstre monstre = c.getListeMonstres().get(indiceMonstreSurvole);
@@ -462,9 +479,9 @@ public class RenduCarte implements IConfig {
 			if (ratio >= 50) {
 				g.setColor(COULEUR_PV_HAUT);
 			} else if (ratio < 15) {
-				g.setColor(COULEUR_PV_MOYEN);
-			} else {
 				g.setColor(COULEUR_PV_BAS);
+			} else {
+				g.setColor(COULEUR_PV_MOYEN);
 			}
 			g.fillRect(X_BARRE_DE_VIE, Y_BARRE_DE_VIE, (int) ratio, HAUTEUR_BARRE_DE_VIE);
 			
@@ -499,6 +516,11 @@ public class RenduCarte implements IConfig {
 			} else {
 				g.drawString(PV, X_PV, Y_PV);
 			}
+			
+			// Actions restantes
+			int actionsRestantes = monstre.getAction();
+			Image actions = imageActionsRestantes(actionsRestantes);
+			g.drawImage(actions, X_ACTIONS, Y_ACTIONS, LARGEUR_ACTIONS, HAUTEUR_ACTIONS, null);
 		}
 	}
 }

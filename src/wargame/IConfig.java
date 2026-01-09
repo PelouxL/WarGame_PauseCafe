@@ -114,6 +114,12 @@ public interface IConfig {
 	int X_NOM = X_INFOBULLE + 6;
 	int Y_NOM = Y_INFOBULLE + 72;
 	
+	// actions restantes
+	int LARGEUR_ACTIONS = 15;
+	int HAUTEUR_ACTIONS = 15;
+	int X_ACTIONS = X_INFOBULLE + 179;
+	int Y_ACTIONS = Y_INFOBULLE + 99;
+	
 	// couleurs
 	Color COULEUR_PV_HAUT = Color.GREEN;
 	Color COULEUR_PV_MOYEN = Color.ORANGE;

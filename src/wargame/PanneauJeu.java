@@ -362,6 +362,7 @@ import java.awt.Toolkit;
 							dragPersoFin.setX(essaie.getX());
 							dragPersoFin.setY(essaie.getY());
 							deplacePerso = false;
+							nettoyerPanneauDroit();
 							panneauCarte.repaint();
 						}
 					}
