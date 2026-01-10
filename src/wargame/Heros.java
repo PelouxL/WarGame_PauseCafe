@@ -49,7 +49,7 @@ public class Heros extends Soldat{
 			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
 			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
 			break;
-		case MAGICIEN:
+		case MAGE:
 			ajouterCompetence(new Competence(TypeCompetence.BOULE_DE_FEU));
 			ajouterCompetence(new Competence(TypeCompetence.LANCE_PIERRE));
 		default:
@@ -62,12 +62,24 @@ public class Heros extends Soldat{
 	public String trouverImg() {
 		String path = "./images/persos/";
 		switch(this.getType()) {
-		   case HUMAIN: path += "humain"; break;
-		   case NAIN: path += "nain"; break;
-		   case ELF: path += "elfe"; break;
-		   case HOBBIT: path += "hobbit"; break;
-		   case ANGE: path += "ange"; break;
-		   case MAGICIEN: path += "ange"; break;
+		   case HUMAIN:
+			   path += "humain";
+			   break;
+		   case NAIN:
+			   path += "nain";
+			   break;
+		   case ELF:
+			   path += "elfe";
+			   break;
+		   case HOBBIT:
+			   path += "hobbit";
+			   break;
+		   case ANGE:
+			   path += "ange";
+			   break;
+		   case MAGE:
+			   path += "mage";
+			   break;
 		}
 	    path += "_map.png";
 	    return path;

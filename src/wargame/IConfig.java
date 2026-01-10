@@ -32,7 +32,7 @@ public interface IConfig {
 	
 	// Hauteurs
 	int HAUTEUR_PANNEAU_LOG = 150;
-	int HAUTEUR_PANNEAU_CARTE = HAUTEUR_CARTE * (NB_PIX_CASE - 5) + OFFSET_X; // 25 * 20 = 500
+	int HAUTEUR_PANNEAU_CARTE = HAUTEUR_CARTE * (NB_PIX_CASE - NB_PIX_CASE/4) + OFFSET_X; // 25 * 20 = 500
 	int HAUTEUR_PANNEAU_L = HAUTEUR_PANNEAU_CARTE;
 	int HAUTEUR_PANNEAU_BAS = 100;
 	int HAUTEUR_PANNEAU_HAUT = 50;
@@ -61,6 +61,8 @@ public interface IConfig {
 	Color COULEUR_HEROS = Color.red;
 	Color COULEUR_HEROS_DEJA_JOUE = Color.pink;
 	Color COULEUR_MONSTRES = Color.black;
+	int HAUTEUR_SOLDAT = NB_PIX_CASE + NB_PIX_CASE/2;
+	int LARGEUR_SOLDAT = NB_PIX_CASE;
 	
 	// TERRAINS
 	int NB_RIVIERE = (int) (Math.random()*2 + 1); // entre 1 et 2
@@ -114,6 +116,12 @@ public interface IConfig {
 	int HAUTEUR_NOM = 22;
 	int X_NOM = X_INFOBULLE + 6;
 	int Y_NOM = Y_INFOBULLE + 72;
+	
+	// actions restantes
+	int LARGEUR_ACTIONS = 15;
+	int HAUTEUR_ACTIONS = 15;
+	int X_ACTIONS = X_INFOBULLE + 179;
+	int Y_ACTIONS = Y_INFOBULLE + 99;
 	
 	// couleurs
 	Color COULEUR_PV_HAUT = Color.GREEN;

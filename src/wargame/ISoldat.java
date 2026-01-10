@@ -22,7 +22,7 @@ public interface ISoldat {
       	ELF     (50, 8, 10, 10, 2),
       	HOBBIT  (30, 7, 10,  2, 5),
       	ANGE    (80, 5, 10,  6, 2),
-        MAGICIEN(50, 6,  0,  0, 5);
+        MAGE    (50, 6,  0,  0, 3);
 
         private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
 

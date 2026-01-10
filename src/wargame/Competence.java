@@ -325,13 +325,13 @@ public class Competence implements ICompetence, Serializable {
 		String path = "./images/comp/icon_comp_";
 	
 		switch(type.getNom()) {
-		case "boule de feu": path +="boule_de_feu"; break;
-		case "soin": path += "soin"; break;
-		case "soin de zone": path += "soin_de_zone"; break;
-		case "coup d'épée": path += "coup_epee"; break;
-		case "tir a porter": path += "tir_a_porter"; break;
-		case "lance pierre": path += "lance_pierre"; break;
-		case "coup de baton": path += "coup_de_baton"; break;
+		case "Boule de feu": path +="boule_de_feu"; break;
+		case "Soin": path += "soin"; break;
+		case "Soin de zone": path += "soin_de_zone"; break;
+		case "Coup d'épée": path += "coup_epee"; break;
+		case "Tir à portée": path += "tir_a_porter"; break;
+		case "Lance-pierre": path += "lance_pierre"; break;
+		case "Coup de baton": path += "coup_de_baton"; break;
 		case "default": path += "default"; break;
 		}
 	

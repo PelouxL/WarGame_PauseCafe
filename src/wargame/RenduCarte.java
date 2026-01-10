@@ -31,17 +31,18 @@ public class RenduCarte implements IConfig {
     private static final Image imgTerrainPont     = new ImageIcon("./images/terrain/img_terrain_pont.png").getImage();
     
     // têtes héros
-    private static final Image imgPersoMapElf     = new ImageIcon("./images/persos/elfe_map.png").getImage();
-    private static final Image imgPersoMapHumain  = new ImageIcon("./images/persos/humain_map.png").getImage();
-    private static final Image imgPersoMapNain    = new ImageIcon("./images/persos/nain_map.png").getImage();
-    private static final Image imgPersoMapHobbit  = new ImageIcon("./images/persos/hobbit_map.png").getImage();
-    private static final Image imgPersoMapAnge    = new ImageIcon("./images/persos/ange_map.png").getImage();
+    private static final Image imgTeteElf     = new ImageIcon("./images/tete_perso/tete_elf.png").getImage();
+    private static final Image imgTeteHumain  = new ImageIcon("./images/tete_perso/tete_humain.png").getImage();
+    private static final Image imgTeteNain    = new ImageIcon("./images/tete_perso/tete_nain.png").getImage();
+    private static final Image imgTeteHobbit  = new ImageIcon("./images/tete_perso/tete_hobbit.png").getImage();
+    private static final Image imgTeteAnge    = new ImageIcon("./images/tete_perso/tete_ange.png").getImage();
+    private static final Image imgTeteMage    = new ImageIcon("./images/tete_perso/tete_mage.png").getImage();
     
     // têtes monstres
-    private static final Image imgPersoMapTroll   = new ImageIcon("./images/persos/troll_map.png").getImage();
-    private static final Image imgPersoMapOrc     = new ImageIcon("./images/persos/orc_map.png").getImage();
-    private static final Image imgPersoMapGobelin = new ImageIcon("./images/persos/gobelin_map.png").getImage();
-    private static final Image imgPersoMapDemon   = new ImageIcon("./images/persos/demon_map.png").getImage();
+    private static final Image imgTeteTroll   = new ImageIcon("./images/tete_perso/tete_troll.png").getImage();
+    private static final Image imgTeteOrc     = new ImageIcon("./images/tete_perso/tete_orc.png").getImage();
+    private static final Image imgTeteGobelin = new ImageIcon("./images/tete_perso/tete_gobelin.png").getImage();
+    private static final Image imgTeteDemon   = new ImageIcon("./images/tete_perso/tete_demon.png").getImage();
     
     // noms héros
     private static final Image imgNomElf		  = new ImageIcon("./images/nom_perso/nom_elf.png").getImage();
@@ -49,6 +50,8 @@ public class RenduCarte implements IConfig {
     private static final Image imgNomNain		  = new ImageIcon("./images/nom_perso/nom_nain.png").getImage();
     private static final Image imgNomHobbit		  = new ImageIcon("./images/nom_perso/nom_hobbit.png").getImage();
     private static final Image imgNomAnge		  = new ImageIcon("./images/nom_perso/nom_ange.png").getImage();
+    private static final Image imgNomMage		  = new ImageIcon("./images/nom_perso/nom_mage.png").getImage();
+  
     
     // noms monstres
     private static final Image imgNomTroll		  = new ImageIcon("./images/nom_perso/nom_troll.png").getImage();
@@ -59,6 +62,9 @@ public class RenduCarte implements IConfig {
     // autre
     private static final Image imgBarreDeVie      = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
     private static final Image imgInfobulle       = new ImageIcon("./images/infobulle_6.png").getImage();
+    private static final Image imgActions2		  = new ImageIcon("./images/actions_restantes_2.png").getImage();
+    private static final Image imgActions1		  = new ImageIcon("./images/actions_restantes_1.png").getImage();
+    private static final Image imgActions0		  = new ImageIcon("./images/actions_restantes_0.png").getImage();
     
     /**
      * Dessine toute la carte, y compris les cases, les soldats, et les zones de compétence.
@@ -69,7 +75,7 @@ public class RenduCarte implements IConfig {
      * @param caseCliquee la case actuellement sélectionnée
      * @param competenceChoisie compétence sélectionnée (peut être null)
      */
-    public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie) {
+    public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie, int indiceHerosClique) {
 
         carte.setVisibilite();
 
@@ -97,14 +103,19 @@ public class RenduCarte implements IConfig {
             dessinerCaseCliquee(g, caseCliquee);
         }
 
-        
+        int indice = 0;
         for (Heros h : carte.getListeHeros()) {
-            RenduSoldat.dessiner(g, h);
+        	if (indice == indiceHerosClique) {
+        		RenduSoldat.dessiner(g, h, true);
+        	} else {
+        		RenduSoldat.dessiner(g, h, false);
+        	}
+            indice++;
         }
 
         for (Monstre m : carte.getListeMonstres()) {
             if (carte.getVisibilite(m.getPos()) == 1) {
-                RenduSoldat.dessiner(g, m);
+                RenduSoldat.dessiner(g, m, false);
             }
         }
     }
@@ -164,7 +175,10 @@ public class RenduCarte implements IConfig {
 
     private static void dessinerContourHexagone(Graphics g, int x, int y) {
         int offsetX = (y % 2 == 1) ? OFFSET_X : 0;
+        Color couleur_actuelle = g.getColor();
+        g.setColor(new Color(0, 0, 0, 50)); // changer 4ème valeur pour l'opacité du contour
         g.drawPolygon(hexX(x, y, offsetX), hexY(y), 6);
+        g.setColor(couleur_actuelle); // remet la couleur à celle qu'on avait avant l'appel de fonction
     }
 
     private static int[] hexX(int x, int y, int offset) {
@@ -268,21 +282,22 @@ public class RenduCarte implements IConfig {
 
     public static Image imageHeros(TypesH type) {
         switch (type) {
-            case HUMAIN: return imgPersoMapHumain;
-            case NAIN:   return imgPersoMapNain;
-            case ELF:    return imgPersoMapElf;
-            case HOBBIT: return imgPersoMapHobbit;
-            case ANGE: 	 return imgPersoMapAnge;
+            case HUMAIN: return imgTeteHumain;
+            case NAIN:   return imgTeteNain;
+            case ELF:    return imgTeteElf;
+            case HOBBIT: return imgTeteHobbit;
+            case ANGE: 	 return imgTeteAnge;
+            case MAGE:   return imgTeteMage;
             default:     return null;
         }
     }
     
     public static Image imageMonstre(TypesM type) {
         switch (type) {
-            case TROLL:   return imgPersoMapTroll;
-            case ORC:     return imgPersoMapOrc;
-            case GOBELIN: return imgPersoMapGobelin;
-            case DEMON:   return imgPersoMapDemon;
+            case TROLL:   return imgTeteTroll;
+            case ORC:     return imgTeteOrc;
+            case GOBELIN: return imgTeteGobelin;
+            case DEMON:   return imgTeteDemon;
             default:      return null;
         }
     }
@@ -294,6 +309,7 @@ public class RenduCarte implements IConfig {
             case ELF:    return imgNomElf;
             case HOBBIT: return imgNomHobbit;
             case ANGE: 	 return imgNomAnge;
+            case MAGE:   return imgNomMage;
             default:     return null;
         }
     }
@@ -306,6 +322,15 @@ public class RenduCarte implements IConfig {
             case DEMON:   return imgNomDemon;
             default:      return null;
         }
+    }
+    
+    public static Image imageActionsRestantes(int actionsRestantes) {
+    	switch (actionsRestantes) {
+    		case 2:	  return imgActions2;
+    		case 1:	  return imgActions1;
+    		case 0:	  return imgActions0;
+    		default : return null;
+    	}
     }
     
     /**
@@ -328,23 +353,27 @@ public class RenduCarte implements IConfig {
 				double taille = (pv_act / pv_max) * 50 + 1;
 				
 				if (k == indiceHerosSurvole) {
-					g.setColor(Color.RED);
+					g.setColor(Color.BLACK);
 					g.fillRect(5+i, 5+j, 110, 35);
+					g.setColor(Color.RED);
+					g.fillRect(7+i, 7+j, 106, 31);
 				}
 				
+				g.setColor(COULEUR_PLATEAU);
+				g.fillRect(51+i, 16+j, 51, 12); // permet de cacher le carré rouge à l'intérieur de la barre de vie
 				if (ratio >= 50) {
 					g.setColor(COULEUR_PV_HAUT);
 				} else if (ratio < 15) {
-					g.setColor(COULEUR_PV_MOYEN);
-				} else {
 					g.setColor(COULEUR_PV_BAS);
+				} else {
+					g.setColor(COULEUR_PV_MOYEN);
 				}
 				g.fillRect(51+i, 16+j, (int) taille, 12);
-				g.drawString("" + heros.getNum(), 35+i, 25+j);
+				//g.drawString("" + heros.getNum(), 35+i, 25+j);
 								
 				Image im_heros = imageHeros(heros.getType());
 				Image im_barre = imgBarreDeVie;
-				g.drawImage(im_heros, 10+i, 10+j, 20, 20, null);
+				g.drawImage(im_heros, 15+i, 10+j, 20, 20, null);
 				g.drawImage(im_barre, 45+i, 10+j, 62, 24, null);
 				
 				i += 110; // décalage vers la droite
@@ -388,7 +417,7 @@ public class RenduCarte implements IConfig {
 	}
 	
 	public static void dessineInfobulle(Graphics g, Carte c, int indiceHerosSurvole, int indiceMonstreSurvole) {
-		if (indiceHerosSurvole != -1) { // si un Héros est survolé actuellement
+		if (indiceHerosSurvole != -1 && c.getListeHeros().size() > 0) { // si un Héros est survolé actuellement
 			Heros heros = c.getListeHeros().get(indiceHerosSurvole);
 			
 			// Image du Héros
@@ -398,13 +427,13 @@ public class RenduCarte implements IConfig {
 			// Barre de vie
 			double pv_max = heros.getPoints();
 			double pv_act = heros.getPointsActuels();
-			double ratio = (pv_act / pv_max) * 100;
+			double ratio = (pv_act / pv_max) * 100; // pourcentage de vie
 			if (ratio >= 50) {
 				g.setColor(COULEUR_PV_HAUT);
 			} else if (ratio < 15) {
-				g.setColor(COULEUR_PV_MOYEN);
-			} else {
 				g.setColor(COULEUR_PV_BAS);
+			} else {
+				g.setColor(COULEUR_PV_MOYEN);
 			}
 			g.fillRect(X_BARRE_DE_VIE, Y_BARRE_DE_VIE, (int) ratio, HAUTEUR_BARRE_DE_VIE);
 			
@@ -414,13 +443,13 @@ public class RenduCarte implements IConfig {
 			int deplacement = heros.getDeplacement();
 			int portee_de_tir = heros.getTir();
 			g.setColor(COULEUR_STAT_PUISSANCE);
-			g.fillRect(X_STAT, Y_STAT, LARGEUR_CRAN*puissance, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT,                   LARGEUR_CRAN*puissance,       HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_VISUELLE);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y, LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y,   LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_DEPLACEMENT);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement,     HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_DE_TIR);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir,   HAUTEUR_CRAN);
 			
 			// Infobulle
 			Image infobulle = imgInfobulle;
@@ -439,8 +468,13 @@ public class RenduCarte implements IConfig {
 			} else {
 				g.drawString(PV, X_PV, Y_PV);
 			}
+			
+			// Actions restantes
+			int actionsRestantes = heros.getAction();
+			Image actions = imageActionsRestantes(actionsRestantes);
+			g.drawImage(actions, X_ACTIONS, Y_ACTIONS, LARGEUR_ACTIONS, HAUTEUR_ACTIONS, null);
 		}
-		if (indiceMonstreSurvole != -1) { // si un Monstre est survolé actuellement
+		if (indiceMonstreSurvole != -1 && c.getListeMonstres().size() > 0) { // si un Monstre est survolé actuellement
 			Monstre monstre = c.getListeMonstres().get(indiceMonstreSurvole);
 			
 			// Image du Monstre
@@ -450,13 +484,13 @@ public class RenduCarte implements IConfig {
 			// Barre de vie
 			double pv_max = monstre.getPoints();
 			double pv_act = monstre.getPointsActuels();
-			double ratio = (pv_act / pv_max) * 100;
+			double ratio = (pv_act / pv_max) * 100; // pourcentage de vie
 			if (ratio >= 50) {
 				g.setColor(COULEUR_PV_HAUT);
 			} else if (ratio < 15) {
-				g.setColor(COULEUR_PV_MOYEN);
-			} else {
 				g.setColor(COULEUR_PV_BAS);
+			} else {
+				g.setColor(COULEUR_PV_MOYEN);
 			}
 			g.fillRect(X_BARRE_DE_VIE, Y_BARRE_DE_VIE, (int) ratio, HAUTEUR_BARRE_DE_VIE);
 			
@@ -466,13 +500,13 @@ public class RenduCarte implements IConfig {
 			int deplacement = monstre.getDeplacement();
 			int portee_de_tir = monstre.getTir();
 			g.setColor(COULEUR_STAT_PUISSANCE);
-			g.fillRect(X_STAT, Y_STAT, LARGEUR_CRAN*puissance, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT,                   LARGEUR_CRAN*puissance,       HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_VISUELLE);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y, LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y,   LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_DEPLACEMENT);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement,     HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_DE_TIR);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir,   HAUTEUR_CRAN);
 			
 			// Infobulle
 			Image infobulle = imgInfobulle;
@@ -491,6 +525,11 @@ public class RenduCarte implements IConfig {
 			} else {
 				g.drawString(PV, X_PV, Y_PV);
 			}
+			
+			// Actions restantes
+			int actionsRestantes = monstre.getAction();
+			Image actions = imageActionsRestantes(actionsRestantes);
+			g.drawImage(actions, X_ACTIONS, Y_ACTIONS, LARGEUR_ACTIONS, HAUTEUR_ACTIONS, null);
 		}
 	}
 }
