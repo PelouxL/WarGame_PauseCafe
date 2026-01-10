@@ -98,14 +98,15 @@ public final class RenduSoldat implements IConfig {
     /**
      * Dessine un soldat sur la carte à sa position actuelle.
      * <p>
-     * Le sprite utilisé dépend du type du soldat :
+     * On utilise des formats d'images différents selon si un héros est actuellement sélectionné
      * <ul>
-     *   <li>Héros : sprite de mage</li>
-     *   <li>Monstre : sprite de monstre</li>
+     *   <li>Sélectionné : .gif</li>
+     *   <li>Non sélectionné : .png</li>
      * </ul>
      *
      * @param g contexte graphique utilisé pour le dessin
      * @param s soldat à dessiner
+     * @param herosClique indique si on a un héros actuellement sélectionné
      */
     public static void dessiner(Graphics g, Soldat s, boolean herosClique) {
         Position pos = s.getPos();
@@ -124,7 +125,7 @@ public final class RenduSoldat implements IConfig {
         		img = imageHeros(h.getType());
         	}
         	if (h.getType() == TypesH.MAGE) {
-        		mage += HAUTEUR_SOLDAT/6;
+        		mage += 5*(HAUTEUR_SOLDAT/30);
         	}
         } else {
         	Monstre m = (Monstre) s;
@@ -132,5 +133,55 @@ public final class RenduSoldat implements IConfig {
         }
 
         g.drawImage(img, (x/2) * NB_PIX_CASE + offsetX, y * NB_PIX_CASE * 3/4 - NB_PIX_CASE*3/5 - mage, LARGEUR_SOLDAT, HAUTEUR_SOLDAT+mage, null);
+    }
+    
+    
+    /**
+     * Dessine le héros qu'on drag actuellement.
+     * 
+     * @param g contexte graphique utilisé pour le dessin
+     * @param h héros à dessiner
+     * @param x la position en x de la souris
+     * @param y la position en y de la souris
+     * @param x_debut la position en x de la souris lors du clic au début du drag
+     * @param y_debut la position en y de la souris lors du clic au début du drag
+     */
+    public static void dessinerHerosDrag(Graphics g, Heros h, int x, int y, int x_debut, int y_debut) {
+    	int mage = 0;
+    	Image img = imageHeros(h.getType());
+    	if (h.getType() == TypesH.MAGE) {
+    		mage += 5*(HAUTEUR_SOLDAT/30);
+    	}
+    	int x_image_base = h.getPos().getX();
+    	int y_image_base = h.getPos().getY();
+    	int offsetX = (y_image_base % 2 == 1) ? OFFSET_X : 0;
+    	x_image_base = (x_image_base/2) * NB_PIX_CASE + offsetX;
+    	y_image_base = y_image_base * NB_PIX_CASE *3/4 - NB_PIX_CASE*3/5 - mage;
+    	x = x - (x_debut-x_image_base);
+    	y = y - (y_debut-y_image_base);
+    	g.drawImage(img, x, y, LARGEUR_SOLDAT, HAUTEUR_SOLDAT+mage, null);
+    }
+    
+    
+    /**
+     * Dessine tous les GIFs de tous les soldats (même ceux non présents actuellement).
+     * Permet de preload les GIFs. Les GIFs sont mis en dehors de la fenêtre.
+     * 
+     * @param g contexte graphique utilisé pour le dessin
+     */
+    public static void dessinerGifsPreload(Graphics g) {
+    	int mage = 5*(HAUTEUR_SOLDAT/30);
+    	// héros
+    	g.drawImage(gifCorpsElf, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT, HAUTEUR_SOLDAT, null);
+    	g.drawImage(gifCorpsHumain, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT, HAUTEUR_SOLDAT, null);
+    	g.drawImage(gifCorpsNain, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT, HAUTEUR_SOLDAT, null);
+    	g.drawImage(gifCorpsHobbit, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT, HAUTEUR_SOLDAT, null);
+    	g.drawImage(gifCorpsAnge, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT, HAUTEUR_SOLDAT, null);
+    	g.drawImage(gifCorpsMage, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT+mage, HAUTEUR_SOLDAT, null);
+    	// monstres
+    	g.drawImage(gifCorpsTroll, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT, HAUTEUR_SOLDAT, null);
+    	g.drawImage(gifCorpsOrc, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT, HAUTEUR_SOLDAT, null);
+    	g.drawImage(gifCorpsGobelin, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT, HAUTEUR_SOLDAT, null);
+    	g.drawImage(gifCorpsDemon, LARGEUR_FENETRE + 5, 0, LARGEUR_SOLDAT, HAUTEUR_SOLDAT, null);
     }
 }

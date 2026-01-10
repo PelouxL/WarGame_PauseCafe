@@ -59,6 +59,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 	// Drag&drop
 	private Position dragPersoFin = null;
 	private Position dragPersoInit = null;
+	private int xSouris = 0;
+	private int ySouris = 0;
+	private int xSourisDebut = 0;
+	private int ySourisDebut = 0;
 	
 	// Action et boolean
 	private boolean deplacePerso = false;
@@ -88,7 +92,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private int indiceHerosSurvole = -1;
 	private int indiceMonstreSurvole = -1;
 	private int indiceHerosClique = -1;
+	private int indiceHerosDrag = -1;
 	private Timer timerGif;
+	
+	// flag pour preload des images (se fait une seule fois)
+	private boolean preloadFait = false;
 	
 	// fin de jeu
 	private int finJeu = 0;
@@ -116,12 +124,16 @@ public class PanneauJeu extends JPanel implements IConfig {
 				Graphics2D g2d = (Graphics2D) g;
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-				RenduCarte.dessiner(g2d, carte, caseSurvolee, caseCliquee, choisiComp, indiceHerosClique);
+				RenduCarte.dessiner(g2d, carte, caseSurvolee, caseCliquee, choisiComp, indiceHerosClique, indiceHerosDrag, xSouris, ySouris, xSourisDebut, ySourisDebut);
+				if (dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
+					RenduCarte.dessinerCaseCliquee(g2d, dragPersoFin);
+				}
+				if (!preloadFait) {
+					RenduSoldat.dessinerGifsPreload(g2d);
+					preloadFait = true;
+				}
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 				g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
-				if (dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
-					RenduCarte.dessinerCaseCliquee(g, dragPersoFin);
-				}	
 				verifFinJeu();
 				if (finJeu != 0) {
 					afficherFinJeu(g);
@@ -362,10 +374,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 			// Mouvement en gardant le bouton enfonce
 			public void mouseDragged(MouseEvent e) {
 				if (finJeu == 0) {
-					if(dragPerso) {
+					if(dragPerso) {			
 						int x = e.getX();
 				        int y = e.getY();
-						
+				        
+				        // pour afficher le perso qu'on drag
+				        xSouris = x;
+				        ySouris = y;
+				        
 				        Position essaie = carte.coorToPos(x, y);
 				        
 				        Soldat s = carte.getSoldat(dragPersoInit);
@@ -375,6 +391,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 				        	return;
 				        	// gerer exeption
 				        }
+				        
+				        indiceHerosDrag = carte.getIndiceHeros((Heros) s);
 	
 						dragPersoFin.setX(essaie.getX());
 						dragPersoFin.setY(essaie.getY());
@@ -450,6 +468,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 							dragPerso = true;
 							dragPersoInit = new Position(caseCliquee.getX(), caseCliquee.getY());
 							dragPersoFin = new Position(caseCliquee.getX(), caseCliquee.getY());
+							xSourisDebut = x;
+							ySourisDebut = y;
 							
 						// Annulation du deplacement
 						} else {
@@ -492,6 +512,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					if(dragPerso && dragPersoFin != null) {
 						if(!(dragPersoFin.estValide())){
 							dragPerso = false;
+							indiceHerosDrag = -1;
 							return;
 							// surement gerer l'exeptionnelle 
 						}
@@ -501,6 +522,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 						infoTexte="";
 					}		
 					dragPerso = false;
+					indiceHerosDrag = -1;
 					repaint();
 				}
 			}

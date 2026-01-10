@@ -63,6 +63,8 @@ public interface IConfig {
 	Color COULEUR_MONSTRES = Color.black;
 	int HAUTEUR_SOLDAT = NB_PIX_CASE + NB_PIX_CASE/2;
 	int LARGEUR_SOLDAT = NB_PIX_CASE;
+	int NB_TYPES_HEROS = 6;
+	int NB_TYPES_MONSTRES = 4;
 	
 	// TERRAINS
 	int NB_RIVIERE = (int) (Math.random()*2 + 1); // entre 1 et 2

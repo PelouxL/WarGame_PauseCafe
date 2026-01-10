@@ -74,8 +74,10 @@ public class RenduCarte implements IConfig {
      * @param caseSurvolee la case actuellement survolée par la souris
      * @param caseCliquee la case actuellement sélectionnée
      * @param competenceChoisie compétence sélectionnée (peut être null)
+     * @param indiceHerosClique héros actuellement sélectionné (-1 si aucun héros sélectionné)
      */
-    public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie, int indiceHerosClique) {
+    public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie,
+    							int indiceHerosClique, int indiceHerosDrag, int x, int y, int xDebut, int yDebut) {
 
         carte.setVisibilite();
 
@@ -107,6 +109,8 @@ public class RenduCarte implements IConfig {
         for (Heros h : carte.getListeHeros()) {
         	if (indice == indiceHerosClique) {
         		RenduSoldat.dessiner(g, h, true);
+        	} else if (indice == indiceHerosDrag) {
+        		RenduSoldat.dessinerHerosDrag(g, h, x, y, xDebut, yDebut);
         	} else {
         		RenduSoldat.dessiner(g, h, false);
         	}
@@ -229,13 +233,13 @@ public class RenduCarte implements IConfig {
     }
 
     /**
-     * Dessine  sur la carte l'ensemble des position d'une competence.
+     * Dessine sur la carte l'ensemble des positions d'une competence.
      * 
      * @param g l'objet Graphics utilisé pour dessiner
-     * @param carte reccupere l'état du jeu
-     * @param competence la competence a dessiner
+     * @param carte récupère l'état du jeu
+     * @param competence la compétence à dessiner
      * @param lanceur le soldat qui lance le sort
-     * @param caseSurvolee l'emplacement de la souris actuelle
+     * @param caseSurvolee l'emplacement actuel de la souris
      */
     public static void dessinerPorteeCompetence(Graphics g, Carte carte, Competence competence, Soldat lanceur, Position caseSurvolee) {
 
