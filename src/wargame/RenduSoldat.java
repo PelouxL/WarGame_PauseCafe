@@ -21,7 +21,7 @@ public final class RenduSoldat implements IConfig {
     private static final Image imgCorpsHumain  = new ImageIcon("./images/corps_perso/corps_humain.png").getImage();
     private static final Image imgCorpsNain    = new ImageIcon("./images/corps_perso/corps_nain.png").getImage();
     private static final Image imgCorpsHobbit  = new ImageIcon("./images/corps_perso/corps_hobbit.png").getImage();
-    private static final Image imgCorpsAnge    = new ImageIcon("./images/corps_perso/corps_ange.gif").getImage();
+    private static final Image imgCorpsAnge    = new ImageIcon("./images/corps_perso/corps_ange.png").getImage();
     private static final Image imgCorpsMage    = new ImageIcon("./images/corps_perso/corps_mage.png").getImage();
     
     // corps monstres
@@ -107,7 +107,7 @@ public final class RenduSoldat implements IConfig {
      * @param g contexte graphique utilisé pour le dessin
      * @param s soldat à dessiner
      */
-    public static void dessiner(Graphics g, Soldat s) {
+    public static void dessiner(Graphics g, Soldat s, boolean herosClique) {
         Position pos = s.getPos();
 
         int x = pos.getX();
@@ -118,13 +118,17 @@ public final class RenduSoldat implements IConfig {
         Image img;
         if (s instanceof Heros) {
         	Heros h = (Heros) s;
-        	img = gifHeros(h.getType());
+        	if (herosClique) { // si le héros est sélectionné, alors on affiche le GIF
+        		img = gifHeros(h.getType());
+        	} else {
+        		img = imageHeros(h.getType());
+        	}
         	if (h.getType() == TypesH.MAGE) {
         		mage += HAUTEUR_SOLDAT/6;
         	}
         } else {
         	Monstre m = (Monstre) s;
-        	img = gifMonstre(m.getType());
+        	img = imageMonstre(m.getType());
         }
 
         g.drawImage(img, (x/2) * NB_PIX_CASE + offsetX, y * NB_PIX_CASE * 3/4 - NB_PIX_CASE*3/5 - mage, LARGEUR_SOLDAT, HAUTEUR_SOLDAT+mage, null);

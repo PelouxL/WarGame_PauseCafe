@@ -9,8 +9,9 @@ import javax.swing.JLayeredPane;
 	import javax.swing.JTextArea;
 	import javax.swing.SwingConstants;
 	import javax.swing.SwingUtilities;
-	
-	import wargame.ISoldat.TypesH;
+import javax.swing.Timer;
+
+import wargame.ISoldat.TypesH;
 	
 	import javax.swing.BorderFactory;
 	import javax.swing.BoxLayout;
@@ -86,6 +87,8 @@ import java.awt.Toolkit;
 		// infobulle et panneauInfo
 		private int indiceHerosSurvole = -1;
 		private int indiceMonstreSurvole = -1;
+		private int indiceHerosClique = -1;
+		private Timer timerGif;
 		
 		// fin de jeu
 		private int finJeu = 0;
@@ -113,7 +116,7 @@ import java.awt.Toolkit;
 					Graphics2D g2d = (Graphics2D) g;
 					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 					g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-					RenduCarte.dessiner(g2d, carte, caseSurvolee, caseCliquee, choisiComp);
+					RenduCarte.dessiner(g2d, carte, caseSurvolee, caseCliquee, choisiComp, indiceHerosClique);
 					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 					g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
 					if (dragPerso == true && dragPersoFin != null && dragPersoFin.estValide()) {
@@ -128,6 +131,13 @@ import java.awt.Toolkit;
 			panneauCarte.setBackground(Color.BLACK);
 			panneauCarte.setBounds(0, 0, LARGEUR_PANNEAU_CARTE, HAUTEUR_PANNEAU_CARTE);
 			layers.add(panneauCarte, Integer.valueOf(JLayeredPane.DEFAULT_LAYER));
+			
+			// ------------------- timerGif ------------------- //
+			timerGif = new Timer(1, new ActionListener() {
+			    public void actionPerformed(ActionEvent e) {
+			        panneauCarte.repaint();
+			    }
+			});
 	
 			// ----------------------------- Creation panneauLog ---------------------------- //
 			// ------------------- TextArea ------------------- //
@@ -369,6 +379,8 @@ import java.awt.Toolkit;
 							dragPersoFin.setX(essaie.getX());
 							dragPersoFin.setY(essaie.getY());
 							deplacePerso = false;
+							indiceHerosClique = -1;
+							timerGif.stop();
 							nettoyerPanneauDroit();
 							panneauCarte.repaint();
 						}
@@ -401,6 +413,8 @@ import java.awt.Toolkit;
 							deplacePerso = false;
 							caseCliquee = null;
 							caseAction = null;
+							indiceHerosClique = -1;
+							timerGif.stop();
 							nettoyerPanneauDroit();
 							
 						// Cas 2 - Lancement de competence 
@@ -413,6 +427,8 @@ import java.awt.Toolkit;
 							caseAction = null;
 							choisiComp = null;
 							infoTexte2 ="";
+							indiceHerosClique = -1;
+							timerGif.stop();
 							nettoyerPanneauDroit();
 							panneauCarte.repaint();
 							
@@ -424,6 +440,10 @@ import java.awt.Toolkit;
 							if (caseCliquee.estValide() && soldat instanceof Heros && dragPerso == false && choisiComp == null) {
 								
 								deplacePerso = true;
+								indiceHerosClique = carte.getIndiceHeros((Heros) soldat);
+								if (!timerGif.isRunning()) { // on commence le GIF du héros
+							        timerGif.start();
+							    }
 								mettreAJourPanneauDroit();
 								infoTexte2 = soldat.toString();
 								
@@ -438,6 +458,8 @@ import java.awt.Toolkit;
 								infoTexte2 ="";
 								// OCTODAMS (remettre ?) caseAction = null;
 								choisiComp = null;
+								indiceHerosClique = -1;
+								timerGif.stop();
 								nettoyerPanneauDroit();			
 							}
 						}
@@ -452,6 +474,8 @@ import java.awt.Toolkit;
 						dragPersoFin = null;
 						infoTexte2="";
 						choisiComp = null;
+						indiceHerosClique = -1;
+						timerGif.stop();
 						nettoyerPanneauDroit();
 					}
 					

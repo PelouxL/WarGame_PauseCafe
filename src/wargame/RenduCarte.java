@@ -75,7 +75,7 @@ public class RenduCarte implements IConfig {
      * @param caseCliquee la case actuellement sélectionnée
      * @param competenceChoisie compétence sélectionnée (peut être null)
      */
-    public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie) {
+    public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie, int indiceHerosClique) {
 
         carte.setVisibilite();
 
@@ -103,14 +103,19 @@ public class RenduCarte implements IConfig {
             dessinerCaseCliquee(g, caseCliquee);
         }
 
-        
+        int indice = 0;
         for (Heros h : carte.getListeHeros()) {
-            RenduSoldat.dessiner(g, h);
+        	if (indice == indiceHerosClique) {
+        		RenduSoldat.dessiner(g, h, true);
+        	} else {
+        		RenduSoldat.dessiner(g, h, false);
+        	}
+            indice++;
         }
 
         for (Monstre m : carte.getListeMonstres()) {
             if (carte.getVisibilite(m.getPos()) == 1) {
-                RenduSoldat.dessiner(g, m);
+                RenduSoldat.dessiner(g, m, false);
             }
         }
     }
