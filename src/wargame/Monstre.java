@@ -28,23 +28,10 @@ public class Monstre extends Soldat {
 	}
 	
 	/**
-	 * Initialise les competences du monstre selon son type (TROLL, ORC...).
+	 * Initialise les compétences du monstre selon son type (TROLL, ORC...).
 	 */
 	public void initialiserCompetence() {
 		ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
-	}
-	
-	/** @return le chemin vers l'image associee au heros */
-	public String trouverImg() {
-		String path = "./images/persos/";
-		switch(this.getType()) {
-		   case TROLL: path += "troll"; break;
-		   case ORC: path += "orc"; break;
-		   case GOBELIN: path += "gobelin"; break;
-		   case DEMON: path += "demon"; break;
-		}
-	    path += "_map.png";
-	    return path;
 	}
 	
 	public TypesM getType() { return this.TYPE; }
