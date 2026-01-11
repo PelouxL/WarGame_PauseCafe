@@ -65,6 +65,45 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	 */
 	protected abstract void initialiserCompetence(); 
 	
+	// POINTS DE VIE
+	/**
+	 * Retourne les points de vie maximum du soldat.
+	 *
+	 * @return points de vie maximum
+	 */
+	public int getPoints() { return this.POINT_DE_VIE; }
+	
+	/**
+	 * Retourne les points de vie actuels.
+	 *
+	 * @return points de vie actuels
+	 */
+	public int getPointsActuels() { return this.pointsDeVie; }
+	
+	/**
+	 * Modifie les points de vie actuels.
+	 *
+	 * @param pointsDeVie nouvelle valeur
+	 */
+	public void setPointsActuels(int pointsDeVie) { this.pointsDeVie = pointsDeVie; }
+	
+	/**
+	 * Retire des points de vie au soldat.
+	 *
+	 * @param degats nombre de points retirés
+	 */
+	public void retirerPv(int degats) { this.pointsDeVie -= degats; }
+	
+	/**
+	 * Ajoute des points de vie sans dépasser le maximum.
+	 *
+	 * @param soin nombre de points ajoutés
+	 */
+	public void ajouterPv(int soin) {
+		pointsDeVie += soin; 
+		if (pointsDeVie > POINT_DE_VIE) pointsDeVie = POINT_DE_VIE;
+	}
+	
 	/**
 	 * Indique si le soldat est mort.
 	 *
@@ -324,19 +363,6 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 		return id;
 	}
 	
-	public int getPoints() { return this.POINT_DE_VIE; }
-	public int getPointsActuels() { return this.pointsDeVie; }
-	public void setPointsActuels(int pointsDeVie) { this.pointsDeVie = pointsDeVie; }
-	public void retirerPv(int degats) { this.pointsDeVie -= degats; }
-	/**
-	 * Ajoute des points de vie sans dépasser le maximum.
-	 *
-	 * @param soin nombre de points ajoutés
-	 */
-	public void ajouterPv(int soin) {
-		this.pointsDeVie += soin; 
-		if (this.pointsDeVie > this.POINT_DE_VIE) this.pointsDeVie = this.POINT_DE_VIE;
-	}
 	
 	/**
 	 * Retourne la puissance totale du soldat en tenant compte des effets.

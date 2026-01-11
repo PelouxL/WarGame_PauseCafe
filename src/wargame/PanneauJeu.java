@@ -2,27 +2,24 @@
 	
 	import javax.swing.JButton;
 	import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
+	import javax.swing.JLabel;
+	import javax.swing.JLayeredPane;
 	import javax.swing.JPanel;
 	import javax.swing.JScrollPane;
 	import javax.swing.JTextArea;
 	import javax.swing.SwingConstants;
 	import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-
-import wargame.ISoldat.TypesH;
+	import javax.swing.Timer;
 	
 	import javax.swing.BorderFactory;
 	import javax.swing.BoxLayout;
 	import javax.swing.ImageIcon;
 	
 	import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
+	import java.awt.Graphics2D;
 	import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
+	import java.awt.RenderingHints;
+	import java.awt.Toolkit;
 	import java.awt.Dimension;
 	import java.awt.BorderLayout;
 	import java.awt.Color;
@@ -33,7 +30,6 @@ import java.awt.Toolkit;
 	import java.awt.event.MouseAdapter;
 	import java.awt.event.MouseEvent;
 	import java.awt.event.MouseMotionAdapter;
-	import java.awt.event.KeyAdapter;
 	import java.awt.event.KeyEvent;
 	import javax.swing.InputMap;
 	import javax.swing.ActionMap;
