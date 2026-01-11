@@ -3,10 +3,10 @@ package wargame;
 import java.io.Serializable;
 
 /**
- * Représente un effet appliqué à un personnage ou à une case du wargame.
+ * Représente un effet appliqué à un personnage ou à une case du Wargame.
  * <p>
  * Un effet modifie temporairement ou définitivement une caractéristique
- * (vie, déplacement, portée, etc.) pendant une certaine durée.
+ * (vie, déplacement, portée, etc.).
  * </p>
  */
 public class Effet implements Serializable {
@@ -16,7 +16,7 @@ public class Effet implements Serializable {
 	/**
 	 * Enumération des caractéristiques pouvant être affectées par un effet.
 	 */
-	public enum TCarAff { // Types de caracteritique pouvant etre affectee
+	public enum TCarAff { // Types de caractéristique pouvant être affectée
 		PORTEE, DEPLACEMENT, VIE, PUISSANCE, ACTION;
 	}
 		
@@ -45,9 +45,9 @@ public class Effet implements Serializable {
 		/**
 		 * Construit un type d'effet.
 		 *
-		 * @param carAff caractéristique affectée
-		 * @param valeur valeur du bonus ou malus
-		 * @param duree durée de l'effet
+		 * @param carAff la caractéristique affectée
+		 * @param valeur la valeur du bonus ou malus
+		 * @param duree la durée de l'effet
 		 */
 		TypeEffet(TCarAff carAff, int valeur, int duree){
 			this.carAff = carAff;
@@ -67,7 +67,7 @@ public class Effet implements Serializable {
 	 * Crée un nouvel effet à partir de son type.
 	 * La durée restante est initialisée selon le type d'effet.
 	 *
-	 * @param type type de l'effet
+	 * @param type le type de l'effet
 	 */
 	public Effet(TypeEffet type) {
 		TYPE = type;
@@ -77,7 +77,7 @@ public class Effet implements Serializable {
 	/**
 	 * Modifie la durée restante de l'effet.
 	 *
-	 * @param dureeRestante nouvelle durée
+	 * @param dureeRestante la nouvelle durée
 	 */
 	public void setDureeRestante(int dureeRestante) { this.dureeRestante = dureeRestante; }
 	

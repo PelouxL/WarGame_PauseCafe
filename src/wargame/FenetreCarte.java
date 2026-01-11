@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 /**
  * Fenêtre principale affichant la carte du jeu.
  * <p>
- * Cette classe gère l'interface graphique principale du wargame,
+ * Cette classe gère l'interface graphique principale du Wargame,
  * incluant l'affichage de la carte, le panneau de jeu et le menu
  * permettant de sauvegarder et charger une partie.
  */
@@ -32,7 +32,7 @@ public class FenetreCarte extends JFrame {
 	/**
 	 * Construit la fenêtre principale du jeu à partir d'une carte donnée.
 	 *
-	 * @param carte carte initiale à afficher
+	 * @param carte la carte initiale à afficher
 	 */
 	public FenetreCarte(Carte carte) {
 		super();
@@ -60,7 +60,7 @@ public class FenetreCarte extends JFrame {
 		menuFichier.add(menuRedemarer);
 		menuFichier.add(menuQuitter);
 		
-		// ------------- Creation PanneauJeu ----------- //
+		// ------------- Création PanneauJeu ----------- //
 		panneauCarte = new PanneauJeu(carteActive[0]);
 		panneauCarte.setPreferredSize(new Dimension(IConfig.LARGEUR_FENETRE, IConfig.HAUTEUR_FENETRE));
 		
@@ -109,7 +109,7 @@ public class FenetreCarte extends JFrame {
 	 * Sauvegarde la carte courante dans un slot donné.
 	 * Si une sauvegarde existe déjà, une confirmation est demandée.
 	 *
-	 * @param slot numéro du slot de sauvegarde
+	 * @param slot le numéro du slot de sauvegarde
 	 */
 	public void sauvegarderSlot(int slot) {
 	    try {
@@ -136,7 +136,7 @@ public class FenetreCarte extends JFrame {
 	 * Charge une carte depuis un slot de sauvegarde.
 	 * Met à jour l'affichage de la carte après le chargement.
 	 *
-	 * @param slot numéro du slot à charger
+	 * @param slot le numéro du slot à charger
 	 */
 	public void chargerSlot(int slot) {
 	    try {

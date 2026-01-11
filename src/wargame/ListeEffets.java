@@ -32,7 +32,7 @@ public class ListeEffets implements Serializable {
 
 	/**
 	 * Retourne l'effet à l'indice donné.
-	 * @param i indice de l'effet
+	 * @param i l'indice de l'effet
 	 * @return l'effet ou null si l'indice est hors limites
 	 */
 	public Effet getEffet(int i) {
@@ -42,19 +42,19 @@ public class ListeEffets implements Serializable {
 
 	/**
 	 * Ajoute un effet à la liste.
-	 * @param e effet à ajouter
+	 * @param e l'effet à ajouter
 	 */
 	public void ajouterEffet(Effet e) { liste.add(e); }
 
 	/**
 	 * Supprime l'effet à l'indice donné.
-	 * @param i indice de l'effet à supprimer
+	 * @param i l'indice de l'effet à supprimer
 	 */
 	public void retirerEffet(int i) { if (i < liste.size()) liste.remove(i); }
 
 	/**
 	 * Supprime le premier effet correspondant au type donné.
-	 * @param type type d'effet à supprimer
+	 * @param type le type d'effet à supprimer
 	 * @return true si un effet a été supprimé, false sinon
 	 */
 	public boolean retirerEffet(Effet.TypeEffet type) {
@@ -80,7 +80,7 @@ public class ListeEffets implements Serializable {
 
 	/**
 	 * Vérifie si un effet du type donné est présent dans la liste.
-	 * @param type type d'effet recherché
+	 * @param type le type d'effet recherché
 	 * @return indice du premier effet trouvé, ou -1 si absent
 	 */
 	public int contient(Effet.TypeEffet type) {
@@ -94,7 +94,7 @@ public class ListeEffets implements Serializable {
 
 	/**
 	 * Calcule la somme des valeurs de tous les effets affectant une caractéristique donnée.
-	 * @param carAff caractéristique concernée
+	 * @param carAff la caractéristique concernée
 	 * @return somme des effets
 	 */
 	public int sommeEffets(Effet.TCarAff carAff) {

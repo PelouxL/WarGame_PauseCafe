@@ -19,7 +19,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	private int pointsDeVie;
 	private Position pos;
 	private Carte carte;
-	private int action = 2; // nb d'action possible pour un soldat par tour
+	private int action = 2; // nb d'actions possibles pour un soldat par tour
 	private ListeEffets listeEffets;
 	
 	private static int nbHeros = 0;
@@ -31,13 +31,13 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	/**
 	 * Construit un soldat avec ses caractéristiques initiales.
 	 *
-	 * @param carte carte sur laquelle le soldat est placé
-	 * @param pts points de vie maximum
-	 * @param portee portée visuelle
-	 * @param puiss puissance en combat au corps à corps
-	 * @param tir puissance de tir à distance
-	 * @param dep distance de déplacement
-	 * @param pos position initiale du soldat
+	 * @param carte la carte sur laquelle le soldat est placé
+	 * @param pts les points de vie maximum
+	 * @param portee la portée visuelle
+	 * @param puiss la puissance en combat au corps à corps
+	 * @param tir la distance de tir
+	 * @param dep la distance de déplacement
+	 * @param pos la position initiale du soldat
 	 */
 	public Soldat(Carte carte, int pts, int portee, int puiss, int tir, int dep, Position pos) {
 		POINT_DE_VIE = pointsDeVie = pts;
@@ -61,7 +61,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	}
 	
 	/*
-	 * Initialise les competence des soldats selon leur type.
+	 * Initialise les compétences des soldats selon leur type.
 	 */
 	protected abstract void initialiserCompetence(); 
 	
@@ -74,23 +74,23 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	public int getPoints() { return this.POINT_DE_VIE; }
 	
 	/**
-	 * Retourne les points de vie actuels.
+	 * Retourne les points de vie actuels du soldat.
 	 *
 	 * @return points de vie actuels
 	 */
 	public int getPointsActuels() { return this.pointsDeVie; }
 	
 	/**
-	 * Modifie les points de vie actuels.
+	 * Modifie les points de vie actuels, remplacés par une nouvelle valeur.
 	 *
-	 * @param pointsDeVie nouvelle valeur
+	 * @param pointsDeVie la nouvelle valeur
 	 */
 	public void setPointsActuels(int pointsDeVie) { this.pointsDeVie = pointsDeVie; }
 	
 	/**
-	 * Retire des points de vie au soldat.
+	 * Retire des points de vie au soldat en fonction des dégâts reçus.
 	 *
-	 * @param degats nombre de points retirés
+	 * @param degats le nombre de points de vie retirés
 	 */
 	public void retirerPv(int degats) { this.pointsDeVie -= degats; }
 	
@@ -114,7 +114,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	/**
 	 * Met à jour les cases visibles sur la carte.
 	 *
-	 * @param visibilite matrice de visibilité
+	 * @param visibilite la matrice de visibilité
 	 * @return matrice mise à jour
 	 */
 	public int[][] setCasesVisibles(int[][] visibilite) { // Penser a gerer les lignes de vue
@@ -138,7 +138,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	/**
 	 * Ajoute une compétence au soldat.
 	 *
-	 * @param competence compétence à ajouter
+	 * @param competence la compétence à ajouter
 	 */
 	public void ajouterCompetence(Competence competence) { this.Competences.add(competence); }
 	
@@ -154,7 +154,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	/**
 	 * Engage un combat contre un autre soldat.
 	 *
-	 * @param soldat adversaire
+	 * @param soldat l'adversaire
 	 * @return true si le combat a eu lieu
 	 */
 	public boolean combat(Soldat soldat) {
@@ -193,7 +193,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 		
 		// Riposte adverse
 		if (!soldat.estMort()) {
-			this.retirerPv(soldat.getPuissance());
+			this.retirerPv(soldat.getPuissance()/3);
 			msgLog += soldat.logCombat(this, true);
 		}
 		
@@ -209,7 +209,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 		if (this.getTir() <= 0) return false;
 		
 		// Combat
-		soldat.retirerPv(this.getTir());
+		soldat.retirerPv(this.getPuissance()/2);
 		msgLog = this.logCombat(soldat, false);
 		
 		carte.addCombatMessage(msgLog);
@@ -232,7 +232,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 			def += ((Monstre)soldat).getNom();
 		}
 		
-		log += atq+msg_riposte+" inflige "+this.getPuissance()+" degats a "+def+"\n";
+		log += atq+msg_riposte+" inflige "+(this.getPuissance()/2)+" degats a "+def+"\n";
 		
 		if (soldat.estMort()) {
 			log += def+" succombe à ses blessures.\n";
@@ -242,8 +242,8 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	}
 	
 	/**
-	 * Calcul la zone des deplacements possibles pour un soldat
-	 * grace a un algorithme d'inondation.
+	 * Calcul la zone des déplacements possibles pour un soldat
+	 * grace à un algorithme d'inondation.
 	 * 
 	 * @return L'ensemble des positions accessibles
 	 */
@@ -305,7 +305,7 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	/**
 	 * Déplace le soldat vers une nouvelle position.
 	 *
-	 * @param newPos nouvelle position
+	 * @param newPos la nouvelle position
 	 */
 	public void seDeplace(Position newPos) {
 		if (newPos.estValide()) this.setPos(newPos);
@@ -347,8 +347,8 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	}
 	
 	/**
-	 * ?????????
-	 * @return
+	 * Retourne une chaîne contenant le nom du soldat (Monstre ou Héros) et son numéro
+	 * @return la chaîne donnant l'identé du soldat
 	 */
 	public String recupIdentite() {
 		String id = "";
@@ -378,18 +378,18 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	/**
 	 * Retourne la valeur de tir du soldat en tenant compte des effets.
 	 *
-	 * @return puissance de tir effective
+	 * @return portée de tir effective
 	 */
 	public int getTir() {
-		int puissance_tir = this.TIR + listeEffets.sommeEffets(Effet.TCarAff.PUISSANCE); 
+		int puissance_tir = this.TIR + listeEffets.sommeEffets(Effet.TCarAff.PORTEE); 
 		if (puissance_tir >= 0) return puissance_tir;
 		return 0; 
 	}
 	
 	/**
-	 * Retourne la portée visuelle effective du soldat.
+	 * Retourne la portée visuelle du soldat en tenant compte des effets.
 	 *
-	 * @return portée visuelle
+	 * @return portée visuelle effective
 	 */
 	public int getPortee() {
 		int portee = this.PORTEE_VISUELLE + listeEffets.sommeEffets(Effet.TCarAff.PORTEE);
@@ -400,14 +400,14 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 	/**
 	 * Retourne la distance de déplacement en tenant compte des effets.
 	 *
-	 * @return distance de déplacement
+	 * @return distance de déplacement effective
 	 */
 	public int getDeplacement() { return this.DEPLACEMENT + listeEffets.sommeEffets(Effet.TCarAff.DEPLACEMENT); }
 	
 	/**
 	 * Retourne le nombre d'actions disponibles en tenant compte des effets.
 	 *
-	 * @return nombre d'actions
+	 * @return nombre d'actions effectif
 	 */
 	public int getAction() { 
 		int action = this.action + listeEffets.sommeEffets(Effet.TCarAff.ACTION);

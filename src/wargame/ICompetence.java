@@ -14,7 +14,7 @@ public interface ICompetence{
 	/**
 	 * Enum représentant les différents types de compétences.
 	 * <p>
-	 * Chaque compétence possède un nom, une classe (attaque, soins, etc.), un coût en action, des dégâts, 
+	 * Chaque compétence possède un nom, une classe (attaque, soin, etc.), un coût en action, des dégâts, 
 	 * une zone de lancer, une distance, et d'autres attributs définissant son fonctionnement.
 	 */
 	public enum TypeCompetence {

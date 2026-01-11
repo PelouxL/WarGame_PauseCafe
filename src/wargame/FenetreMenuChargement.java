@@ -14,8 +14,8 @@ import javax.swing.JFrame;
 /**
  * Fenêtre du chargement des sauvegardes.
  * <p>
- * Cette classe affiche le menu des sauvegardes disponible
- * et permet de charger une sauvegardes existante.
+ * Cette classe affiche le menu des sauvegardes disponibles
+ * et permet de charger une sauvegarde existante.
  */
 public class FenetreMenuChargement extends JFrame{
 	
@@ -23,7 +23,7 @@ public class FenetreMenuChargement extends JFrame{
      * Constructeur de la fenêtre du menu des chargements.
      * <p>
      * Initialise les boutons, leur disposition et les actions associées.
-     * @param fenetre permet l'accès a la fenetre dans les boutons d'action
+     * @param fenetre qui permet l'accès à la fenêtre dans les boutons d'action
      * 
      */
 	public FenetreMenuChargement(FenetreCarte fenetre) {

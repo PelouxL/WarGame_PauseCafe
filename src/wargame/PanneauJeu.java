@@ -1,6 +1,6 @@
-	package wargame;
+package wargame;
 	
-	import javax.swing.JButton;
+import javax.swing.JButton;
 	import javax.swing.JFrame;
 	import javax.swing.JLabel;
 	import javax.swing.JLayeredPane;
@@ -39,7 +39,7 @@
 	import java.util.List;
 	import java.util.ArrayList;
 	
-	/**
+/**
  * Représente le panneau principal de jeu.
  * <p>
  * Ce panneau contient la carte, les informations sur les soldats,
@@ -302,7 +302,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 					panneauHaut.repaint();
 					panneauDroit.repaint();
 					panneauInfos.repaint();
-					System.out.println("Termine-moi !");
 				} else {
 					panneauHaut.repaint();
 				}
@@ -552,7 +551,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 		    public void actionPerformed(ActionEvent e) {
 		        if (finJeu != 0) return;
 		        
-		        System.out.println("gauche");
 	
 		        ArrayList<Heros> listeHeros = carte.getListeHeros();
 		        Heros heros;
@@ -579,7 +577,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 		actionMap.put("droite", new AbstractAction() {
 		    public void actionPerformed(ActionEvent e) {
 		        if (finJeu != 0) return;
-		        System.out.println("droite");
 		        
 		        ArrayList<Heros> listeHeros = carte.getListeHeros();
 		        Heros heros;
@@ -683,9 +680,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    			if(choisiComp.peutUtiliser()) {
 	    				changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
 	    			}else if(carte.getSoldat(caseCliquee).getAction() < choisiComp.getType().getCoutAction()){
-	    				System.out.println("Vous n'aveez pas les point d'action necessaire ! ");
+	    				//System.out.println("Vous n'avez pas les points d'action nécessaires ! ");
 	    			}else {
-	    				System.out.println("La competence n'est pas encore disponible !!! ");
+	    				//System.out.println("La compétence n'est pas encore disponible !!! ");
 	    				choisiComp = null;
 	    			}
 	    		}else {

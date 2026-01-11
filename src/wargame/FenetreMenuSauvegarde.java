@@ -14,14 +14,14 @@ import javax.swing.JButton;import javax.swing.JFrame;
 /**
  * Fenêtre de la sauvegarde de l'état du jeu.
  * <p>
- * Cette classe affiche le menu des sauvegardes disponible
+ * Cette classe affiche le menu des sauvegardes disponibles
  * et permet d'enregistrer sa partie.
  */
 public class FenetreMenuSauvegarde extends JFrame{
 	private Carte carte;
 	
 	/**
-	 * Constructeur de la fenêtre du menu des chargements.
+	 * Constructeur de la fenêtre du menu des sauvegardes.
 	 * <p>
 	 * Initialise les boutons, leur disposition et les actions associées.
 	 */

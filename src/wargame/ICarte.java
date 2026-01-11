@@ -50,5 +50,5 @@ public interface ICarte {
     /**
      * Fait jouer tous les monstres (ou autres soldats contrôlés par l’IA) sur la carte.
      */
-    void jouerSoldats();	//void toutDessiner(Graphics g, Position caseSurvolee, Position caseCliquee, Competence competence);
+    void jouerSoldats();
 }

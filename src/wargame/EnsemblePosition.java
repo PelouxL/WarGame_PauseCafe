@@ -16,7 +16,7 @@ public class EnsemblePosition {
 	/**
 	 * Construit un ensemble de positions avec une taille maximale donnée.
 	 *
-	 * @param n nombre maximal de positions pouvant être stockées
+	 * @param n le nombre maximal de positions pouvant être stockées
 	 */
 	public EnsemblePosition(int n) {
 		this.ePos = new Position[n];
@@ -26,7 +26,7 @@ public class EnsemblePosition {
 	/**
 	 * Ajoute une position à l'ensemble.
 	 *
-	 * @param pos position à ajouter
+	 * @param posla  position à ajouter
 	 */
 	public void ajouterPos(Position pos) { this.ePos[nbPos++] = pos; }
 	
@@ -62,8 +62,9 @@ public class EnsemblePosition {
 	
 	/**
 	 * Retire la position située à l'indice donné.
+	 * Affiche un message d'erreyr si l'indice est trop grand.
 	 *
-	 * @param i indice de la position à retirer
+	 * @param i l'indice de la position à retirer
 	 */
 	public void retirerPos(int i) {
 		if (i >= nbPos) {
@@ -81,7 +82,7 @@ public class EnsemblePosition {
 	/**
 	 * Indique si l'ensemble contient une position donnée.
 	 *
-	 * @param pos position recherchée
+	 * @param pos la position recherchée
 	 * @return true si la position est présente, false sinon
 	 */
 	public boolean contient(Position pos) {
@@ -96,7 +97,7 @@ public class EnsemblePosition {
 	/**
 	 * Renvoie l'indice de la première position égale à celle donnée.
 	 *
-	 * @param pos position recherchée
+	 * @param pos la position recherchée
 	 * @return indice de la position ou -1 si absente
 	 */
 	public int indexPosition(Position pos) {

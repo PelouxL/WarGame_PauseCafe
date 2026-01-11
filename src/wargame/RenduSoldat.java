@@ -50,7 +50,7 @@ public final class RenduSoldat implements IConfig {
     private RenduSoldat() {} 
     
     
-    public static Image imageHeros(TypesH type) {
+    private static Image imageHeros(TypesH type) {
         switch (type) {
             case HUMAIN: return imgCorpsHumain;
             case NAIN:   return imgCorpsNain;
@@ -62,7 +62,7 @@ public final class RenduSoldat implements IConfig {
         }
     }
     
-    public static Image imageMonstre(TypesM type) {
+    private static Image imageMonstre(TypesM type) {
         switch (type) {
             case TROLL:   return imgCorpsTroll;
             case ORC:     return imgCorpsOrc;
@@ -72,7 +72,7 @@ public final class RenduSoldat implements IConfig {
         }
     }
     
-    public static Image gifHeros(TypesH type) {
+    private static Image gifHeros(TypesH type) {
         switch (type) {
             case HUMAIN: return gifCorpsHumain;
             case NAIN:   return gifCorpsNain;
@@ -84,7 +84,7 @@ public final class RenduSoldat implements IConfig {
         }
     }
     
-    public static Image gifMonstre(TypesM type) {
+    private static Image gifMonstre(TypesM type) {
         switch (type) {
             case TROLL:   return gifCorpsTroll;
             case ORC:     return gifCorpsOrc;
@@ -121,7 +121,7 @@ public final class RenduSoldat implements IConfig {
         	Heros h = (Heros) s;
         	if (herosClique) { // si le héros est sélectionné, alors on affiche le GIF
         		img = gifHeros(h.getType());
-        	} else {
+        	} else { // sinon on affiche le PNG
         		img = imageHeros(h.getType());
         	}
         	if (h.getType() == TypesH.MAGE) {

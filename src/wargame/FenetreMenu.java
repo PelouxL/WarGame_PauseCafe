@@ -35,7 +35,7 @@ public class FenetreMenu extends JFrame implements IConfig{
 			setResizable(false);
 			setLocation(POSITION_LOG_X, POSITION_Y);
 			
-			/* --------------- fenetre de gestion des boutons ----------- */
+			/* --------------- Fenêtre de gestion des boutons ----------- */
 			JPanel panneauPrincipal = new JPanel();
 			panneauPrincipal.setPreferredSize(new Dimension(LARGEUR_FENETRE, HAUTEUR_FENETRE ));
 			panneauPrincipal.setBackground(COULEUR_PLATEAU);
@@ -48,7 +48,7 @@ public class FenetreMenu extends JFrame implements IConfig{
 			JButton bouttonQuitter = creerBoutonMenu("Quitter");
 			
 			
-			/* ------ creation des boutons et de leur disposition --------*/
+			/* ------ Création des boutons et de leur disposition --------*/
 			bouttonJouer.setAlignmentX(Component.CENTER_ALIGNMENT);
 			bouttonCharger.setAlignmentX(Component.CENTER_ALIGNMENT);
 			bouttonQuitter.setAlignmentX(Component.CENTER_ALIGNMENT);

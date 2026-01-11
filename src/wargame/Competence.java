@@ -29,7 +29,7 @@ public class Competence implements ICompetence, Serializable {
 	 * Crée une nouvelle compétence à partir de son type.
 	 * La compétence est initialement disponible.
 	 *
-	 * @param type type de la compétence
+	 * @param type le type de la compétence
 	 */
 	public Competence(TypeCompetence type) {
 		this.type = type;
@@ -48,18 +48,18 @@ public class Competence implements ICompetence, Serializable {
 	 * Tente d'utiliser la compétence sur une position donnée.
 	 * Vérifie la disponibilité, la portée et la zone d'effet.
 	 *
-	 * @param lanceur soldat lançant la compétence
-	 * @param receveur position ciblée
-	 * @param carte carte du jeu
+	 * @param lanceur le soldat lançant la compétence
+	 * @param receveur la position ciblée
+	 * @param carte la carte du jeu
 	 */
 	public void utiliserCompetence(Soldat lanceur, Position receveur, Carte carte) {
-		if(!peutUtiliser()) {
-			System.out.println("La competence " + type.getNom() + " n'est pas encore disponible !");
-		}else if(lanceur.getAction() < type.getCoutAction()) {
-			System.out.println("Vous n'avez pas assez de points de competence !");
+		if (!peutUtiliser()) {
+			//System.out.println("La competence " + type.getNom() + " n'est pas encore disponible !");
+		} else if (lanceur.getAction() < type.getCoutAction()) {
+			//System.out.println("Vous n'avez pas assez de points de competence !");
 		} else {
-			if(lanceur.getPos().distance(receveur) <= type.getDistance()
-			   && this.zoneAttaque(lanceur.getPos(), carte).contient(receveur)){
+			if (lanceur.getPos().distance(receveur) <= type.getDistance()
+			   && this.zoneAttaque(lanceur.getPos(), carte).contient(receveur)) {
 				
 				this.appliquerCompetence(lanceur.getPos(), receveur, carte);
 				lanceur.setAction(lanceur.getAction() - type.getCoutAction());
@@ -72,9 +72,9 @@ public class Competence implements ICompetence, Serializable {
 	 * Applique les effets de la compétence sur la carte.
 	 * Les effets dépendent du type de compétence.
 	 *
-	 * @param lanceur position du lanceur
-	 * @param receveur position ciblée
-	 * @param carte carte du jeu
+	 * @param lanceur la position du lanceur
+	 * @param receveur la position ciblée
+	 * @param carte la carte du jeu
 	 */
 	public void appliquerCompetence(Position lanceur, Position receveur, Carte carte) {
 		Soldat soldat = carte.getSoldat(receveur);
@@ -216,9 +216,9 @@ public class Competence implements ICompetence, Serializable {
 	/**
 	 * Dessine la compétence dans l'interface graphique.
 	 *
-	 * @param g contexte graphique
-	 * @param x position horizontale
-	 * @param y position verticale
+	 * @param g le contexte graphique
+	 * @param x la position horizontale
+	 * @param y la position verticale
 	 */
 	public void dessinerCompetence(Graphics g, int x, int y) {
 		g.setColor(Color.black);
@@ -233,7 +233,7 @@ public class Competence implements ICompetence, Serializable {
 	/**
 	 * Change l'image associée à la compétence.
 	 *
-	 * @param cheminImage chemin vers la nouvelle image
+	 * @param cheminImage le chemin vers la nouvelle image
 	 */
 	public void changerImageCompetence(String cheminImage) {
        this.imageCompetence = new ImageIcon(cheminImage).getImage();
@@ -242,7 +242,8 @@ public class Competence implements ICompetence, Serializable {
 	/**
 	 * Détermine les cases où la compétence peut être lancée.
 	 *
-	 * @param pos position du lanceur
+	 * @param pos la position du lanceur
+	 * @param carte la carte du jeu
 	 * @return ensemble des positions ciblables
 	 */
 	public EnsemblePosition zoneAttaque(Position pos, Carte carte) {
@@ -289,7 +290,6 @@ public class Competence implements ICompetence, Serializable {
 			ePos = pos.voisines(type.getDistance(), false);	
 			break;
 		default:
-			System.out.println("Erreur zoneAttaque() : Zone de lancé de "+type.getNom()+" non définie.");
 			ePos = null;
 			break;
 		}
@@ -303,9 +303,9 @@ public class Competence implements ICompetence, Serializable {
 	}
 	
 	/**
-	 * Retourne la couleur associée au type de compétence (soin, debuff, degâts).
+	 * Retourne la couleur associée au type de compétence (soin, debuff, dégâts).
 	 *
-	 * @param pos position ciblée
+	 * @param pos la position ciblée
 	 * @return couleur utilisée pour l'affichage
 	 */
 	public Color typeCouleurAttaque(Position pos){

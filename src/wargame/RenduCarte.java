@@ -75,6 +75,11 @@ public class RenduCarte implements IConfig {
      * @param caseCliquee la case actuellement sélectionnée
      * @param competenceChoisie compétence sélectionnée (peut être null)
      * @param indiceHerosClique héros actuellement sélectionné (-1 si aucun héros sélectionné)
+     * @param indiceHerosDrag héros actuellement drag (-1 si aucun héros sélectionné)
+     * @param x la position en x de la souris
+     * @param y la position en y de la souris
+     * @param xDebut la position en x de la souris au début de l'éventuel drag (sert à aligner l'image du perso au début du drag)
+     * @param yDebut la position en y de la souris au début de l'éventuel drag (sert à aligner l'image du perso au début du drag)
      */
     public static void dessiner(Graphics g, Carte carte, Position caseSurvolee, Position caseCliquee, Competence competenceChoisie,
     							int indiceHerosClique, int indiceHerosDrag, int x, int y, int xDebut, int yDebut) {
@@ -129,7 +134,7 @@ public class RenduCarte implements IConfig {
      * 
      * @param g Graphics
      * @param carte Carte
-     * @param pos Position de la case
+     * @param pos la Position de la case
      * @param transparent true si la case doit être dessinée avec transparence
      */
     private static void dessinerCase(Graphics g, Carte carte, Position pos, boolean transparent) {
@@ -284,7 +289,7 @@ public class RenduCarte implements IConfig {
         dessinerInterieurHexagone(g, x, y, null); // null = remplissage avec la couleur définie
     }
 
-    public static Image imageHeros(TypesH type) {
+    private static Image imageHeros(TypesH type) {
         switch (type) {
             case HUMAIN: return imgTeteHumain;
             case NAIN:   return imgTeteNain;
@@ -296,7 +301,7 @@ public class RenduCarte implements IConfig {
         }
     }
     
-    public static Image imageMonstre(TypesM type) {
+    private static Image imageMonstre(TypesM type) {
         switch (type) {
             case TROLL:   return imgTeteTroll;
             case ORC:     return imgTeteOrc;
@@ -306,7 +311,7 @@ public class RenduCarte implements IConfig {
         }
     }
     
-    public static Image imageNomHeros(TypesH type) {
+    private static Image imageNomHeros(TypesH type) {
         switch (type) {
             case HUMAIN: return imgNomHumain;
             case NAIN:   return imgNomNain;
@@ -318,7 +323,7 @@ public class RenduCarte implements IConfig {
         }
     }
     
-    public static Image imageNomMonstre(TypesM type) {
+    private static Image imageNomMonstre(TypesM type) {
         switch (type) {
             case TROLL:   return imgNomTroll;
             case ORC:     return imgNomOrc;
@@ -328,7 +333,7 @@ public class RenduCarte implements IConfig {
         }
     }
     
-    public static Image imageActionsRestantes(int actionsRestantes) {
+    private static Image imageActionsRestantes(int actionsRestantes) {
     	switch (actionsRestantes) {
     		case 2:	  return imgActions2;
     		case 1:	  return imgActions1;
@@ -338,14 +343,15 @@ public class RenduCarte implements IConfig {
     }
     
     /**
-     * Dessine les informations des héros en bas de l'écran.
+     * Dessine les barres de vies des héros en bas de l'écran.
+     * Encadre un héros s'il est sélectionné ou survolé.
      * 
      * @param g Graphics
      * @param c Carte contenant les héros
+     * @param indiceHeros le héros actuellement sélectionné ou survolé
      */
-	public static void dessinerInfosBas(Graphics g, Carte c, int indiceHerosSurvole) {
+	public static void dessinerInfosBas(Graphics g, Carte c, int indiceHeros) {
 		int i = 0, j = 0;
-		// heros
         int nbHeros = c.getNbHeros();
 		for (int k = 0 ; k < nbHeros ; k++) {
 			Heros heros = c.getListeHeros().get(k);
@@ -356,7 +362,7 @@ public class RenduCarte implements IConfig {
 				double ratio = (pv_act / pv_max) * 100;
 				double taille = (pv_act / pv_max) * 50 + 1;
 				
-				if (k == indiceHerosSurvole) {
+				if (k == indiceHeros) {
 					g.setColor(Color.BLACK);
 					g.fillRect(5+i, 5+j, 110, 35);
 					g.setColor(Color.RED);
@@ -373,7 +379,6 @@ public class RenduCarte implements IConfig {
 					g.setColor(COULEUR_PV_MOYEN);
 				}
 				g.fillRect(51+i, 16+j, (int) taille, 12);
-				//g.drawString("" + heros.getNum(), 35+i, 25+j);
 								
 				Image im_heros = imageHeros(heros.getType());
 				Image im_barre = imgBarreDeVie;
@@ -389,40 +394,28 @@ public class RenduCarte implements IConfig {
 
 			}
 		}
-		// monstre (pas fonctionnel à 100%, il faudrait une scrollbar
-		/*
-		i = 0;
-		System.out.println("NB MONSTRE = " + this.nbMonstre);
-		for (int j = 0 ; j < this.nbMonstre ; j++) {
-			Monstre monstre = listeMonstres[j];
-			if (!monstre.estMort()) {
-				Image soldat = new ImageIcon("./images/elfe_1.png").getImage();
-				Image barre = new ImageIcon("./images/barre_de_vie_bas.png").getImage();
-				g.drawImage(soldat, 10+i, 60, 20, 20, null);
-				g.drawImage(barre, 35+i, 60, 54, 20, null);
-				
-				double pv_max = monstre.getPoints();
-				double pv_act = monstre.getPointsActuels();
-				double ratio = (pv_act / pv_max) * 100;
-				double taille = (pv_act / pv_max) * 46;
-				
-				if (ratio >= 50) {
-					g.setColor(Color.GREEN);
-				} else if (ratio < 15) {
-					g.setColor(Color.RED);
-				} else {
-					g.setColor(Color.ORANGE);
-				}
-				g.fillRect(39+i, 64, (int) taille, 12);
-				g.drawString("" + monstre.getNum(), 100+i, 60);
-				i += 100;
-			}
-		}*/
 	}
 	
+	/**
+	 * Dessine une infobulle dans le panneau de droite, contenant :
+	 * 	- une image de la tête du héros
+	 * 	- le nom de son type
+	 * 	- l'état sa barre de vie
+	 * 	- ses points de vie chiffrés
+	 *  - les valeurs de ses 4 statistiques (puissance, portée visuelle, déplacement, portée de tir)
+	 *  - son nombre d'actions restantes
+	 * @param g Graphics
+	 * @param c Carte
+	 * @param indiceHeros l'indice du héros sélectionné/survolé, -1 si aucun des 2
+	 * @param indiceMonstre l'indice du monstre sélectionné/survolé, -1 si aucun des 2
+	 * @param h le décalage en hauteur si cet appel affiche une 2ème infobulle (égal à HAUTEUR_INFOBULLE)
+	 */
 	public static void dessinerInfobulle(Graphics g, Carte c, int indiceHeros, int indiceMonstre, int h) {
-		if (indiceHeros != -1 && c.getListeHeros().size() > 0) { // si un Héros est survolé ou sélectionné actuellement
+		if (indiceHeros != -1 && c.getListeHeros().size() > indiceHeros) { // si un Héros est sélectionné ou survolé actuellement
 			Heros heros = c.getListeHeros().get(indiceHeros);
+			if (heros.estMort()) {
+				return;
+			}
 			
 			// Image du Héros
 			Image im_heros = imageHeros(heros.getType());
@@ -477,8 +470,11 @@ public class RenduCarte implements IConfig {
 			int actionsRestantes = heros.getAction();
 			Image actions = imageActionsRestantes(actionsRestantes);
 			g.drawImage(actions, X_ACTIONS, Y_ACTIONS-h, LARGEUR_ACTIONS, HAUTEUR_ACTIONS, null);
-		} else if (indiceMonstre != -1 && c.getListeMonstres().size() > 0) { // si un Monstre est survolé actuellement
+		} else if (indiceMonstre != -1 && c.getListeMonstres().size() > indiceMonstre) { // si un Monstre est sélectionné ou survolé actuellement
 			Monstre monstre = c.getListeMonstres().get(indiceMonstre);
+			if (monstre.estMort()) {
+				return;
+			}
 			
 			// Image du Monstre
 			Image im_monstre = imageMonstre(monstre.getType());

@@ -15,8 +15,8 @@ public class Position implements IConfig, Serializable {
 	/**
      * Crée une nouvelle position avec des coordonnées données.
      * 
-     * @param x coordonnée X
-     * @param y coordonnée Y
+     * @param x la coordonnée X
+     * @param y la coordonnée Y
      */
 	public Position(int x, int y) { 
 		this.x = x; 
@@ -58,15 +58,28 @@ public class Position implements IConfig, Serializable {
 		return voisines;
 	}
 	
+	// Permet d'avoir un vrai calcul pour nbVoisinesMax
+	private int nbVoisinesMax(int rayon, boolean centre) {
+		int nb = 0;
+		for (int i = 1 ; i <= rayon ; i++) {
+			nb += 6*i;
+		}
+		if (centre) {
+			nb += 1;
+		}
+		System.out.println("rayon : " + rayon + "  nb : " + nb);
+		return nb;
+	}
+	
 	/**
      * Retourne les positions voisines jusqu'à un certain rayon.
      * 
-     * @param rayon distance maximale des positions voisines
+     * @param rayon la distance maximale des positions voisines
      * @param centre true si la position centrale doit être incluse
      * @return un ensemble de positions voisines
      */
 	public EnsemblePosition voisines(int rayon, boolean centre) {
-		int nbVoisinesMax = (3 * rayon) * (rayon +1) +2 ;
+		int nbVoisinesMax = nbVoisinesMax(rayon, centre); // ancien : (3 * rayon) * (rayon +1) +2 ;
 		EnsemblePosition voisines = new EnsemblePosition(nbVoisinesMax);
 		
 		if (centre) voisines.ajouterPos(this);
@@ -92,6 +105,12 @@ public class Position implements IConfig, Serializable {
 		
 	}
 	
+	/**
+	 * Retourne les positions atteignables dans un certain rayou
+	 * en se déplaçant dans une des 6 directions (donne une forme semblable à une croix).
+	 * @param rayon la distance maximale des positions atteignables
+	 * @return un ensemble de positions atteignables
+	 */
 	public EnsemblePosition voisinesCroix(int rayon) {
 		EnsemblePosition voisines = new EnsemblePosition(6*rayon);
 		
@@ -111,7 +130,7 @@ public class Position implements IConfig, Serializable {
 	 /**
      * Vérifie si une position donnée est voisine immédiate.
      * 
-     * @param pos position à vérifier
+     * @param pos la position à vérifier
      * @return true si la position est voisine, false sinon
      */
 	public boolean estVoisine(Position pos) {
@@ -119,9 +138,9 @@ public class Position implements IConfig, Serializable {
 	}
 
 	/**
-     * Calcule la distance entre cette position et une autre.
+     * Calcule la distance entre la position courante et une autre.
      * 
-     * @param p autre position
+     * @param p l'autre position
      * @return distance en nombre de cases
      */
 	public int distance(Position p) {
@@ -132,22 +151,15 @@ public class Position implements IConfig, Serializable {
 				Math.abs(cube1[2] - cube2[2])) / 2;
 	}
 	
-	public int[] coord(int q, int r, int s) {
-		int col = 2 * q + r;
-		int ligne = r;
-		int [] resultat = {col, ligne};
-		return resultat;
-	}
-	
-	  /**
+	/**
      * Vérifie si deux positions sont égales.
      * 
-     * @param pos position à comparer
+     * @param pos la position à comparer
      * @return true si les coordonnées sont identiques, false sinon
      */
 	public boolean equals(Position pos) { return (this.x == pos.x && this.y == pos.y); }
 	
-	  /**
+	/**
      * Représentation textuelle de la position.
      * 
      * @return chaîne sous la forme "(x,y)"
@@ -163,14 +175,6 @@ public class Position implements IConfig, Serializable {
 		int q = (this.getX() - this.getY()) / 2;
 		int r = this.getY();
 		int [] resultat = {q, r, -q-r};
-		return resultat;
-	}
-	
-	private int getFactoriel(int val) {
-		int resultat = 1;
-		for (int i=2; i <= val; i++) {
-			resultat *= i;
-		}
 		return resultat;
 	}
 }

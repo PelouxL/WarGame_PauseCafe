@@ -39,13 +39,13 @@ public class Terrain implements IConfig, Serializable {
 		/*
 		 * HERBE : aucun effet
 		 * ROCHER : inaccessible
-		 * FORET : portee visuelle reduite
+		 * FORET : portée visuelle réduite
 		 * EAU : inaccessible
-		 * PONT : aucun d'effet
-		 * FEU : degats de fin de tour
+		 * PONT : aucun effet
+		 * FEU : dégâts de fin de tour
 		 * ACIDE : applique un poison
 		 * VILLAGE : soin de fin de tour
-		 * SABLE : portee de deplacement reduite
+		 * SABLE : distance de déplacement réduite
 		 */
 		
 		HERBE   (COULEUR_HERBE,   true,  null, null, 1),
@@ -59,7 +59,7 @@ public class Terrain implements IConfig, Serializable {
 		SABLE   (COULEUR_SABLE,   true,  Effet.TypeEffet.SABLES_MOUVANTS, TypeMoment.TANT_QUE_DESSUS, 2);
 
 		private final Color COULEUR;
-		private final boolean ACCESSIBLE; // Changer pour gerer des unité volante par ex?
+		private final boolean ACCESSIBLE; // Changer pour gérer des unités volantes par ex?
 		private final Effet.TypeEffet effet; // Effet appliqué par la case, remplacer par une liste?
 		private final TypeMoment moment; // Moment d'application de l'effet
 		private final int COUT;
@@ -67,11 +67,11 @@ public class Terrain implements IConfig, Serializable {
 		/**
 		 * Construit un type de terrain.
 		 *
-		 * @param couleur couleur d'affichage
+		 * @param couleur la couleur d'affichage
 		 * @param accessible indique si le terrain est franchissable
-		 * @param effet effet appliqué par le terrain
-		 * @param moment moment d'application de l'effet
-		 * @param cout coût de déplacement
+		 * @param effet l'effet appliqué par le terrain
+		 * @param moment le moment d'application de l'effet
+		 * @param cout le coût de déplacement
 		 */
 		TypeTerrain(Color couleur, boolean accessible, Effet.TypeEffet effet, TypeMoment moment, int cout) { 
 			this.COULEUR = couleur;
@@ -107,20 +107,23 @@ public class Terrain implements IConfig, Serializable {
 	/**
 	 * Construit un terrain avec un type donné.
 	 *
-	 * @param type type de terrain
+	 * @param type le type de terrain
 	 */
 	public Terrain(TypeTerrain type) { 
 		TYPE = type;
 	}
 	
-	/** @return vrai si la case est libre et accessible, false sinon */
+	/** 
+	 * Indique si une case est libre et accessible.
+	 * 
+	 * @return vrai si la case est libre et accessible, false sinon */
 	public boolean estLibre() { return (occupant == null) && (this.TYPE.ACCESSIBLE); }
 
 	/**
-	 * Place un soldat sur la case et applique l'effet associe au terrain
+	 * Place un soldat sur la case et applique l'effet associé au terrain
 	 * selon son type d'application.
 	 *
-	 * @param soldat soldat à placer
+	 * @param soldat le soldat à placer
 	 */
 	public void occuper(Soldat soldat) { 
 		this.occupant = soldat;
@@ -130,7 +133,7 @@ public class Terrain implements IConfig, Serializable {
 	}
 	
 	/**
-	 * Libère la case et retire l'effet associe au terrain selon son type d'application.
+	 * Libère la case et retire l'effet associé au terrain selon son type d'application.
 	 */
 	public void liberer() {
 		
