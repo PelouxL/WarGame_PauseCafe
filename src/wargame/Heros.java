@@ -55,33 +55,6 @@ public class Heros extends Soldat{
 	
 	}
 	
-	/** @return le chemin vers l'image associee au heros */
-	public String trouverImg() {
-		String path = "./images/persos/";
-		switch(this.getType()) {
-		   case HUMAIN:
-			   path += "humain";
-			   break;
-		   case NAIN:
-			   path += "nain";
-			   break;
-		   case ELF:
-			   path += "elfe";
-			   break;
-		   case HOBBIT:
-			   path += "hobbit";
-			   break;
-		   case ANGE:
-			   path += "ange";
-			   break;
-		   case MAGE:
-			   path += "mage";
-			   break;
-		}
-	    path += "_map.png";
-	    return path;
-	}
-	
 	public TypesH getType() { return this.TYPE; }
 	public String getNom() { return this.NOM; }
 }
