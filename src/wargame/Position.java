@@ -67,7 +67,6 @@ public class Position implements IConfig, Serializable {
 		if (centre) {
 			nb += 1;
 		}
-		System.out.println("rayon : " + rayon + "  nb : " + nb);
 		return nb;
 	}
 	

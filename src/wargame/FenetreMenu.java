@@ -43,7 +43,7 @@ public class FenetreMenu extends JFrame implements IConfig{
 			panneauPrincipal.setLayout(new BoxLayout(panneauPrincipal, BoxLayout.Y_AXIS));
 			panneauPrincipal.setAlignmentX(CENTER_ALIGNMENT);
 			
-			JButton bouttonJouer = creerBoutonMenu("Lancez une partie");
+			JButton bouttonJouer = creerBoutonMenu("Lancer une partie");
 			JButton bouttonCharger = creerBoutonMenu("Charger une partie");
 			JButton bouttonQuitter = creerBoutonMenu("Quitter");
 			
