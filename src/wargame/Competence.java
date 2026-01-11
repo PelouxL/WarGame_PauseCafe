@@ -55,6 +55,8 @@ public class Competence implements ICompetence, Serializable {
 	public void utiliserCompetence(Soldat lanceur, Position receveur, Carte carte) {
 		if(!peutUtiliser()) {
 			System.out.println("La competence " + type.getNom() + " n'est pas encore disponible !");
+		}else if(lanceur.getAction() < type.getCoutAction()) {
+			System.out.println("Vous n'avez pas assez de points de competence !");
 		} else {
 			if(lanceur.getPos().distance(receveur) <= type.getDistance()
 			   && this.zoneAttaque(lanceur.getPos(), carte).contient(receveur)){

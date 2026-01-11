@@ -666,7 +666,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 		    }
 		});*/
 	 
-	    if (!competence.peutUtiliser()) {
+	    if (!competence.peutUtiliser() || carte.getSoldat(caseCliquee).getAction() < competence.getType().getCoutAction()) {
 	    	boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
 	    	textLabel.setForeground(Color.BLACK); // Met texte en noir
 	    } else { 
