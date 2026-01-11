@@ -91,7 +91,7 @@ public class RenduCarte implements IConfig {
             }
         }
 
-        if (caseSurvolee != null && carte.getVisibilite(caseSurvolee) != 0 &&caseCliquee == null && carte.getSoldat(caseSurvolee) != null) {
+        if (caseSurvolee != null && carte.getVisibilite(caseSurvolee) != 0 && caseCliquee == null && carte.getSoldat(caseSurvolee) != null) {
             dessinerZoneDeplacement(g, carte, carte.getSoldat(caseSurvolee));
         }
 
@@ -343,7 +343,7 @@ public class RenduCarte implements IConfig {
      * @param g Graphics
      * @param c Carte contenant les héros
      */
-	public static void dessineInfosBas(Graphics g, Carte c, int indiceHerosSurvole) {
+	public static void dessinerInfosBas(Graphics g, Carte c, int indiceHerosSurvole) {
 		int i = 0, j = 0;
 		// heros
         int nbHeros = c.getNbHeros();
@@ -420,13 +420,13 @@ public class RenduCarte implements IConfig {
 		}*/
 	}
 	
-	public static void dessineInfobulle(Graphics g, Carte c, int indiceHerosSurvole, int indiceMonstreSurvole) {
-		if (indiceHerosSurvole != -1 && c.getListeHeros().size() > 0) { // si un Héros est survolé actuellement
-			Heros heros = c.getListeHeros().get(indiceHerosSurvole);
+	public static void dessinerInfobulle(Graphics g, Carte c, int indiceHeros, int indiceMonstre, int h) {
+		if (indiceHeros != -1 && c.getListeHeros().size() > 0) { // si un Héros est survolé ou sélectionné actuellement
+			Heros heros = c.getListeHeros().get(indiceHeros);
 			
 			// Image du Héros
 			Image im_heros = imageHeros(heros.getType());
-			g.drawImage(im_heros, X_IMAGE_SOLDAT, Y_IMAGE_SOLDAT, LARGEUR_IMAGE_SOLDAT, HAUTEUR_IMAGE_SOLDAT, null);
+			g.drawImage(im_heros, X_IMAGE_SOLDAT, Y_IMAGE_SOLDAT-h, LARGEUR_IMAGE_SOLDAT, HAUTEUR_IMAGE_SOLDAT, null);
 			
 			// Barre de vie
 			double pv_max = heros.getPoints();
@@ -439,7 +439,7 @@ public class RenduCarte implements IConfig {
 			} else {
 				g.setColor(COULEUR_PV_MOYEN);
 			}
-			g.fillRect(X_BARRE_DE_VIE, Y_BARRE_DE_VIE, (int) ratio, HAUTEUR_BARRE_DE_VIE);
+			g.fillRect(X_BARRE_DE_VIE, Y_BARRE_DE_VIE-h, (int) ratio, HAUTEUR_BARRE_DE_VIE);
 			
 			// Statistiques
 			int puissance = heros.getPuissance() / 5;
@@ -447,43 +447,42 @@ public class RenduCarte implements IConfig {
 			int deplacement = heros.getDeplacement();
 			int portee_de_tir = heros.getTir();
 			g.setColor(COULEUR_STAT_PUISSANCE);
-			g.fillRect(X_STAT, Y_STAT,                   LARGEUR_CRAN*puissance,       HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT-h,                   LARGEUR_CRAN*puissance,       HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_VISUELLE);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y,   LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y-h,   LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_DEPLACEMENT);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement,     HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2-h, LARGEUR_CRAN*deplacement,     HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_DE_TIR);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir,   HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3-h, LARGEUR_CRAN*portee_de_tir,   HAUTEUR_CRAN);
 			
 			// Infobulle
 			Image infobulle = imgInfobulle;
-			g.drawImage(infobulle, X_INFOBULLE, Y_INFOBULLE, LARGEUR_INFOBULLE, HAUTEUR_INFOBULLE, null);
+			g.drawImage(infobulle, X_INFOBULLE, Y_INFOBULLE-h, LARGEUR_INFOBULLE, HAUTEUR_INFOBULLE, null);
 			
 			// Nom
 			Image nom = imageNomHeros(heros.getType());
-			g.drawImage(nom, X_NOM, Y_NOM, LARGEUR_NOM, HAUTEUR_NOM, null);
+			g.drawImage(nom, X_NOM, Y_NOM-h, LARGEUR_NOM, HAUTEUR_NOM, null);
 			
 			// Points de vie
 			String PV = "" + heros.getPointsActuels() + " / " + heros.getPoints();
 			g.setColor(Color.WHITE);
 			// pour que ça soit un peu centré
 			if (heros.getPoints() >= 100) {
-				g.drawString(PV, X_PV + PV_DECALAGE_X, Y_PV);
+				g.drawString(PV, X_PV + PV_DECALAGE_X, Y_PV-h);
 			} else {
-				g.drawString(PV, X_PV, Y_PV);
+				g.drawString(PV, X_PV, Y_PV-h);
 			}
 			
 			// Actions restantes
 			int actionsRestantes = heros.getAction();
 			Image actions = imageActionsRestantes(actionsRestantes);
-			g.drawImage(actions, X_ACTIONS, Y_ACTIONS, LARGEUR_ACTIONS, HAUTEUR_ACTIONS, null);
-		}
-		if (indiceMonstreSurvole != -1 && c.getListeMonstres().size() > 0) { // si un Monstre est survolé actuellement
-			Monstre monstre = c.getListeMonstres().get(indiceMonstreSurvole);
+			g.drawImage(actions, X_ACTIONS, Y_ACTIONS-h, LARGEUR_ACTIONS, HAUTEUR_ACTIONS, null);
+		} else if (indiceMonstre != -1 && c.getListeMonstres().size() > 0) { // si un Monstre est survolé actuellement
+			Monstre monstre = c.getListeMonstres().get(indiceMonstre);
 			
 			// Image du Monstre
 			Image im_monstre = imageMonstre(monstre.getType());
-			g.drawImage(im_monstre, X_IMAGE_SOLDAT, Y_IMAGE_SOLDAT, LARGEUR_IMAGE_SOLDAT, HAUTEUR_IMAGE_SOLDAT, null);
+			g.drawImage(im_monstre, X_IMAGE_SOLDAT, Y_IMAGE_SOLDAT-h, LARGEUR_IMAGE_SOLDAT, HAUTEUR_IMAGE_SOLDAT, null);
 			
 			// Barre de vie
 			double pv_max = monstre.getPoints();
@@ -496,7 +495,7 @@ public class RenduCarte implements IConfig {
 			} else {
 				g.setColor(COULEUR_PV_MOYEN);
 			}
-			g.fillRect(X_BARRE_DE_VIE, Y_BARRE_DE_VIE, (int) ratio, HAUTEUR_BARRE_DE_VIE);
+			g.fillRect(X_BARRE_DE_VIE, Y_BARRE_DE_VIE-h, (int) ratio, HAUTEUR_BARRE_DE_VIE);
 			
 			// Statistiques
 			int puissance = monstre.getPuissance() / 5;
@@ -504,36 +503,36 @@ public class RenduCarte implements IConfig {
 			int deplacement = monstre.getDeplacement();
 			int portee_de_tir = monstre.getTir();
 			g.setColor(COULEUR_STAT_PUISSANCE);
-			g.fillRect(X_STAT, Y_STAT,                   LARGEUR_CRAN*puissance,       HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT-h,                   LARGEUR_CRAN*puissance,       HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_VISUELLE);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y,   LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y-h,   LARGEUR_CRAN*portee_visuelle, HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_DEPLACEMENT);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2, LARGEUR_CRAN*deplacement,     HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*2-h, LARGEUR_CRAN*deplacement,     HAUTEUR_CRAN);
 			g.setColor(COULEUR_STAT_PORTEE_DE_TIR);
-			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3, LARGEUR_CRAN*portee_de_tir,   HAUTEUR_CRAN);
+			g.fillRect(X_STAT, Y_STAT+STAT_DECALAGE_Y*3-h, LARGEUR_CRAN*portee_de_tir,   HAUTEUR_CRAN);
 			
 			// Infobulle
 			Image infobulle = imgInfobulle;
-			g.drawImage(infobulle, X_INFOBULLE, Y_INFOBULLE, LARGEUR_INFOBULLE, HAUTEUR_INFOBULLE, null);
+			g.drawImage(infobulle, X_INFOBULLE, Y_INFOBULLE-h, LARGEUR_INFOBULLE, HAUTEUR_INFOBULLE, null);
 			
 			// Nom
 			Image nom = imageNomMonstre(monstre.getType());
-			g.drawImage(nom, X_NOM, Y_NOM, LARGEUR_NOM, HAUTEUR_NOM, null);
+			g.drawImage(nom, X_NOM, Y_NOM-h, LARGEUR_NOM, HAUTEUR_NOM, null);
 			
 			// Points de vie
 			String PV = "" + monstre.getPointsActuels() + " / " + monstre.getPoints();
 			g.setColor(Color.WHITE);
 			// pour que ça soit un peu centré
 			if (monstre.getPoints() >= 100) {
-				g.drawString(PV, X_PV + PV_DECALAGE_X, Y_PV);
+				g.drawString(PV, X_PV + PV_DECALAGE_X, Y_PV-h);
 			} else {
-				g.drawString(PV, X_PV, Y_PV);
+				g.drawString(PV, X_PV, Y_PV-h);
 			}
 			
 			// Actions restantes
 			int actionsRestantes = monstre.getAction();
 			Image actions = imageActionsRestantes(actionsRestantes);
-			g.drawImage(actions, X_ACTIONS, Y_ACTIONS, LARGEUR_ACTIONS, HAUTEUR_ACTIONS, null);
+			g.drawImage(actions, X_ACTIONS, Y_ACTIONS-h, LARGEUR_ACTIONS, HAUTEUR_ACTIONS, null);
 		}
 	}
 }

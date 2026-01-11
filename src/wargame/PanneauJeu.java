@@ -234,7 +234,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 				Graphics2D g2d = (Graphics2D) g;
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-				RenduCarte.dessineInfosBas(g, c, indiceHerosSurvole);
+				RenduCarte.dessinerInfosBas(g, c, indiceHerosSurvole);
+				RenduCarte.dessinerInfosBas(g, c, indiceHerosClique);
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 				g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
 	    		//carte.dessineInfosBas(g, indiceHerosSurvole);
@@ -254,7 +255,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				g.setColor(COULEUR_FORET);
 				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
-				RenduCarte.dessineInfobulle(g, c, indiceHerosSurvole, indiceMonstreSurvole);
+				if (indiceHerosClique != -1) {
+					RenduCarte.dessinerInfobulle(g, c, indiceHerosClique, indiceMonstreSurvole, 0);
+					if (indiceHerosClique != indiceHerosSurvole) { // pour pas afficher 2 fois la même infobulle
+						RenduCarte.dessinerInfobulle(g, c, indiceHerosSurvole, indiceMonstreSurvole, HAUTEUR_INFOBULLE);
+					}
+				} else {
+					RenduCarte.dessinerInfobulle(g, c, indiceHerosSurvole, indiceMonstreSurvole, 0);
+				}
 			}
 		};
 		//panneauDroit.setLayout(new GridLayout(0, 1, 0, 5));
