@@ -26,19 +26,17 @@ public class Heros extends Soldat{
 	}
 	
 	/**
-	 * Initialise les competences du heros selon son type (HOBBIT, ELF...).
+	 * Initialise les compétences du héros selon son type (HOBBIT, ELF...).
 	 */
 	public void initialiserCompetence() {
 		switch(TYPE) {
 		case HOBBIT:
 			ajouterCompetence(new Competence(TypeCompetence.LANCE_PIERRE));
-			ajouterCompetence(new Competence(TypeCompetence.COUP_DE_BATON));
 			break;
 		case ELF:
 			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
 			break;
 		case HUMAIN:
-			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
 			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
 			break;
 		case ANGE:
@@ -46,12 +44,11 @@ public class Heros extends Soldat{
 			ajouterCompetence(new Competence(TypeCompetence.SOIN_DE_ZONE));
 			break;
 		case NAIN:
-			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
 			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
 			break;
 		case MAGE:
 			ajouterCompetence(new Competence(TypeCompetence.BOULE_DE_FEU));
-			ajouterCompetence(new Competence(TypeCompetence.LANCE_PIERRE));
+			ajouterCompetence(new Competence(TypeCompetence.COUP_DE_BATON));
 		default:
 			break;
 		}
