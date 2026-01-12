@@ -22,7 +22,7 @@ public interface ICompetence{
 		SOIN("Soin", ClasseCompetence.SOINS, 1, 15, "libre", 3, false, 0, 1),
 		SOIN_DE_ZONE("Soin de zone", ClasseCompetence.SOINS,  2, 20, "ligne", 4, false, 2, 3),
 		COUP_EPEE("Coup d'épée", ClasseCompetence.ATTAQUE, 1, 10, "libre", 1, false, 0, 1),
-		TIR_A_PORTER("Tir à portée", ClasseCompetence.ATTAQUE, 1, 10, "ligne", 12, false, 0, 1),
+		TIR_A_PORTEE("Tir à portée", ClasseCompetence.ATTAQUE, 1, 10, "ligne", 12, false, 0, 1),
 		LANCE_PIERRE("Lance-pierre", ClasseCompetence.DEBUFF, 1, 5, "ligne", 5, false, 0, 0),
 		COUP_DE_BATON("Coup de baton", ClasseCompetence.DEBUFF, 1, 5, "ligne", 1, false, 0, 0);
 

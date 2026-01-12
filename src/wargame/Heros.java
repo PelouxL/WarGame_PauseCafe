@@ -34,11 +34,11 @@ public class Heros extends Soldat{
 			ajouterCompetence(new Competence(TypeCompetence.LANCE_PIERRE));
 			break;
 		case ELF:
-			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
+			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTEE));
 			break;
 		case HUMAIN:
 			ajouterCompetence(new Competence(TypeCompetence.COUP_EPEE));
-			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTER));
+			ajouterCompetence(new Competence(TypeCompetence.TIR_A_PORTEE));
 			break;
 		case ANGE:
 			ajouterCompetence(new Competence(TypeCompetence.SOIN));

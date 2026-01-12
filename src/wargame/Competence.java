@@ -7,17 +7,19 @@ import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
+import wargame.ICompetence.TypeCompetence;
+
 /**
  * Représente les compétences utilisables par les Soldats.
  * <p>
  * Une compétence peut infliger des dégâts, soigner ou appliquer des effets
  * selon son type. Chaque compétence possède :
+ * </p>
  * <ul>
  * 		<li>une portée</li>
  * 		<li>une zone d'effet</li>
  * 		<li>un temps de rechargement</li>
  * </ul>
- * </p>
  */
 public class Competence implements ICompetence, Serializable {
 
@@ -59,7 +61,10 @@ public class Competence implements ICompetence, Serializable {
 			//System.out.println("Vous n'avez pas assez de points de competence !");
 		} else {
 			if (lanceur.getPos().distance(receveur) <= type.getDistance()
-			   && this.zoneAttaque(lanceur.getPos(), carte).contient(receveur)) {
+			    && lanceur.getPos().distance(receveur) <= lanceur.getPortee()
+			    && (lanceur.getPos().distance(receveur) <= lanceur.getTir()
+				    || (this.getType() == TypeCompetence.COUP_EPEE || this.getType() == TypeCompetence.COUP_DE_BATON))
+			    && this.zoneAttaque(lanceur.getPos(), carte).contient(receveur)) {
 				
 				this.appliquerCompetence(lanceur.getPos(), receveur, carte);
 				lanceur.setAction(lanceur.getAction() - type.getCoutAction());
@@ -107,7 +112,7 @@ public class Competence implements ICompetence, Serializable {
 			break;
 
 		case COUP_EPEE:
-			atq += caster.recupIdentite() + " Donne un coup d'épée !\n";
+			atq += caster.recupIdentite() + " donne un coup d'épée !\n";
 			if(soldat != null) {
 				receveurs += soldat.recupIdentite();
 				receveurs += " a reçu " + (type.getDegats() + soldat.getPuissance()) + " points de dégâts !";
@@ -123,7 +128,7 @@ public class Competence implements ICompetence, Serializable {
 			break;
 
 		case SOIN:
-			atq += caster.recupIdentite() + " Lance un sort de soin !\n";
+			atq += caster.recupIdentite() + " lance un sort de soin !\n";
 			if(soldat != null) {
 				receveurs += soldat.recupIdentite();
 				receveurs += " a reçu " + (type.getDegats() + soldat.getPuissance()) + " points de vie !";
@@ -135,7 +140,7 @@ public class Competence implements ICompetence, Serializable {
 			break;
 
 		case SOIN_DE_ZONE:
-			atq += caster.recupIdentite() + " Lance un sort de soin de zone !\n";
+			atq += caster.recupIdentite() + " lance un sort de soin de zone !\n";
 			EnsemblePosition zoneSoin = receveur.voisines(type.getDegatsZone(), false);
 			for(int i = 0; i < zoneSoin.getNbPos(); i++) {				
 				Soldat soldats = carte.getSoldat(zoneSoin.getPosition(i));
@@ -148,8 +153,8 @@ public class Competence implements ICompetence, Serializable {
 			}
 			break;
 
-		case TIR_A_PORTER:
-			atq += caster.recupIdentite() + " Décoche une flèche ! !\n";
+		case TIR_A_PORTEE:
+			atq += caster.recupIdentite() + " décoche une flèche ! !\n";
 			if(soldat != null) {	
 				receveurs += "---- ";
 				receveurs += soldat.recupIdentite();
@@ -166,7 +171,7 @@ public class Competence implements ICompetence, Serializable {
 			break;
 			
 		case LANCE_PIERRE:
-			atq += caster.recupIdentite() + "Tir un coup de fronde !\n";
+			atq += caster.recupIdentite() + " tire un coup de fronde !\n";
 			if(soldat != null) {	
 				receveurs += "---- ";
 				receveurs += soldat.recupIdentite();
@@ -185,7 +190,7 @@ public class Competence implements ICompetence, Serializable {
 			break;
 			
 		case COUP_DE_BATON:
-			atq += caster.recupIdentite() + "Met un coup de baton dans les jambes !\n";
+			atq += caster.recupIdentite() + " met un coup de baton dans les jambes !\n";
 			if(soldat != null) {	
 				receveurs += "---- ";
 				receveurs += soldat.recupIdentite();
@@ -251,7 +256,7 @@ public class Competence implements ICompetence, Serializable {
 		EnsemblePosition ePos;
 		switch(type.getZoneLancer()) {
 		case "ligne": // lancé sur les cases alignées au lanceur, les obstacles genent
-			ePos = new EnsemblePosition(6*type.getDistance() + 1);
+			ePos = new EnsemblePosition(6*type.getDistance() + 5);
 			
 			int[] x = {-2, -1, -1, 1, 1, 2};
 			int[] y = {0, 1, -1, 1, -1, 0};
@@ -269,7 +274,7 @@ public class Competence implements ICompetence, Serializable {
 			break;
 			
 		case "cercle": // lancé sur les cases autour du lancer dans un certain rayon, les obstacles genent
-			ePos = pos.voisines(type.getDistance(), false);
+			ePos = pos.voisines(type.getDistance(), true);
 			
 			// Test de chaque position
 			for (int i = 0; i < ePos.getNbPos(); i++) {
@@ -287,18 +292,15 @@ public class Competence implements ICompetence, Serializable {
 			
 			break;
 			
-		case "libre": // pas de restriction de lancé
-			ePos = pos.voisines(type.getDistance(), false);	
+		case "libre": // pas de restriction de lancer
+			ePos = pos.voisines(type.getDistance(), true);	
 			break;
 		default:
 			ePos = null;
 			break;
 		}
 		
-		// Si c'est une competence de soin le lanceur peut la lancer sur lui-meme
-		if (type.getClasseCompetence() == ClasseCompetence.SOINS) {
-			ePos.ajouterPos(pos);
-		}
+		
 		
 		return ePos;
 	}

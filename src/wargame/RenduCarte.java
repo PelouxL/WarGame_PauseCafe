@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+
+import wargame.ICompetence.TypeCompetence;
 import wargame.ISoldat.TypesH;
 import wargame.ISoldat.TypesM;
 import wargame.Terrain.TypeTerrain;
@@ -261,19 +263,26 @@ public class RenduCarte implements IConfig {
             Position pos = ePos.getPosition(i);
             Soldat soldat = carte.getSoldat(pos);
 
-            if (soldat != null) {
-                if (soldat instanceof Heros) {
-                    dessinerCaseSurvolee(g, pos, new Color(107, 24, 24, 128)); // rouge sombre
-                } else {
-                    dessinerCaseSurvolee(g, pos, new Color(64, 57, 57, 128)); // gris sombre
-                }
-            } else {
-                dessinerCaseSurvolee(g, pos, COULEUR_PORTEE_COMP); // couleur classique pour les cases vides
+            if (lanceur.getPos().distance(pos) <= lanceur.getPortee()
+            	&& (lanceur.getPos().distance(pos) <= lanceur.getTir()
+            	    || (competence.getType() == TypeCompetence.COUP_EPEE || competence.getType() == TypeCompetence.COUP_DE_BATON))) {
+	            if (soldat != null) {
+	                if (soldat instanceof Heros) {
+	                    dessinerCaseSurvolee(g, pos, new Color(107, 24, 24, 128)); // rouge sombre
+	                } else {
+	                    dessinerCaseSurvolee(g, pos, new Color(64, 57, 57, 128)); // gris sombre
+	                }
+	            } else {
+	                dessinerCaseSurvolee(g, pos, COULEUR_PORTEE_COMP); // couleur classique pour les cases vides
+	            }
             }
         }
 
         // Dessiner la zone d'effet autour de la case survolée
-        if(caseSurvolee.estValide() && ePos.contient(caseSurvolee)){
+        if(caseSurvolee.estValide() && ePos.contient(caseSurvolee)
+            && lanceur.getPos().distance(caseSurvolee) <= lanceur.getPortee()
+            && (lanceur.getPos().distance(caseSurvolee) <= lanceur.getTir()
+            	|| (competence.getType() == TypeCompetence.COUP_EPEE || competence.getType() == TypeCompetence.COUP_DE_BATON))){
 	        for (int i = 0; i < zoneAtt.getNbPos(); i++) {
 	            Position pos = zoneAtt.getPosition(i);
 	            dessinerCaseSurvolee(g, pos, new Color(255, 0, 0, 128)); // rouge semi-transparent

@@ -223,16 +223,23 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 		String msg_riposte = "";
 		
 		if (riposte) msg_riposte = " riposte et";
-		
+		/*
 		if (this instanceof Monstre) {
-			atq += ((Monstre)this).getNom();
-			def += ((Heros)soldat).getNom();
+			atq += ((Monstre)this).getType();
+			def += ((Heros)soldat).getType();
 		} else {
-			atq += ((Heros)this).getNom();
-			def += ((Monstre)soldat).getNom();
+			atq += ((Heros)this).getType();
+			def += ((Monstre)soldat).getType();
+		}*/
+		if (this instanceof Monstre) {
+			atq += ((Monstre)this).recupIdentite();
+			def += ((Heros)soldat).recupIdentite();
+		} else {
+			atq += ((Heros)this).recupIdentite();
+			def += ((Monstre)soldat).recupIdentite();
 		}
 		
-		log += atq+msg_riposte+" inflige "+(this.getPuissance()/2)+" degats a "+def+"\n";
+		log += atq+msg_riposte+" inflige "+(this.getPuissance()/2)+" dégâts à "+def+"\n";
 		
 		if (soldat.estMort()) {
 			log += def+" succombe à ses blessures.\n";
@@ -354,10 +361,12 @@ public abstract class Soldat implements ISoldat, IConfig,  ICompetence, Serializ
 		String id = "";
 		 
 		if (this instanceof Monstre) {
-			id += ((Monstre)this).getNom();
+			id += ((Monstre)this).getType();
+			id += " ";
 			id += this.getNum()+1;
 		} else {
-			id += ((Heros)this).getNom();
+			id += ((Heros)this).getType();
+			id += " ";
 			id += (char)('A'+this.getNum());
 		}
 		return id;

@@ -278,7 +278,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				Font precedent = g.getFont();
 				g.setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 15));
 				g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2 + 3);
-				g.drawString("Position souris : (" + getCaseSurvolee(), LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*10, HAUTEUR_PANNEAU_HAUT/2 + 3);
+				g.drawString("Position souris : " + getCaseSurvolee(), LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*9, HAUTEUR_PANNEAU_HAUT/2 + 3);
 				g.setFont(precedent);
 				verifFinJeu();
 				if (finJeu != 0) {

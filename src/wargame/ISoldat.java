@@ -19,10 +19,10 @@ public interface ISoldat {
     static enum TypesH {
       	HUMAIN  (90, 6, 20,  5, 3),
       	NAIN   (120, 3, 30,  0, 2),
-      	ELF     (50, 8, 10, 10, 2),
-      	HOBBIT  (30, 7, 10,  2, 5),
+      	ELF     (50, 8, 10,  8, 2),
+      	HOBBIT  (30, 7, 10,  4, 5),
       	ANGE    (80, 5, 10,  6, 2),
-        MAGE    (50, 6,  0,  0, 3);
+        MAGE    (80, 6,  0,  5, 3);
 
         private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
 
@@ -62,7 +62,7 @@ public interface ISoldat {
       	TROLL  (150, 2, 40, 0, 2),
       	ORC     (80, 3, 15, 3, 3),
       	GOBELIN (30, 6, 10, 6, 5),
-      	DEMON   (50, 4, 30, 5, 4);
+      	DEMON   (50, 4, 30, 4, 4);
 
         private final int POINTS_DE_VIE, PORTEE_VISUELLE, PUISSANCE, TIR, DEPLACEMENT;
 
