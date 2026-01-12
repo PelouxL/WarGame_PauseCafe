@@ -110,7 +110,7 @@ public class Competence implements ICompetence, Serializable {
 			atq += caster.recupIdentite() + " Donne un coup d'épée !\n";
 			if(soldat != null) {
 				receveurs += soldat.recupIdentite();
-				receveurs += " a reçu " + type.getDegats() + soldat.getPuissance() + " points de dégats !";
+				receveurs += " a reçu " + (type.getDegats() + soldat.getPuissance()) + " points de dégats !";
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
 				if(soldat.estMort()) {
 					carte.mort(soldat);
@@ -126,7 +126,7 @@ public class Competence implements ICompetence, Serializable {
 			atq += caster.recupIdentite() + " Lance un sort de soin !\n";
 			if(soldat != null) {
 				receveurs += soldat.recupIdentite();
-				receveurs += " a reçu " + type.getDegats() + soldat.getPuissance() + " points de vie !";
+				receveurs += " a reçu " + (type.getDegats() + soldat.getPuissance()) + " points de vie !";
 				soldat.ajouterPv(type.getDegats() + soldat.getPuissance());
 			}else {
 				receveurs += "Le vent vous remercie pour votre generosité.";
@@ -153,7 +153,7 @@ public class Competence implements ICompetence, Serializable {
 			if(soldat != null) {	
 				receveurs += "---- ";
 				receveurs += soldat.recupIdentite();
-				receveurs +=  " a reçu " + this.type.getDegats() + caster.getTir() + " points de dégats !";
+				receveurs +=  " a reçu " + (this.type.getDegats() + caster.getTir()) + " points de dégats !";
 				soldat.retirerPv(type.getDegats() + caster.getTir());
 				if(soldat.estMort()) {
 					carte.mort(soldat);
@@ -182,6 +182,7 @@ public class Competence implements ICompetence, Serializable {
 		    }else{
 		    	receveurs += "La pierre ricoche sur le sol ! Bravo.";
 		    }
+			break;
 			
 		case COUP_DE_BATON:
 			atq += caster.recupIdentite() + "Met un coup de baton dans les jambes !\n";

@@ -561,10 +561,14 @@ public class PanneauJeu extends JPanel implements IConfig {
 		        	heros = listeHeros.get((listeHeros.indexOf(carte.getSoldat(caseCliquee)) - 1 + listeHeros.size()) % listeHeros.size());
 		        }
 		        
-		        
 		        caseCliquee = heros.getPos();
 	        	deplacePerso = true;
 				infoTexte2 = heros.toString();
+				
+				indiceHerosClique = carte.getIndiceHeros(heros);
+				if (!timerGif.isRunning()) { // on commence le GIF du héros
+			        timerGif.start();
+			    }
 
 		        panneauCarte.repaint();
 		        panneauInfos.repaint();
@@ -590,10 +594,15 @@ public class PanneauJeu extends JPanel implements IConfig {
 		        caseCliquee = heros.getPos();
 	        	deplacePerso = true;
 				infoTexte2 = heros.toString();
+				
+				indiceHerosClique = carte.getIndiceHeros(heros);
+				if (!timerGif.isRunning()) { // on commence le GIF du héros
+			        timerGif.start();
+			    }
 
 		        panneauCarte.repaint();
 		        panneauInfos.repaint();
-		        panneauDroit.repaint();
+		        mettreAJourPanneauDroit();
 		    }
 		});
 	}
