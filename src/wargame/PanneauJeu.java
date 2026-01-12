@@ -253,7 +253,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				g.setColor(COULEUR_FORET);
 				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
-				g.setFont(new java.awt.Font("Serif", java.awt.Font.ITALIC, 12));
+				g.setFont(new java.awt.Font("Serif", java.awt.Font.ITALIC, 10));
 				if (indiceHerosClique != -1) {
 					RenduCarte.dessinerInfobulle(g, c, indiceHerosClique, indiceMonstreSurvole, 0);
 					if (indiceHerosClique != indiceHerosSurvole) { // pour pas afficher 2 fois la même infobulle
@@ -280,9 +280,9 @@ public class PanneauJeu extends JPanel implements IConfig {
 				g.setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 15));
 				g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2 + 3);
 				if (caseSurvolee != null && caseDrag == null) {
-					g.drawString("Case survolée (x,y) : " + caseSurvolee, LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*10, HAUTEUR_PANNEAU_HAUT/2 + 3);
+					g.drawString("Case survolée (x,y) : " + caseSurvolee, LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*12, HAUTEUR_PANNEAU_HAUT/2 + 3);
 				} else if (caseDrag != null) {
-					g.drawString("Case survolée (x,y) : " + caseDrag, LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*10, HAUTEUR_PANNEAU_HAUT/2 + 3);
+					g.drawString("Case survolée (x,y) : " + caseDrag, LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*12, HAUTEUR_PANNEAU_HAUT/2 + 3);
 				}
 				g.setFont(precedent);
 				verifFinJeu();
@@ -626,7 +626,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private JButton creerBoutonPanneauHaut(String texte) {
 	    JButton bouton = new JButton(texte);
 
-	    bouton.setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 20));
+	    bouton.setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 15));
 	    bouton.setPreferredSize(new Dimension(200, 35));
 	    bouton.setMaximumSize(new Dimension(200, 35));
 
