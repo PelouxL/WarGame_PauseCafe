@@ -26,9 +26,12 @@ public class EnsemblePosition {
 	/**
 	 * Ajoute une position à l'ensemble.
 	 *
-	 * @param posla  position à ajouter
+	 * @param pos la position à ajouter
 	 */
-	public void ajouterPos(Position pos) { this.ePos[nbPos++] = pos; }
+	public void ajouterPos(Position pos) {
+		this.ePos[nbPos] = pos;
+		nbPos++;
+	}
 	
 	/**
 	 * Retire la première position de l'ensemble.

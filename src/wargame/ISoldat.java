@@ -47,6 +47,15 @@ public interface ISoldat {
         public static TypesH getTypeHAlea() {
             return values()[(int)(Math.random() * values().length)];
         }
+        
+        /**
+         * Retourne un type de héros à l'indice i.
+         * @param i l'indice du type de héros voulu
+         * @return le TypesH correspondant à i
+         */
+        public static TypesH getTypeHIndice(int i) {
+        	return values()[i];
+        }
     }
 
    	public static enum TypesM {
@@ -77,6 +86,15 @@ public interface ISoldat {
          */
         public static TypesM getTypeMAlea() {
             return values()[(int)(Math.random() * values().length)];
+        }
+        
+        /**
+         * Retourne un type de monstre à l'indice i.
+         * @param i l'indice du type de monstre voulu
+         * @return le TypesM correspondant à i
+         */
+        public static TypesM getTypeMIndice(int i) {
+        	return values()[i];
         }
     }
 

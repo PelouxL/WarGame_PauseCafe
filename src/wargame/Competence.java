@@ -88,8 +88,8 @@ public class Competence implements ICompetence, Serializable {
 		switch(type) {
 		case BOULE_DE_FEU:	
 			atq += caster.recupIdentite() + " lance une boule de feu en zone !\n";
-			EnsemblePosition zoneAttaque = receveur.voisines(type.getDegatsZone(), false);
-			zoneAttaque.ajouterPos(receveur);
+			EnsemblePosition zoneAttaque = receveur.voisines(type.getDegatsZone(), true);
+			//zoneAttaque.ajouterPos(receveur);
 			for(int i = 0; i < zoneAttaque.getNbPos(); i++) {
 				Soldat soldats = carte.getSoldat(zoneAttaque.getPosition(i));
 				if(soldats != null) {
@@ -110,14 +110,14 @@ public class Competence implements ICompetence, Serializable {
 			atq += caster.recupIdentite() + " Donne un coup d'épée !\n";
 			if(soldat != null) {
 				receveurs += soldat.recupIdentite();
-				receveurs += " a reçu " + (type.getDegats() + soldat.getPuissance()) + " points de dégats !";
+				receveurs += " a reçu " + (type.getDegats() + soldat.getPuissance()) + " points de dégâts !";
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
 				if(soldat.estMort()) {
 					carte.mort(soldat);
 					receveurs += "Il a succombé !";
 				}
 			}else {
-				receveurs += "Wooaw ! le Vent tremble devant votre puissance !";
+				receveurs += "Wooaw ! le vent tremble devant votre puissance !";
 			}
 			receveurs += "\n";
 			break;
@@ -129,7 +129,7 @@ public class Competence implements ICompetence, Serializable {
 				receveurs += " a reçu " + (type.getDegats() + soldat.getPuissance()) + " points de vie !";
 				soldat.ajouterPv(type.getDegats() + soldat.getPuissance());
 			}else {
-				receveurs += "Le vent vous remercie pour votre generosité.";
+				receveurs += "Le vent vous remercie pour votre générosité.";
 			}
 			receveurs += "\n";
 			break;
@@ -153,14 +153,14 @@ public class Competence implements ICompetence, Serializable {
 			if(soldat != null) {	
 				receveurs += "---- ";
 				receveurs += soldat.recupIdentite();
-				receveurs +=  " a reçu " + (this.type.getDegats() + caster.getTir()) + " points de dégats !";
+				receveurs +=  " a reçu " + (this.type.getDegats() + caster.getTir()) + " points de dégâts !";
 				soldat.retirerPv(type.getDegats() + caster.getTir());
 				if(soldat.estMort()) {
 					carte.mort(soldat);
 					receveurs += "Il a succombé !";
 				}
 		    }else{
-		    	receveurs += "Vous avez réussi a transpercer le sol ! Bravo.";
+		    	receveurs += "Vous avez réussi à transpercer le sol ! Bravo.";
 		    }
 			receveurs += "\n";
 			break;
@@ -170,7 +170,7 @@ public class Competence implements ICompetence, Serializable {
 			if(soldat != null) {	
 				receveurs += "---- ";
 				receveurs += soldat.recupIdentite();
-				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégats !";
+				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégâts !";
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
 				receveurs +=  " il a reçu une pierre sur la tête ! il est affaiblit !";
 				soldat.setAction(soldat.getAction()-1);
@@ -189,7 +189,7 @@ public class Competence implements ICompetence, Serializable {
 			if(soldat != null) {	
 				receveurs += "---- ";
 				receveurs += soldat.recupIdentite();
-				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégats !";
+				receveurs +=  " a reçu " + this.type.getDegats() + " points de dégâts !";
 				soldat.retirerPv(type.getDegats() + soldat.getPuissance());
 				receveurs +=  " Il est paralysé !";
 				soldat.setAction(soldat.getAction()-2);
@@ -251,7 +251,7 @@ public class Competence implements ICompetence, Serializable {
 		EnsemblePosition ePos;
 		switch(type.getZoneLancer()) {
 		case "ligne": // lancé sur les cases alignées au lanceur, les obstacles genent
-			ePos = new EnsemblePosition(6*type.getDistance());
+			ePos = new EnsemblePosition(6*type.getDistance() + 1);
 			
 			int[] x = {-2, -1, -1, 1, 1, 2};
 			int[] y = {0, 1, -1, 1, -1, 0};

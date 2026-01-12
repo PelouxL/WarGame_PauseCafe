@@ -72,7 +72,10 @@ public class Carte implements IConfig, ICarte, Serializable {
 		// HEROS
 	    for(int i = 0; i < NB_HEROS; i++) {
 			Position p = trouvePositionVide();
-			Heros heros = new Heros(this, TypesH.getTypeHAlea(), "Héros"+i, p);
+			// Version aléatoire
+			// Heros heros = new Heros(this, TypesH.getTypeHAlea(), "Héros "+i, p);
+			// Version qui donne chaque TypesH à la suite
+			Heros heros = new Heros(this, TypesH.getTypeHIndice(i%6), "Héros "+i, p);
 			this.listeHeros.add(heros);
 			this.carte[p.getX()][p.getY()].occuper(heros);
 			this.visibilite = heros.setCasesVisibles(this.visibilite);
@@ -82,7 +85,7 @@ public class Carte implements IConfig, ICarte, Serializable {
 	    // MONSTRES
 		for(int i = 0; i < NB_MONSTRES; i++) {
 			Position p = trouvePositionVide();
-			Monstre monstre = new Monstre(this, TypesM.getTypeMAlea(), "Monstre"+i, p);
+			Monstre monstre = new Monstre(this, TypesM.getTypeMAlea(), "Monstre "+i, p);
 			this.listeMonstres.add(monstre);
 			this.carte[p.getX()][p.getY()].occuper(monstre);;
 		}

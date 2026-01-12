@@ -21,7 +21,8 @@ import javax.swing.JButton;
 	import java.awt.RenderingHints;
 	import java.awt.Toolkit;
 	import java.awt.Dimension;
-	import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.BorderLayout;
 	import java.awt.Color;
 	import java.awt.Component;
 	import java.awt.Cursor;
@@ -251,6 +252,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				g.setColor(COULEUR_FORET);
 				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
+				g.setFont(new java.awt.Font("Serif", java.awt.Font.ITALIC, 12));
 				if (indiceHerosClique != -1) {
 					RenduCarte.dessinerInfobulle(g, c, indiceHerosClique, indiceMonstreSurvole, 0);
 					if (indiceHerosClique != indiceHerosSurvole) { // pour pas afficher 2 fois la même infobulle
@@ -273,7 +275,11 @@ public class PanneauJeu extends JPanel implements IConfig {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				g.setColor(Color.WHITE);
-				g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2);
+				Font precedent = g.getFont();
+				g.setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 15));
+				g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2 + 3);
+				g.drawString("Position souris : (" + getCaseSurvolee(), LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*10, HAUTEUR_PANNEAU_HAUT/2 + 3);
+				g.setFont(precedent);
 				verifFinJeu();
 				if (finJeu != 0) {
 					boutonFin.setVisible(false);
@@ -287,8 +293,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 		panneauHaut.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
 		// --------------- Creation boutons --------------- //
-		boutonFin = new JButton("Fin de tour");
-		boutonRevenirMenu = new JButton("Revenir au menu");
+		boutonFin = creerBoutonPanneauHaut("Fin de tour");
+		boutonRevenirMenu = creerBoutonPanneauHaut("Revenir au menu");
 		panneauHaut.add(boutonFin);
 		panneauHaut.add(boutonRevenirMenu);
 		
@@ -368,10 +374,8 @@ public class PanneauJeu extends JPanel implements IConfig {
 					panneauInfos.repaint();
 					panneauCarte.repaint();
 					panneauDroit.repaint();
+					panneauHaut.repaint();
 				}
-				panneauInfos.repaint();
-				panneauCarte.repaint();
-				panneauDroit.repaint();
 			}
 			
 			// Mouvement en gardant le bouton enfonce
@@ -605,6 +609,35 @@ public class PanneauJeu extends JPanel implements IConfig {
 		        mettreAJourPanneauDroit();
 		    }
 		});
+	}
+	
+	
+	// -------------------- Boutons en haut -------------------- //
+	
+	private JButton creerBoutonPanneauHaut(String texte) {
+	    JButton bouton = new JButton(texte);
+
+	    bouton.setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 20));
+	    bouton.setPreferredSize(new Dimension(200, 35));
+	    bouton.setMaximumSize(new Dimension(200, 35));
+
+	    bouton.setForeground(Color.WHITE);
+	    bouton.setBackground(new Color(80, 30, 30)); // rouge sombre
+	    bouton.setFocusPainted(false);
+	    bouton.setBorderPainted(false);
+	    bouton.setOpaque(true);
+
+	    // Effet hover
+	    bouton.addMouseListener(new MouseAdapter() {
+	        public void mouseEntered(MouseEvent e) {
+	            bouton.setBackground(new Color(120, 50, 50));
+	        }
+	        public void mouseExited(MouseEvent e) {
+	            bouton.setBackground(new Color(80, 30, 30));
+	        }
+	    });
+
+	    return bouton;
 	}
 
 

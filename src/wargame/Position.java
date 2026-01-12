@@ -78,7 +78,7 @@ public class Position implements IConfig, Serializable {
      * @return un ensemble de positions voisines
      */
 	public EnsemblePosition voisines(int rayon, boolean centre) {
-		int nbVoisinesMax = nbVoisinesMax(rayon, centre); // ancien : (3 * rayon) * (rayon +1) +2 ;
+		int nbVoisinesMax = nbVoisinesMax(rayon, centre);
 		EnsemblePosition voisines = new EnsemblePosition(nbVoisinesMax);
 		
 		if (centre) voisines.ajouterPos(this);
