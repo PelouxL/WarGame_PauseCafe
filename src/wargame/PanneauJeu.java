@@ -51,6 +51,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 	private Carte carte;
 	private Position caseSurvolee;
 	private Position caseCliquee;
+	private Position caseDrag;
 	private Position caseAction;
 	
 	// Drag&drop
@@ -278,8 +279,10 @@ public class PanneauJeu extends JPanel implements IConfig {
 				Font precedent = g.getFont();
 				g.setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 15));
 				g.drawString("Tour " + Integer.toString(carte.getNbTours()), NB_PIX_CASE, HAUTEUR_PANNEAU_HAUT/2 + 3);
-				if (getCaseSurvolee() != null) {
-					g.drawString("Case survolée (x,y) : " + getCaseSurvolee(), LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*10, HAUTEUR_PANNEAU_HAUT/2 + 3);
+				if (caseSurvolee != null && caseDrag == null) {
+					g.drawString("Case survolée (x,y) : " + caseSurvolee, LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*10, HAUTEUR_PANNEAU_HAUT/2 + 3);
+				} else if (caseDrag != null) {
+					g.drawString("Case survolée (x,y) : " + caseDrag, LARGEUR_PANNEAU_HAUT - NB_PIX_CASE*10, HAUTEUR_PANNEAU_HAUT/2 + 3);
 				}
 				g.setFont(precedent);
 				verifFinJeu();
@@ -386,6 +389,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 					if(dragPerso) {			
 						int x = e.getX();
 				        int y = e.getY();
+				        caseDrag = carte.coorToPos(x, y);
 				        
 				        // pour afficher le perso qu'on drag
 				        xSouris = x;
@@ -406,10 +410,12 @@ public class PanneauJeu extends JPanel implements IConfig {
 						dragPersoFin.setX(essaie.getX());
 						dragPersoFin.setY(essaie.getY());
 						deplacePerso = false;
+						caseCliquee = null;
 						indiceHerosClique = -1;
 						timerGif.stop();
 						nettoyerPanneauDroit();
 						panneauCarte.repaint();
+						panneauHaut.repaint();
 					}
 				}
 			}
@@ -531,6 +537,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 						infoTexte="";
 					}		
 					dragPerso = false;
+					caseDrag = null;
 					indiceHerosDrag = -1;
 					repaint();
 				}
@@ -686,26 +693,6 @@ public class PanneauJeu extends JPanel implements IConfig {
 
 		iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10)); // Espace entre image et texte
 		textLabel.setVerticalAlignment(SwingConstants.CENTER);
-					
-		// Changement de couleur quand on passe dessus (pas ouf en fait)
-		/*
-		boutonCompetence.addMouseListener(new MouseAdapter() {
-		    public void mouseEntered(MouseEvent e) {
-		    	if (boutonCompetence.getBackground().equals(COULEUR_BOUTON_COMP)) {
-		    		boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
-		    	} else {
-		    		boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
-		    	}
-		    }
-		    
-		    public void mouseExited(MouseEvent e) {
-		    	if (boutonCompetence.getBackground().equals(COULEUR_BOUTON_COMP)) {
-		    		boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
-		    	} else {
-		    		boutonCompetence.setBackground(COULEUR_BOUTON_COMP);
-		    	}
-		    }
-		});*/
 	 
 	    if (!competence.peutUtiliser() || carte.getSoldat(caseCliquee).getAction() < competence.getType().getCoutAction()) {
 	    	boutonCompetence.setBackground(COULEUR_BOUTON_COMP_INDISPONIBLE);
@@ -721,15 +708,19 @@ public class PanneauJeu extends JPanel implements IConfig {
 	    		if(choisiComp == null) {	
 	    			choisiComp = competence;
 	    			
-	    			if(choisiComp.peutUtiliser()) {
+	    			if(choisiComp.peutUtiliser() && carte.getSoldat(caseCliquee).getAction() >= choisiComp.getType().getCoutAction()) {
 	    				changeCurseur(competence.trouverImg(), 16, 16, competence.getType().getNom());
 	    			}else if(carte.getSoldat(caseCliquee).getAction() < choisiComp.getType().getCoutAction()){
 	    				//System.out.println("Vous n'avez pas les points d'action nécessaires ! ");
+	    				setCursor(Cursor.getDefaultCursor());
+	    				choisiComp = null;
 	    			}else {
 	    				//System.out.println("La compétence n'est pas encore disponible !!! ");
+	    				setCursor(Cursor.getDefaultCursor());
 	    				choisiComp = null;
 	    			}
 	    		}else {
+	    			setCursor(Cursor.getDefaultCursor());
 	    			choisiComp = null;
 	    		}
 	    		panneauCarte.repaint();
