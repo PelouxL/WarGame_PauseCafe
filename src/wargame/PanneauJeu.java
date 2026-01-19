@@ -253,7 +253,7 @@ public class PanneauJeu extends JPanel implements IConfig {
 				super.paintComponent(g);
 				g.setColor(COULEUR_FORET);
 				g.fillRect(LARGEUR_FENETRE-LARGEUR_PANNEAU_L, HAUTEUR_PANNEAU_HAUT, 60, 60);
-				g.setFont(new java.awt.Font("Serif", java.awt.Font.ITALIC, 10));
+				g.setFont(new java.awt.Font("Serif", java.awt.Font.ITALIC, 12));
 				if (indiceHerosClique != -1) {
 					RenduCarte.dessinerInfobulle(g, c, indiceHerosClique, indiceMonstreSurvole, 0);
 					if (indiceHerosClique != indiceHerosSurvole) { // pour pas afficher 2 fois la même infobulle
